@@ -1,0 +1,165 @@
+<!-- lw:if showcss -->
+<style>
+    div.lwlt_list table tr td, div.lwlt_list table tr, div.lwlt_list table {
+        border-collapse:collapse;
+    }
+    
+    div.lwlt_list table {
+        border:0px;
+    }
+    
+    div.lwlt_list table tr td, div.lwlt_list table tr th {
+        border-left:0px;
+        border-right:0px;
+        border-bottom:1px solid grey;
+        text-align:left;
+        padding:2px;
+        vertical-align: top;
+    }
+    
+    div.lwlt_list table tbody tr:nth-child(odd) { background-color:#f3f3f3; }
+    div.lwlt_list table tbody tr:nth-child(even) { background-color:#fff; }
+    
+    div.lt_adminfunctions {
+        margin-bottom:15px;
+    }
+    
+</style>
+<!-- lw:endif showcss -->
+<div class="lwlt_list" id="list_<!-- lw:var listId -->">
+<!-- lw:if ltRead -->
+    <h2><!-- lw:var listtitle --></h2>
+    <!-- lw:if ltWrite -->
+        <div class="lt_adminfunctions">
+            <a href="#" id="lt_new_file"><!-- lw:var lang_newfile --></a>
+            | <a href="#" id="lt_new_link"><!-- lw:var lang_newlink --></a>
+            <!-- lw:if manualsorting -->| <a href="#" id="lt_sorting"><!-- lw:var lang_sortlist --></a><!-- lw:endif manualsorting -->
+        </div>
+    <!-- lw:endif ltWrite -->
+    <!-- lw:if entries -->
+        <table width="100%" border="1">
+            <thead>
+                <tr>
+                    <!-- lw:if showid -->
+                    <th>ID</th>
+                    <!-- lw:endif showid -->
+                    <!-- lw:if showname -->
+                    <th><!-- lw:var lang_name --></th>
+                    <!-- lw:endif showname -->
+                    <!-- lw:if showdescription -->
+                    <th><!-- lw:var lang_description --></th>
+                    <!-- lw:endif showdescription -->
+                    <!-- lw:if showdate -->
+                    <th><!-- lw:var lang_date --></th>
+                    <!-- lw:endif showdate -->
+                    <!-- lw:if showlastdate -->
+                    <th><!-- lw:var lang_lastdate --></th>
+                    <!-- lw:endif showlastdate -->
+                    <!-- lw:if showuser -->
+                    <th><!-- lw:var lang_user --></th>
+                    <!-- lw:endif showuser -->
+                    <!-- lw:if ltWrite -->
+                    <!-- lw:if columnpublished -->
+                    <th><!-- lw:var lang_published --></th>
+                    <!-- lw:endif columnpublished -->
+                    <!-- lw:endif ltWrite -->
+                    <!-- lw:if columnlink -->
+                    <th>&nbsp;</th>
+                    <!-- lw:endif columnlink -->
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- lw:blockstart entry -->
+                <tr<!-- lw:if ltWrite --><!-- lw:if rowcolorpublished --> style="background-color:#ffcccc;"<!-- lw:endif rowcolorpublished --><!-- lw:endif ltWrite -->>
+                    <!-- lw:if showid -->
+                    <td align="left">
+                        <!-- lw:var id -->
+                    </td>
+                    <!-- lw:endif showid -->
+                    <!-- lw:if showname -->
+                    <td align="left">
+                    <!-- lw:if namelink -->
+                        <!-- lw:if link -->
+                        <a href="<!-- lw:var opt3text -->" class="lwlt_link"><!-- lw:var name --></a>
+                        <!-- lw:endif link -->
+                        <!-- lw:if file -->
+                        <a href="<!-- lw:var downloadurl -->" class="lwlt_download"><!-- lw:var name --></a>
+                        <!-- lw:endif file -->                    
+                    <!-- lw:endif namelink -->
+                    <!-- lw:ifnot namelink -->
+                    <!-- lw:var name -->
+                    <!-- lw:endifnot namelink -->
+                    </td>
+                    <!-- lw:endif showname -->
+                    <!-- lw:if showdescription -->
+                    <td><!-- lw:var description --></td>
+                    <!-- lw:endif showdescription -->
+                    <!-- lw:if showdate -->
+                    <td align="left">
+                        <!-- lw:if showdate --><!-- lw:var lw_first_date --><!-- lw:endif showdate -->
+                        <!-- lw:if showtime --><!-- lw:var lw_first_time --><!-- lw:endif showtime -->
+                    </td>
+                    <!-- lw:endif showdate -->
+                    <!-- lw:if showlastdate -->
+                    <td align="left">
+                        <!-- lw:if showlastdate --><!-- lw:var lw_last_date --><!-- lw:endif showlastdate -->
+                        <!-- lw:if showtime --><!-- lw:var lw_last_time --><!-- lw:endif showtime -->
+                    </td>
+                    <!-- lw:endif showlastdate -->
+                    <!-- lw:if showuser -->
+                    <td><!-- lw:var last_username --></td>
+                    <!-- lw:endif showuser -->
+                    <!-- lw:if ltWrite -->
+                    <!-- lw:if columnpublished -->
+                    <td align="left">
+                        <!-- lw:var published -->
+                    </td>
+                    <!-- lw:endif columnpublished -->
+                    <!-- lw:endif ltWrite -->
+                    <!-- lw:if columnlink -->
+                    <td align="left">
+                        <!-- lw:if link -->
+                        <a href="<!-- lw:var opt3text -->" class="lwlt_link"><!-- lw:var lang_link --></a>
+                        <!-- lw:endif link -->
+                        <!-- lw:if file -->
+                        <a href="<!-- lw:var downloadurl -->" class="lwlt_download"><!-- lw:var lang_download --></a>
+                        <!-- lw:endif file -->
+                    </td>
+                    <!-- lw:endif columnlink -->
+                    <td>
+                        <!-- lw:if ltWrite -->
+                        <!-- lw:if showEditOptions -->
+                        <span class="lt_adminfunctions">
+                            <a href="#" class="lt_edit_entry" id="lt_entry_<!-- lw:var id -->"><!-- lw:var lang_edit --></a>
+                            | <a href="<!-- lw:var deleteurl -->" onclick="return confirm('<!-- lw:var lang_reallydelete -->');"><!-- lw:var lang_delete --></a>
+                            <!-- lw:if showReleaseLink -->
+                            | <a href="<!-- lw:var releaseurl -->"><!-- lw:var lang_release --></a>
+                            <!-- lw:endif showReleaseLink -->
+                        </span>
+                        <!-- lw:endif showEditOptions -->
+                        <!-- lw:if borrow -->
+                        <span class="lt_adminfunctions">
+                            <a href="<!-- lw:var borrowurl -->"><!-- lw:var lang_borrow --></a>
+                        </span>
+                        <!-- lw:endif borrow -->
+                        <!-- lw:if borrowed -->
+                        <span class="lt_adminfunctions">
+                            <!-- lw:var lang_borrowedby --> <!-- lw:var borrower -->
+                        </span>
+                        <!-- lw:endif borrowed -->
+                        <!-- lw:endif ltWrite -->
+                    </td>
+                </tr>
+                <!-- lw:blockend entry -->
+            </tbody>
+        </table>
+    <!-- lw:endif entries -->
+    <!-- lw:ifnot entries -->
+        <div class="lt_noentries"><!-- lw:var lang_noentries --></div>
+    <!-- lw:endifnot entries -->
+<!-- lw:endif ltRead -->
+<!-- lw:ifnot ltRead -->
+    <!-- Keine Lese-Berechtigung! -->
+<!-- lw:endifnot ltRead -->
+</div>

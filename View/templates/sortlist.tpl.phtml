@@ -1,0 +1,52 @@
+<script type="text/javascript" src="<?php echo $this->urlmedia; ?>jquery/tablednd/jquery.tablednd_0_5.js"></script>
+<script>
+	$(document).ready(function(){
+		$("#sorttable").tableDnD({
+			onDragClass: "rowdragging",
+		    onDrop: function(table, row) {
+            	var rows = table.tBodies[0].rows;
+	            var debugStr = ":";
+	            for (var i=0; i<rows.length; i++) {
+	                debugStr += rows[i].id+":";
+	            }
+		        $("#neworder").val(debugStr);
+		    }
+		});
+	});
+</script>
+<fieldset class="lwadminform">
+    <legend class="lwadminform">Listtooleintr&auml;ge</legend>
+    <div class="lw_adminform_infotext">Eintr&auml;ge zum Sortieren mit der Maus ziehen und abschliessend speichern:</div>
+   
+    <?php if($this->aggregate): ?>
+    
+    <table class="itemslist" id="sorttable">
+        <THEAD>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Date</th>
+            </tr>
+        </THEAD>
+        <TBODY>
+            <?php foreach($this->aggregate as $entry): ?>
+            <tr id="<?php echo $entry->getValueByKey("id"); ?>">
+                <td><?php echo $entry->getValueByKey("id"); ?> <!-- seq: <?php echo $entry->getValueByKey("opt1number"); ?> --></td>
+                <td><?php echo $entry->getValueByKey("name"); ?></td>
+                <td><?php echo $this->formatDate($entry->getValueByKey("lw_first_date")); ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </TBODY>
+    </table>
+    <form id="neworderform" method="POST" action="<?php echo $this->actionUrl; ?>">
+        <input type="hidden" id="neworder" name="neworder" value="" />
+        <input type="submit" value="speichern" />
+    </form>
+    
+    <?php else: ?>
+    
+    <div>Es sind keine Elemente vorhanden</div>
+    
+    <?php endif; ?>
+	
+</fieldset>
