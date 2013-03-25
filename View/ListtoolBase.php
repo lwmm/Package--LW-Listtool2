@@ -14,7 +14,11 @@ class ListtoolBase extends \LWmvc\View
         $this->view->addurlfile = \lw_page::getInstance()->getUrl(array("cmd"=>"showAddFileForm"));
         $this->view->addurllink = \lw_page::getInstance()->getUrl(array("cmd"=>"showAddLinkForm"));
         $this->view->sorturl = \lw_page::getInstance()->getUrl(array("cmd"=>"sortEntries"));
-        $this->view->baseurl = \lw_page::getInstance()->getUrl();
+        $baseurl = \lw_page::getInstance()->getUrl();
+        if (!strstr($baseurl, "?")) {
+            $baseurl = $baseurl."?gf543=1";
+        }
+        $this->view->baseurl = $baseurl;
         return $this->view->render();
     }
 }

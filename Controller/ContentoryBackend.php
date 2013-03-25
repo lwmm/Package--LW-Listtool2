@@ -27,10 +27,18 @@ class ContentoryBackend extends \LWmvc\Controller
     {
         parent::__construct($cmd, $oid);
         $this->request = \lw_registry::getInstance()->getEntry("request");
+        $this->config = \lw_registry::getInstance()->getEntry("config");
     }
     
     public function execute()
     {
+        $PathTest = new \LwListtool\Services\PathTest($this->config);
+        if (!$PathTest->PathExistsAndIsWriteable()) {
+            $View = new \LwListtool\View\PathError();
+            return $this->returnRenderedView($View);
+        }
+        $PathTest->checkPathSecurity();
+        
         $response = $this->executeDomainEvent('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
         $this->listConfig = $response->getDataByKey('ConfigurationEntity');
         
