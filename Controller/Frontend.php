@@ -29,6 +29,7 @@ class Frontend extends \LWmvc\Controller
         $this->dic = new \LwListtool\Services\dic();
         $this->response = \lw_registry::getInstance()->getEntry("response");
         $this->request = \lw_registry::getInstance()->getEntry("request");
+        $this->lwi18nQH = new \LwI18n\Model\queryHandler($this->dic->getDbObject());
     }
     
     public function execute()
@@ -54,10 +55,17 @@ class Frontend extends \LWmvc\Controller
             $this->response->useJQuery();
             $this->response->useJQueryUI();
 
+            $result = $this->lwi18nQH->getAllEntriesForCategoryAndLang("lw_listtool2", $this->listConfig->getValueByKey("language"));
+            $temp = array();
+            foreach($result as $value) {
+                $temp[$value["lw_key"]] = $value["text"];
+            }
+            
             $view = new \LwListtool\View\ListtoolList();
             $view->setConfiguration($this->listConfig);
             $view->setListRights($this->listRights);
             $view->setListId($this->getContentObjectId());
+            $view->setLanguagePhrases($temp);
             $view->init();
         
             $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getListEntriesAggregate', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));

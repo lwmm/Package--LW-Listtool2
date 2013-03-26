@@ -41,6 +41,7 @@ class save extends \LWddd\DomainEventResolver
     {
         try {
             $dataValueObject = new \LWddd\ValueObject($this->event->getDataByKey('postArray'));
+            $parameter['langParams'] = $dataValueObject->getValueByKey("lw_i18n");
             $parameter['name'] = $dataValueObject->getValueByKey("name");
             $parameter['listtooltype'] = $dataValueObject->getValueByKey("listtooltype");
             $parameter['template'] = $dataValueObject->getValueByKey("template");

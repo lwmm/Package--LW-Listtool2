@@ -1,307 +1,421 @@
+<script type="text/javascript" src="<?php echo $this->jqUI ?>"></script>
+<link rel="stylesheet" href="<?php echo $this->jqUIcss ?>" />
+<script type="text/javascript" src="<?php echo $this->bootstrapJS ?>"></script>
+<link rel="stylesheet" href="<?php echo $this->bootstrapCSS ?>" />
+
+<style>
+    body{background-color: #7F7F7F!important}
+
+    #lw_fe_inputelement_lw_formular_template{width: 800px;height: 600px;}
+    #tabs ul li a{color: #fff;}
+
+    .activeline {background: #e8f2ff !important;}
+
+    .active, .active2{background-color: #777;}
+
+    .description {
+        margin-bottom:60px;
+        border:1px solid #aaa;
+        border-radius: 5px;
+        background-color:#eee;
+        padding:10px;
+    }
+
+    legend.lwadminform {
+        height: 20px;
+        margin-bottom: 2px;
+        line-height: 20px;
+        width: 200px;
+    }
+    html body div#lwContent div {
+        font-size: 12px!important;
+    }
+
+    fieldset.lwadminform {
+        position: relative;
+    }
+
+
+    html body div#lwLeftnavi div#lwPageTreeNav.lwBoxLeftContent center form#gotoform input#gotoid {
+        width: 45px;
+        margin-bottom: 0;
+    }
+    html body div#lwLeftnavi div#lwPageTreeNav.lwBoxLeftContent center {
+        height: 35px;
+    } 
+
+    input.lw_fe_textfield{height: 30px;}
+
+    div.lw_comment sup.lw_footnote {
+        top: 0.5em;
+    }
+    
+    #base_data,#columns,#language{padding-top: 20px;}
+    #de, #en{
+        border: 1px solid #ccc;
+        margin-top: -2px;    
+    }
+    
+    #language div h5{color: #fff;}
+    
+</style>
+<script language="javascript" type="text/javascript">
+    $(document).ready(function() {
+        $("#tabs").tabs();
+        $("#tabs li.tab_level_1 a").click(function() {
+            $("#tabs li.tab_level_1 a").removeClass('active');
+            $(this).addClass("active");
+        });
+        
+        $("#language").tabs();
+        $("#language li.tab_level_2 a").click(function() {
+            $("#language li.tab_level_2 a").removeClass('active2');
+            $(this).addClass("active2");
+        });
+    });
+</script>
+
 <fieldset class="lwadminform">
 
     <legend class="lwadminform">Listtoolbasisdaten bearbeiten</legend>
 
-        
     <div class="lw_form">
-        <div class="lw_infobox"><span>Basisdaten der Liste</span></div>
+
         <form action="<?php echo $this->actionUrl; ?>" method="POST">
-    
-        <input type="hidden" name="template" value="list.tpl.html" />
-            
-            
-            <div class="lw_entry lw_select" id="lw_listtool_type" >
-                <div class="lw_contentwrapper">
-                    <label for="listtooltype"><span>Verwaltbar durch</span></label>
-                    <div class="lw_content">
-                        <span>
-                            <select  name="listtooltype"  id="lw_fe_inputelement_lw_listtool_type"  class=" lw_fe_selectone" >
-                                <option value=""/> ----&nbsp;&nbsp;</option>
-                                <option value="backend"<?php if ($this->entity->getValueByKey('listtooltype') == "backend"): ?> selected="selected"<?php endif; ?>/> Backenduser&nbsp;&nbsp;</option>
-                                <option value="intranet"<?php if ($this->entity->getValueByKey('listtooltype') == "intranet"): ?> selected="selected"<?php endif; ?>/> Intranetuser&nbsp;&nbsp;</option>
-                                <option value="intranet_backend"<?php if ($this->entity->getValueByKey('listtooltype') == "intranet_backend"): ?> selected="selected"<?php endif; ?>/> Intranet- und Backenduser&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">1</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_select" id="lw_listtool_type" >
-                <div class="lw_contentwrapper">
-                    <label for="listtooltype"><span>Lesbar von</span></label>
-                    <div class="lw_content">
-                        <span>
-                            <select  name="readableby"  id="lw_fe_inputelement_lw_listtool_type"  class=" lw_fe_selectone" >
-                                <option value=""/> jedem&nbsp;&nbsp;</option>
-                                <option value="backend"<?php if ($this->entity->getValueByKey('readableby') == "backend"): ?> selected="selected"<?php endif; ?>/> Backenduser&nbsp;&nbsp;</option>
-                                <option value="intranet"<?php if ($this->entity->getValueByKey('readableby') == "intranet"): ?> selected="selected"<?php endif; ?>/> Intranetuser&nbsp;&nbsp;</option>
-                                <option value="intranet_backend"<?php if ($this->entity->getValueByKey('readableby') == "intranet_backend"): ?> selected="selected"<?php endif; ?>/> Intranet- und Backenduser&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                <div class="lw_contentwrapper">
-                    <label for="name"><span>Titel</span></label>
-                    <div class="lw_content">
-                        <span>
-                            <input type="text"  name="name"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('name')); ?>"  />
-                        </span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_select" id="lw_listtool_sorting" >
-                <div class="lw_contentwrapper">
-                    <label for="sorting"><span>Sortierung</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <select  name="sorting"  id="lw_fe_inputelement_lw_listtool_sorting"  class=" lw_fe_selectone" >
-                                <option value="opt1number"<?php if ($this->entity->getValueByKey('sorting') == "opt1number"): ?> selected="selected"<?php endif; ?>/> Sequence (eigene freie Sortierung)&nbsp;&nbsp;</option>
-                                <option value="name"<?php if ($this->entity->getValueByKey('sorting') == "name"): ?> selected="selected"<?php endif; ?>/> Name&nbsp;&nbsp;</option>
-                                <option value="opt1text"<?php if ($this->entity->getValueByKey('sorting') == "opt1text"): ?> selected="selected"<?php endif; ?>/> Zusatzinfo&nbsp;&nbsp;</option>
-                                <option value="opt2number"<?php if ($this->entity->getValueByKey('sorting') == "opt2number"): ?> selected="selected"<?php endif; ?>/> Freies Datum&nbsp;&nbsp;</option>
-                                <option value="opt3number"<?php if ($this->entity->getValueByKey('sorting') == "opt3number"): ?> selected="selected"<?php endif; ?>/> letzter Upload&nbsp;&nbsp;</option>
-                                <option value="lw_last_date"<?php if ($this->entity->getValueByKey('sorting') == "lw_last_date"): ?> selected="selected"<?php endif; ?>/> letzte Aenderung&nbsp;&nbsp;</option>
-                                <option value="lw_first_date"<?php if ($this->entity->getValueByKey('sorting') == "lw_first_date"): ?> selected="selected"<?php endif; ?>/> Eintrag angelegt&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
 
-            <div class="lw_entry lw_textfield" id="lw_listtool_suffix" >
-                <div class="lw_contentwrapper">
-                    <label for="suffix"><span>Dateiendungen</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <input type="text"  name="suffix"  id="lw_fe_inputelement_lw_listtool_suffix"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('suffix')); ?>"  />
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">2</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_select" id="lw_listtool_suffix_type" >
-                <div class="lw_contentwrapper">
-                    <label for="suffix_type"><span>Suffixtyp</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <select  name="suffix_type"  id="lw_fe_inputelement_lw_listtool_suffix_type"  class=" lw_fe_selectone" >
-                                <option value="white"<?php if ($this->entity->getValueByKey('suffix_type') == "white"): ?> selected="selected"<?php endif; ?>/> Whitelist&nbsp;&nbsp;</option>
-                                <option value="black"<?php if ($this->entity->getValueByKey('suffix_type') == "black"): ?> selected="selected"<?php endif; ?>/> Blacklist&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">3</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_select" id="lw_listtool_language" >
-                <div class="lw_contentwrapper">
-                    <label for="language"><span>Sprache</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <select  name="language"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
-                                <option value="de"<?php if ($this->entity->getValueByKey('language') == "de"): ?> selected="selected"<?php endif; ?>/> deutsch&nbsp;&nbsp;</option>
-                                <option value="en"<?php if ($this->entity->getValueByKey('language') == "en"): ?> selected="selected"<?php endif; ?>/> english&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_select" id="lw_listtool_language" >
-                <div class="lw_contentwrapper">
-                    <label for="language"><span>Eintrag ausleihen</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <select  name="borrow"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
-                                <option value="1"<?php if ($this->entity->getValueByKey('borrow') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
-                                <option value="0"<?php if ($this->entity->getValueByKey('borrow') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">4</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_select" id="lw_listtool_language" >
-                <div class="lw_contentwrapper">
-                    <label for="language"><span>Basis CSS verwenden</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <select  name="showcss"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
-                                <option value="1"<?php if ($this->entity->getValueByKey('showcss') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
-                                <option value="0"<?php if ($this->entity->getValueByKey('showcss') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">5</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
+            <input type="hidden" name="template" value="list.tpl.html" />
 
-            <div class="lw_entry lw_select" id="lw_listtool_language" >
-                <div class="lw_contentwrapper">
-                    <label for="language"><span>Verlinkung</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <select  name="linktype"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
-                                <option value="1"<?php if ($this->entity->getValueByKey('linktype') == 1): ?> selected="selected"<?php endif; ?>/> eigene Spalte&nbsp;&nbsp;</option>
-                                <option value="0"<?php if ($this->entity->getValueByKey('linktype') == 0): ?> selected="selected"<?php endif; ?>/> Name verlinken&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
+            <div id="tabs">
+                <ul>
+                    <li class="tab_level_1"><a href="#base_data" class="active">Grunddaten</a></li>
+                    <li class="tab_level_1"><a href="#columns">Spalten</a></li>
+                    <li class="tab_level_1"><a href="#language">Sprache</a></li>
+                </ul>
+
+                <!-- TAB1 GRUNDDATEN START -->
+                <div id="base_data">
+                    <div class="lw_entry lw_select" id="lw_listtool_type" >
+                        <div class="lw_contentwrapper">
+                            <label for="listtooltype"><span>Verwaltbar durch</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <select  name="listtooltype"  id="lw_fe_inputelement_lw_listtool_type"  class=" lw_fe_selectone" >
+                                        <option value=""/> ----&nbsp;&nbsp;</option>
+                                        <option value="backend"<?php if ($this->entity->getValueByKey('listtooltype') == "backend"): ?> selected="selected"<?php endif; ?>/> Backenduser&nbsp;&nbsp;</option>
+                                        <option value="intranet"<?php if ($this->entity->getValueByKey('listtooltype') == "intranet"): ?> selected="selected"<?php endif; ?>/> Intranetuser&nbsp;&nbsp;</option>
+                                        <option value="intranet_backend"<?php if ($this->entity->getValueByKey('listtooltype') == "intranet_backend"): ?> selected="selected"<?php endif; ?>/> Intranet- und Backenduser&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">1</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
                     </div>
-                    <div class="lw_comment"><sup class="lw_footnote">6</sup></div>
-                    <div class="clearfix">&nbsp;</div>
+
+                    <div class="lw_entry lw_select" id="lw_listtool_type" >
+                        <div class="lw_contentwrapper">
+                            <label for="listtooltype"><span>Lesbar von</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <select  name="readableby"  id="lw_fe_inputelement_lw_listtool_type"  class=" lw_fe_selectone" >
+                                        <option value=""/> jedem&nbsp;&nbsp;</option>
+                                        <option value="backend"<?php if ($this->entity->getValueByKey('readableby') == "backend"): ?> selected="selected"<?php endif; ?>/> Backenduser&nbsp;&nbsp;</option>
+                                        <option value="intranet"<?php if ($this->entity->getValueByKey('readableby') == "intranet"): ?> selected="selected"<?php endif; ?>/> Intranetuser&nbsp;&nbsp;</option>
+                                        <option value="intranet_backend"<?php if ($this->entity->getValueByKey('readableby') == "intranet_backend"): ?> selected="selected"<?php endif; ?>/> Intranet- und Backenduser&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
+                        <div class="lw_contentwrapper">
+                            <label for="name"><span>Titel</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <input type="text"  name="name"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('name')); ?>"  />
+                                </span>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_select" id="lw_listtool_sorting" >
+                        <div class="lw_contentwrapper">
+                            <label for="sorting"><span>Sortierung</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <select  name="sorting"  id="lw_fe_inputelement_lw_listtool_sorting"  class=" lw_fe_selectone" >
+                                        <option value="opt1number"<?php if ($this->entity->getValueByKey('sorting') == "opt1number"): ?> selected="selected"<?php endif; ?>/> Sequence (eigene freie Sortierung)&nbsp;&nbsp;</option>
+                                        <option value="name"<?php if ($this->entity->getValueByKey('sorting') == "name"): ?> selected="selected"<?php endif; ?>/> Name&nbsp;&nbsp;</option>
+                                        <option value="opt1text"<?php if ($this->entity->getValueByKey('sorting') == "opt1text"): ?> selected="selected"<?php endif; ?>/> Zusatzinfo&nbsp;&nbsp;</option>
+                                        <option value="opt2number"<?php if ($this->entity->getValueByKey('sorting') == "opt2number"): ?> selected="selected"<?php endif; ?>/> Freies Datum&nbsp;&nbsp;</option>
+                                        <option value="opt3number"<?php if ($this->entity->getValueByKey('sorting') == "opt3number"): ?> selected="selected"<?php endif; ?>/> letzter Upload&nbsp;&nbsp;</option>
+                                        <option value="lw_last_date"<?php if ($this->entity->getValueByKey('sorting') == "lw_last_date"): ?> selected="selected"<?php endif; ?>/> letzte Aenderung&nbsp;&nbsp;</option>
+                                        <option value="lw_first_date"<?php if ($this->entity->getValueByKey('sorting') == "lw_first_date"): ?> selected="selected"<?php endif; ?>/> Eintrag angelegt&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_textfield" id="lw_listtool_suffix" >
+                        <div class="lw_contentwrapper">
+                            <label for="suffix"><span>Dateiendungen</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <input type="text"  name="suffix"  id="lw_fe_inputelement_lw_listtool_suffix"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('suffix')); ?>"  />
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">2</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_select" id="lw_listtool_suffix_type" >
+                        <div class="lw_contentwrapper">
+                            <label for="suffix_type"><span>Suffixtyp</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <select  name="suffix_type"  id="lw_fe_inputelement_lw_listtool_suffix_type"  class=" lw_fe_selectone" >
+                                        <option value="white"<?php if ($this->entity->getValueByKey('suffix_type') == "white"): ?> selected="selected"<?php endif; ?>/> Whitelist&nbsp;&nbsp;</option>
+                                        <option value="black"<?php if ($this->entity->getValueByKey('suffix_type') == "black"): ?> selected="selected"<?php endif; ?>/> Blacklist&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">3</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_select" id="lw_listtool_language" >
+                        <div class="lw_contentwrapper">
+                            <label for="language"><span>Sprache</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <select  name="language"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                        <option value="de"<?php if ($this->entity->getValueByKey('language') == "de"): ?> selected="selected"<?php endif; ?>/> deutsch&nbsp;&nbsp;</option>
+                                        <option value="en"<?php if ($this->entity->getValueByKey('language') == "en"): ?> selected="selected"<?php endif; ?>/> english&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_select" id="lw_listtool_language" >
+                        <div class="lw_contentwrapper">
+                            <label for="language"><span>Eintrag ausleihen</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <select  name="borrow"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                        <option value="1"<?php if ($this->entity->getValueByKey('borrow') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
+                                        <option value="0"<?php if ($this->entity->getValueByKey('borrow') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">4</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_select" id="lw_listtool_language" >
+                        <div class="lw_contentwrapper">
+                            <label for="language"><span>Basis CSS verwenden</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <select  name="showcss"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                        <option value="1"<?php if ($this->entity->getValueByKey('showcss') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
+                                        <option value="0"<?php if ($this->entity->getValueByKey('showcss') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">5</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_select" id="lw_listtool_language" >
+                        <div class="lw_contentwrapper">
+                            <label for="language"><span>Verlinkung</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <select  name="linktype"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                        <option value="1"<?php if ($this->entity->getValueByKey('linktype') == 1): ?> selected="selected"<?php endif; ?>/> eigene Spalte&nbsp;&nbsp;</option>
+                                        <option value="0"<?php if ($this->entity->getValueByKey('linktype') == 0): ?> selected="selected"<?php endif; ?>/> Name verlinken&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">6</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_select" id="lw_listtool_language" >
+                        <div class="lw_contentwrapper">
+                            <label for="language"><span>"ver&ouml;ffentlicht"</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <select  name="publishedoption"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                        <option value="0"<?php if ($this->entity->getValueByKey('publishedoption') == 0): ?> selected="selected"<?php endif; ?>/> eigene Spalte&nbsp;&nbsp;</option>
+                                        <option value="1"<?php if ($this->entity->getValueByKey('publishedoption') == 1): ?> selected="selected"<?php endif; ?>/> Zeilenhintergrund rot&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">7</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_footnote">
+                        <ol>
+                            <li><span><i>via Backenduser</i>: darf nur von Administratoren und Redakteuren bearbeitet werden!<br/><i>via Intranetuser</i>: darf nur von Intranetusern bearbeitet werden!<br/><i>via Backend- und Intranetuser oder ------</i>: darf sowohl von Intranet- als auch Backendusern bearbeitet werden!</span></li>
+                            <li><span>Dateiendungen bitte kommasepariert eingeben und mit f&uuml;hrendem Punkt versehen.<br/>Beispiel: <i>.txt,.doc,.xls</i></span></li>
+                            <li><span>Whitelist: nur die einegegebenen Dateiendungen sind erlaubt<br/>Blacklist: die einegegebenen Dateiendungen sind <strong>nicht</strong> erlaubt<br/>Wurden keine Dateiendungen eingegeben, sind automatisch alle erlaubt!</span></li>
+                            <li><span>Ausleihen bedeutet, dass ein User sich den Eintrag zur Bearbeitung sperren kann.<br/>In dieser Zeit kann kein anderer Benutzer an diesem Eintrag arbeiten.<br/>Sp&auml;testens am n&auml;chsten Tag ist der Eintrag automatisch wieder freigegeben.</span></li>
+                            <li><span>Basis CSS: wenn dies eingeschaltet ist, dann wird eine rudiment&auml;re Grundformatierung verwendet. Wenn man via eigenem CSS die Ausgabe gestalten m&ouml;chte, sollte diese Option ausgeschaltet sein.</span></li>
+                            <li><span>Verlinkung: wenn die Spalte "Name" eingeblendet ist, kann man statt einer eigenen Spalte zum Aufrufen des Downloads/Links auch den Namen entsprechend verlinken.</span></li>
+                            <li><span>"ver&ouml;ffentlicht": wird in jedem Fall nur angezeigt, wenn man die LIste bearbeiten darf. Es kann entweder eine eigene Spalte mit dem Status "ver&ouml;ffentlicht" angezeigt werden oder es wird die Zeile mit einem nicht ver&ouml;ffentlichtem Eintrag leicht rot hinterlegt.</span></li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- TAB1 GRUNDDATEN ENDE -->
+
+                <!-- TAB2 SPALTEN START -->
+                <div id="columns">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="showName" value="1" <?php if ($this->entity->getValueByKey('showName') == 1): ?> checked="checked"<?php endif; ?>/><br/>Name</th>
+                                <th><input type="checkbox" name="showDescription" value="1" <?php if ($this->entity->getValueByKey('showDescription') == 1): ?> checked="checked"<?php endif; ?>/><br/>Beschreibung</th>
+                                <th><input type="checkbox" name="showId" value="1" <?php if ($this->entity->getValueByKey('showId') == 1): ?> checked="checked"<?php endif; ?>><br/>ID</th>
+                                <!--<div style="display:none;"><input type="checkbox" name="showUser" value="1" <?php if ($this->entity->getValueByKey('showUser') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;letzter Bearbeiter<br/></div>-->
+                                <th><input type="checkbox" name="showDate" value="1" <?php if ($this->entity->getValueByKey('showDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Erstelldatum</th>
+                                <th><input type="checkbox" name="showLastDate" value="1" <?php if ($this->entity->getValueByKey('showLastDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Bearbeitungsdatum</th>
+                                <th><input type="checkbox" name="showTime" value="1" <?php if ($this->entity->getValueByKey('showTime') == 1): ?> checked="checked"<?php endif; ?>/><br/>Uhrzeit (nur bei eingeschaltetem Datum)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>LW</td>
+                                <td>Logic-Works</td>
+                                <td>1</td>
+                                <td>25.03.2013</td>
+                                <td>28.03.2013</td>
+                                <td>15:02</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- TAB2 SPALTEN ENDE -->
+
+                <!-- TAB 3 SPRACHE START -->
+                <div id="language">
+                    <ul>
+                        <li class="tab_level_2"><a href="#de" class="active2" >Deutsch</a></li>
+                        <li class="tab_level_2"><a href="#en">Englisch</a></li>
+                    </ul>
+                    
+                    <div id="de">
+                        <?php echo $this->de ?>
+                    </div>
+                    <div id="en">
+                        <?php echo $this->en ?>
+                    </div>
+                    <!--
+                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
+                        <div class="lw_contentwrapper">
+                            <label for="title_name"><span>Alternative f&uuml;r "Name"</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <input type="text"  name="title_name"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_name')); ?>"  />
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
+                        <div class="lw_contentwrapper">
+                            <label for="title_description"><span>Alternative f&uuml;r "Beschreibung"</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <input type="text"  name="title_description"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_description')); ?>"  />
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
+                        <div class="lw_contentwrapper">
+                            <label for="title_link"><span>Alternative f&uuml;r "Verlinkung"</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <input type="text"  name="title_link"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_link')); ?>"  />
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
+                        <div class="lw_contentwrapper">
+                            <label for="title_download"><span>Alternative f&uuml;r "Herunterladen"</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <input type="text"  name="title_download"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_download')); ?>"  />
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>-->
+                </div>
+                <!-- TAB3 SPRACHEN ENDE -->
+                <div class="lw_functions_bottom">
+                    <input class="btn btn-primary" type="submit"  value="speichern"  />
+                    <input class="btn" type="button" onClick="document.location.href='<?php echo $this->backUrl; ?>'" value="abbrechen" />
                 </div>
             </div>
-            
-            <div class="lw_entry lw_select" id="lw_listtool_language" >
-                <div class="lw_contentwrapper">
-                    <label for="language"><span>"ver&ouml;ffentlicht"</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <select  name="publishedoption"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
-                                <option value="0"<?php if ($this->entity->getValueByKey('publishedoption') == 0): ?> selected="selected"<?php endif; ?>/> eigene Spalte&nbsp;&nbsp;</option>
-                                <option value="1"<?php if ($this->entity->getValueByKey('publishedoption') == 1): ?> selected="selected"<?php endif; ?>/> Zeilenhintergrund rot&nbsp;&nbsp;</option>
-                            </select>
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">7</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_select" id="lw_listtool_language" >
-                <div class="lw_contentwrapper">
-                    <label for="language"><span>Spalten einblenden</span></label>
-                    <div class="lw_content">
-                        <span>    
-                            <input type="checkbox" name="showName" value="1" <?php if ($this->entity->getValueByKey('showName') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Name<br/>
-                            <input type="checkbox" name="showDescription" value="1" <?php if ($this->entity->getValueByKey('showDescription') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Beschreibung<br/>
-                            <input type="checkbox" name="showId" value="1" <?php if ($this->entity->getValueByKey('showId') == 1): ?> checked="checked"<?php endif; ?>>&nbsp;&nbsp;ID<br/>
-                            <div style="display:none;"><input type="checkbox" name="showUser" value="1" <?php if ($this->entity->getValueByKey('showUser') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;letzter Bearbeiter<br/></div>
-                            <input type="checkbox" name="showDate" value="1" <?php if ($this->entity->getValueByKey('showDate') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Erstelldatum<br/>
-                            <input type="checkbox" name="showLastDate" value="1" <?php if ($this->entity->getValueByKey('showLastDate') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Bearbeitungsdatum<br/>
-                            <input type="checkbox" name="showTime" value="1" <?php if ($this->entity->getValueByKey('showTime') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Uhrzeit (nur bei eingeschaltetem Datum)<br/>
-                        </span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                <div class="lw_contentwrapper">
-                    <label for="title_name"><span>Alternative f&uuml;r "Name"</span></label>
-                    <div class="lw_content">
-                        <span>
-                            <input type="text"  name="title_name"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_name')); ?>"  />
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-            
-            <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                <div class="lw_contentwrapper">
-                    <label for="title_description"><span>Alternative f&uuml;r "Beschreibung"</span></label>
-                    <div class="lw_content">
-                        <span>
-                            <input type="text"  name="title_description"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_description')); ?>"  />
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-        
-            <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                <div class="lw_contentwrapper">
-                    <label for="title_link"><span>Alternative f&uuml;r "Verlinkung"</span></label>
-                    <div class="lw_content">
-                        <span>
-                            <input type="text"  name="title_link"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_link')); ?>"  />
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-        
-            <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                <div class="lw_contentwrapper">
-                    <label for="title_download"><span>Alternative f&uuml;r "Herunterladen"</span></label>
-                    <div class="lw_content">
-                        <span>
-                            <input type="text"  name="title_download"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_download')); ?>"  />
-                        </span>
-                    </div>
-                    <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
-                    <div class="clearfix">&nbsp;</div>
-                </div>
-            </div>
-        
-            <div class="lw_functions_bottom">
-                <input type="button" onClick="document.location.href='<?php echo $this->backUrl; ?>'" value="abbrechen" />
-                <input type="submit"  value="speichern"  />
-            </div>
-            
         </form>
-        
-        <div class="lw_footnote">
-            <ol>
-                <li><span><i>via Backenduser</i>: darf nur von Administratoren und Redakteuren bearbeitet werden!<br/><i>via Intranetuser</i>: darf nur von Intranetusern bearbeitet werden!<br/><i>via Backend- und Intranetuser oder ------</i>: darf sowohl von Intranet- als auch Backendusern bearbeitet werden!</span></li>
-                <li><span>Dateiendungen bitte kommasepariert eingeben und mit f&uuml;hrendem Punkt versehen.<br/>Beispiel: <i>.txt,.doc,.xls</i></span></li>
-                <li><span>Whitelist: nur die einegegebenen Dateiendungen sind erlaubt<br/>Blacklist: die einegegebenen Dateiendungen sind <strong>nicht</strong> erlaubt<br/>Wurden keine Dateiendungen eingegeben, sind automatisch alle erlaubt!</span></li>
-                <li><span>Ausleihen bedeutet, dass ein User sich den Eintrag zur Bearbeitung sperren kann.<br/>In dieser Zeit kann kein anderer Benutzer an diesem Eintrag arbeiten.<br/>Sp&auml;testens am n&auml;chsten Tag ist der Eintrag automatisch wieder freigegeben.</span></li>
-                <li><span>Basis CSS: wenn dies eingeschaltet ist, dann wird eine rudiment&auml;re Grundformatierung verwendet. Wenn man via eigenem CSS die Ausgabe gestalten m&ouml;chte, sollte diese Option ausgeschaltet sein.</span></li>
-                <li><span>Verlinkung: wenn die Spalte "Name" eingeblendet ist, kann man statt einer eigenen Spalte zum Aufrufen des Downloads/Links auch den Namen entsprechend verlinken.</span></li>
-                <li><span>"ver&ouml;ffentlicht": wird in jedem Fall nur angezeigt, wenn man die LIste bearbeiten darf. Es kann entweder eine eigene Spalte mit dem Status "ver&ouml;ffentlicht" angezeigt werden oder es wird die Zeile mit einem nicht ver&ouml;ffentlichtem Eintrag leicht rot hinterlegt.</span></li>
-            </ol>
-        </div>
-        
+
+
+
     </div>	        
-	
+
 </fieldset>
 
 <fieldset class="lwadminform">
 
-	<legend class="lwadminform">Rechtezuweisung</legend>
-	<?php echo $this->rightslink; ?>
-	<br/>	
-	
-	<?php if (is_array($this->intranets) && count($this->intranets)>0): ?>
-	<br/>
-	zugeordnete Intranets:
-	<ul>
-	<?php foreach($this->intranets as $intranet): ?>
-		<li><?php echo $intranet['name']; ?></li>
-	<?php endforeach; ?>
-	</ul>	
-	<?php endif; ?>
+    <legend class="lwadminform">Rechtezuweisung</legend>
+    <?php echo $this->rightslink; ?>
+    <br/>	
 
-	<?php if (is_array($this->users) && count($this->users)>0): ?>
-	<br/>
-	zugeordnete Benutzer:
-	<ul>
-	<?php foreach($this->users as $user): ?>
-		<li><?php echo $user['name']; ?></li>
-	<?php endforeach; ?>
-	</ul>	
-	<?php endif; ?>
+    <?php if (is_array($this->intranets) && count($this->intranets) > 0): ?>
+        <br/>
+        zugeordnete Intranets:
+        <ul>
+            <?php foreach ($this->intranets as $intranet): ?>
+                <li><?php echo $intranet['name']; ?></li>
+            <?php endforeach; ?>
+        </ul>	
+    <?php endif; ?>
+
+    <?php if (is_array($this->users) && count($this->users) > 0): ?>
+        <br/>
+        zugeordnete Benutzer:
+        <ul>
+            <?php foreach ($this->users as $user): ?>
+                <li><?php echo $user['name']; ?></li>
+            <?php endforeach; ?>
+        </ul>	
+    <?php endif; ?>
 
 </fieldset>

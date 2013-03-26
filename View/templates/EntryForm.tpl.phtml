@@ -2,6 +2,9 @@
 
 function showError($errors, $lang, $field) {
     
+    if(!$errors) {
+        return false;
+    }
     foreach($errors as $key => $value) {
         if ($key == $field) {
             foreach($value as $errornr => $error) {

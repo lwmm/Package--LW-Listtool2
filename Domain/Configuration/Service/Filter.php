@@ -1,6 +1,6 @@
 <?php
 
-namespace lwListtool\Domain\Configuration\Service;
+namespace LwListtool\Domain\Configuration\Service;
 
 class Filter
 {
