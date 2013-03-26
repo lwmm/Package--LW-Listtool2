@@ -120,6 +120,12 @@ class ListtoolList extends \LWmvc\View {
         if ($this->configuration->getValueByKey('showLastDate') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_lastdate"] . '</th>' . PHP_EOL;
         }
+        if ($this->configuration->getValueByKey('showFreeDate') == 1) {
+            $out.= '<th>' . $this->langPhrases["lang_freedate"] . '</th>' . PHP_EOL;
+        }
+        if ($this->configuration->getValueByKey('showFileDate') == 1) {
+            $out.= '<th>' . $this->langPhrases["lang_filedate"] . '</th>' . PHP_EOL;
+        }
         if ($this->configuration->getValueByKey('showUser') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_user"] . '</th>' . PHP_EOL;
         }
@@ -127,6 +133,12 @@ class ListtoolList extends \LWmvc\View {
             if ($this->configuration->getValueByKey('publishedoption') == 0) {
                 $out.= '<th>' . $this->langPhrases["lang_published"] . '</th>' . PHP_EOL;
             }
+        }
+        if ($this->configuration->getValueByKey('showFirstUser') == 1) {
+            $out.= '<th>' . $this->langPhrases["lang_firstuser"] . '</th>' . PHP_EOL;
+        }
+        if ($this->configuration->getValueByKey('showLastUser') == 1) {
+            $out.= '<th>' . $this->langPhrases["lang_lastuser"] . '</th>' . PHP_EOL;
         }
         if ($this->configuration->getValueByKey('linktype') == 1) {
             $out.= '<th>&nbsp;</th>';
@@ -152,7 +164,7 @@ class ListtoolList extends \LWmvc\View {
         }
         $out.= '>' . PHP_EOL;
 
-        $columns = array("Id", "Name", "Description", "Date", "LastDate", "Published", "Username", "LinkType", "AdminFunctions");
+        $columns = array("Id", "Name", "Description", "Date", "LastDate", "FreeDate","FileDate" , "Published", "Username", "FirstUser", "LastUser", "LinkType", "AdminFunctions");
         foreach ($columns as $c) {
             $method = "buildColumn".$c;
             $out.= $this->$method($entry);
@@ -222,6 +234,35 @@ class ListtoolList extends \LWmvc\View {
         return $out;
     }
     
+    protected function buildColumnFreeDate($entry)
+    {
+        if ($this->configuration->getValueByKey('showFreeDate') == 1) {
+            return '<td align="left">FREE DATE</td>';
+            
+            $out.= '<td align="left">' . $entry->getLastDate();
+
+            if ($this->configuration->getValueByKey('showTime') == 1) {
+                $out.= $entry->getLastTime();
+            }
+            $out.= '</td>';
+        }
+        return $out;
+    }
+    protected function buildColumnFileDate($entry)
+    {   
+        if ($this->configuration->getValueByKey('showFileDate') == 1) {
+            return '<td align="left">FILE DATE</td>';
+            
+            $out.= '<td align="left">' . $entry->getLastDate();
+
+            if ($this->configuration->getValueByKey('showTime') == 1) {
+                $out.= $entry->getLastTime();
+            }
+            $out.= '</td>';
+        }
+        return $out;
+    }
+    
     protected function buildColumnPublished($entry)
     {
         if ($this->listRights->isWriteAllowed()) {
@@ -236,6 +277,21 @@ class ListtoolList extends \LWmvc\View {
     {
         if ($this->configuration->getValueByKey('showUser') == 1) {
             $out.= '<td>username</td>' . PHP_EOL;
+        }
+        return $out;
+    }
+    
+    protected function buildColumnFirstUser($entry)
+    {
+        if ($this->configuration->getValueByKey('showFirstUser') == 1) {
+            $out.= '<td>FIRST USER</td>' . PHP_EOL;
+        }
+        return $out;
+    }
+    protected function buildColumnLastUser($entry)
+    {
+        if ($this->configuration->getValueByKey('showLastUser') == 1) {
+            $out.= '<td>LAST USER</td>' . PHP_EOL;
         }
         return $out;
     }

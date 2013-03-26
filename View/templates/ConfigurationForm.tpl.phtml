@@ -294,7 +294,11 @@
                                 <!--<div style="display:none;"><input type="checkbox" name="showUser" value="1" <?php if ($this->entity->getValueByKey('showUser') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;letzter Bearbeiter<br/></div>-->
                                 <th><input type="checkbox" name="showDate" value="1" <?php if ($this->entity->getValueByKey('showDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Erstelldatum</th>
                                 <th><input type="checkbox" name="showLastDate" value="1" <?php if ($this->entity->getValueByKey('showLastDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Bearbeitungsdatum</th>
+                                <th><input type="checkbox" name="showFreeDate" value="1" <?php if ($this->entity->getValueByKey('showFreeDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Bezugsdatum</th>
+                                <th><input type="checkbox" name="showFileDate" value="1" <?php if ($this->entity->getValueByKey('showFileDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>letzte Datei&auml;nderung</th>
                                 <th><input type="checkbox" name="showTime" value="1" <?php if ($this->entity->getValueByKey('showTime') == 1): ?> checked="checked"<?php endif; ?>/><br/>Uhrzeit (nur bei eingeschaltetem Datum)</th>
+                                <th><input type="checkbox" name="showFirstUser" value="1" <?php if ($this->entity->getValueByKey('showFirstUser') == 1): ?> checked="checked"<?php endif; ?>/><br/>Erster User</th>
+                                <th><input type="checkbox" name="showLastUser" value="1" <?php if ($this->entity->getValueByKey('showLastUser') == 1): ?> checked="checked"<?php endif; ?>/><br/>Letzter User</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -304,7 +308,11 @@
                                 <td>1</td>
                                 <td>25.03.2013</td>
                                 <td>28.03.2013</td>
+                                <td>22.03.2013</td>
+                                <td>27.03.2013</td>
                                 <td>15:02</td>
+                                <td>User1</td>
+                                <td>User15</td>
 
                             </tr>
                         </tbody>

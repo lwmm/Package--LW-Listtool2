@@ -61,6 +61,10 @@ class save extends \LWddd\DomainEventResolver
             $parameter['showTime'] = $dataValueObject->getValueByKey("showTime");
             $parameter['showDescription'] = $dataValueObject->getValueByKey("showDescription");
             $parameter['showName'] = $dataValueObject->getValueByKey("showName");
+            $parameter['showFirstUser'] = $dataValueObject->getValueByKey("showFirstUser");
+            $parameter['showLastUser'] = $dataValueObject->getValueByKey("showLastUser");
+            $parameter['showFreeDate'] = $dataValueObject->getValueByKey("showFreeDate");
+            $parameter['showFileDate'] = $dataValueObject->getValueByKey("showFileDate");
             $parameter['title_description'] = $dataValueObject->getValueByKey("title_description");
             $parameter['title_name'] = $dataValueObject->getValueByKey("title_name");
             $parameter['readableby'] = $dataValueObject->getValueByKey("readableby");
