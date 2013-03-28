@@ -115,7 +115,7 @@ function showError($errors, $lang, $field) {
 
                 <ul>
                     <li><a href="#tabs-1"><?php if($this->lang =="en"): echo "Base data"; else: echo "Grunddaten"; endif; ?></a></li>
-                    <li style="display:none;"><a href="#tabs-2"><?php if($this->lang =="en"): echo "Additional data"; else: echo "Zusatzdaten"; endif; ?></a></li>
+                    <li ><a href="#tabs-2"><?php if($this->lang =="en"): echo "Additional data"; else: echo "Zusatzdaten"; endif; ?></a></li>
                 </ul>
 
                 <div id="tabs-1">
@@ -185,7 +185,7 @@ function showError($errors, $lang, $field) {
                     <input type="submit" value="speichern" />
 
                 </div>
-                <div id="tabs-2" style="display:none;">
+                <div id="tabs-2" >
 
                     <?php showError($this->errors, $this->lang, 'opt1text'); ?>
                     <div class="lt_fieldwrapper">

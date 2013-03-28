@@ -29,7 +29,7 @@ class save extends \LWddd\DomainEventResolver
     {
         $config = $this->dic->getConfiguration();
         $this->getCommandHandler()->setFilePath($config['path']['listtool']);
-        $result = $this->getCommandHandler()->saveEntity($entity->getId(), $entity->getValues());
+        $result = $this->getCommandHandler()->saveEntity($entity->getId(), $entity->getValues(), $this->event->getParameterByKey("userId"));
         $this->postSaveWork($result, $entity->getId(), $entity);
         return $entity->getId();
     }

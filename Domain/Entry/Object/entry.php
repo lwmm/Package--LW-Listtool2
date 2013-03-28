@@ -97,11 +97,32 @@ class entry extends \LWddd\Entity
         return \lw_object::formatDate($date);
     }
     
+    public function getFreeDate()
+    {
+        $date = substr($this->getValueByKey('opt2number'), 0, 8);
+        return \lw_object::formatDate($date);
+    }
+    
     public function getFirstTime()
     {
         $hour = substr($this->getValueByKey('lw_first_date'), 8, 2);
         $min = substr($this->getValueByKey('lw_first_date'), 10, 2);
         $sec = substr($this->getValueByKey('lw_first_date'), 12, 2);
+        
+        return $hour.':'.$min.':'.$sec;
+    }
+    
+    public function getFileDate()
+    {
+        $date = substr($this->getValueByKey('opt3number'), 0, 8);
+        return \lw_object::formatDate($date);
+    }
+    
+    public function getFileTime()
+    {
+        $hour = substr($this->getValueByKey('opt3number'), 8, 2);
+        $min = substr($this->getValueByKey('opt3number'), 10, 2);
+        $sec = substr($this->getValueByKey('opt3number'), 12, 2);
         
         return $hour.':'.$min.':'.$sec;
     }

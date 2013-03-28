@@ -57,6 +57,7 @@ class ListtoolList extends \LWmvc\View {
     }
 
     public function render() {
+        #print_r($this->configuration);die();
         #return $this->render_old();
         $listtoolbase = new \LwListtool\View\ListtoolBase();
         return $listtoolbase->render() . "\n" . $this->buildList();
@@ -102,7 +103,7 @@ class ListtoolList extends \LWmvc\View {
     }
 
     protected function buildEntryTable() {
-        $out = '<table width="100%" border="1">' . PHP_EOL;
+        $out = '<table width="100%" border="1" class="table table-bordered table-hover">' . PHP_EOL;
         $out.= '<thead>' . PHP_EOL;
         $out.= '<tr>' . PHP_EOL;
         if ($this->configuration->getValueByKey('showId') == 1) {
@@ -237,28 +238,28 @@ class ListtoolList extends \LWmvc\View {
     protected function buildColumnFreeDate($entry)
     {
         if ($this->configuration->getValueByKey('showFreeDate') == 1) {
-            return '<td align="left">FREE DATE</td>';
-            
-            $out.= '<td align="left">' . $entry->getLastDate();
-
-            if ($this->configuration->getValueByKey('showTime') == 1) {
-                $out.= $entry->getLastTime();
+            if($entry->getValueByKey("opt2number") > 0) {
+                $out = '<td align="left">' . $entry->getFreeDate() . '</td>';
+            } else {
+                $out = '<td align="left"></td>';
             }
-            $out.= '</td>';
         }
         return $out;
     }
+    
     protected function buildColumnFileDate($entry)
     {   
         if ($this->configuration->getValueByKey('showFileDate') == 1) {
-            return '<td align="left">FILE DATE</td>';
-            
-            $out.= '<td align="left">' . $entry->getLastDate();
+            if(strlen($entry->getValueByKey("opt3number")) >= 8) {
+                $out.= '<td align="left">' . $entry->getFileDate();
 
-            if ($this->configuration->getValueByKey('showTime') == 1) {
-                $out.= $entry->getLastTime();
+                if ($this->configuration->getValueByKey('showTime') == 1) {
+                    $out.= $entry->getFileTime();
+                }
+                $out.= '</td>';
+            } else {
+                $out = '<td align="left"></td>';
             }
-            $out.= '</td>';
         }
         return $out;
     }
@@ -284,14 +285,15 @@ class ListtoolList extends \LWmvc\View {
     protected function buildColumnFirstUser($entry)
     {
         if ($this->configuration->getValueByKey('showFirstUser') == 1) {
-            $out.= '<td>FIRST USER</td>' . PHP_EOL;
+            $out.= '<td>' . $this->getInUserNameById($entry->getValueByKey("lw_first_user")) . '</td>' . PHP_EOL;
         }
         return $out;
     }
+    
     protected function buildColumnLastUser($entry)
     {
         if ($this->configuration->getValueByKey('showLastUser') == 1) {
-            $out.= '<td>LAST USER</td>' . PHP_EOL;
+            $out.= '<td>' . $this->getInUserNameById($entry->getValueByKey("lw_last_user")) . '</td>' . PHP_EOL;
         }
         return $out;
     }
@@ -325,7 +327,7 @@ class ListtoolList extends \LWmvc\View {
                                         | <a href="' . \lw_page::getInstance()->getUrl(array("cmd" => "releaseEntry", "id" => $entry->getValueByKey("id"))) . '"><span title="' . $this->langPhrases["lang_release_title"] . '">' . $this->langPhrases["lang_release"] . '</span></a>
                                     </span>';     
                     } else {
-                        $out.= '<span class="lt_adminfunctions">' . $this->langPhrases["lang_borrowedby"] . ' ' . $entry->getBorrowerName() . ' id: ' . $entry->getBorrowerId() . '</span>';
+                        $out.= '<span class="lt_adminfunctions">' . $this->langPhrases["lang_borrowedby"] . ' ' . $entry->getBorrowerName() . '</span>'; #id: ' . $entry->getBorrowerId() . '</span>';
                     }
                 } else {
                     $out.= '<span class="lt_adminfunctions"><a href="' . \lw_page::getInstance()->getUrl(array("cmd" => "borrowEntry", "id" => $entry->getValueByKey("id"))) . '"><span title="' . $this->langPhrases["lang_borrow_title"] . '">' . $this->langPhrases["lang_borrow"] . '</span></a></span>';
@@ -336,6 +338,20 @@ class ListtoolList extends \LWmvc\View {
         return $out;
     }
 
+    protected function getInUserNameById($id)
+    {
+        if(!empty($id)) {
+            if(intval($id) < 0) {
+                return "Admin";
+            } else {
+                $db = $this->dic->getDbObject();
+                $db->setStatement("SELECT name FROM t:lw_in_user WHERE id = :id ");
+                $db->bindParameter("id", "i", $id);
+                $result = $db->pselect1();
+                return $result["name"];
+            }
+        }
+    }
 //    public function render_old() {
 //        $this->view->reg("listtitle", $this->configuration->getValueByKey('name'));
 //        if ($this->listRights->isReadAllowed()) {

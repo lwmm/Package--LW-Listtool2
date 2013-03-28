@@ -86,7 +86,7 @@ class Frontend extends \LWmvc\Controller
      {
         if ($this->listRights->isWriteAllowed()) {
 
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'add', array("listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
+            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'add', array("listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig, "userId" => $this->listRights->getUserIdByLoggedInUser()), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
             if ($response->getParameterByKey("error")) {
                 if ($this->request->getAlnum("type") == "file") {
                     return $this->showAddFileFormAction($response->getDataByKey("error"));
@@ -129,7 +129,7 @@ class Frontend extends \LWmvc\Controller
     protected function saveEntryAction()
     {
        if ($this->listRights->isWriteAllowed()) {
-           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'save', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
+           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'save', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig, "userId" => $this->listRights->getUserIdByLoggedInUser()), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
            if ($response->getParameterByKey("error")) {
                return $this->showEditEntryFormAction($response->getDataByKey("error"));
            }

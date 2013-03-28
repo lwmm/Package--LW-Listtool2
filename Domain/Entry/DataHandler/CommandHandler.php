@@ -52,9 +52,9 @@ class CommandHandler
         }
     }
     
-    public function addEntity($listId, $array)
+    public function addEntity($listId, $array, $userId)
     {
-        $this->db->setStatement("INSERT INTO t:lw_master ( lw_object, category_id, name, description, published, opt1bool, opt2number, opt1text, opt2text, opt3text, lw_first_date, lw_last_date ) VALUES ( 'lw_listtool2', :listid, :name, :description, :published, :opt1bool, :opt2number, :opt1text, :opt2text, :opt3text, :firstdate, :lastdate ) ");
+        $this->db->setStatement("INSERT INTO t:lw_master ( lw_object, category_id, name, description, published, opt1bool, opt2number, opt1text, opt2text, opt3text, lw_first_date, lw_first_user, lw_last_date, lw_last_user ) VALUES ( 'lw_listtool2', :listid, :name, :description, :published, :opt1bool, :opt2number, :opt1text, :opt2text, :opt3text, :firstdate, :firstuser, :lastdate, :lastuser ) ");
         $this->db->bindParameter("listid", 'i', $listId);
         $this->db->bindParameter("name", 's', $array['name']);
         $this->db->bindParameter("description", 's', $array['description']);
@@ -65,7 +65,9 @@ class CommandHandler
         $this->db->bindParameter("opt2text", 's', $array['opt2text']);
         $this->db->bindParameter("opt3text", 's', $array['opt3text']);
         $this->db->bindParameter("firstdate", 's', date("YmdHis"));
+        $this->db->bindParameter("firstuser", 'i', $userId);
         $this->db->bindParameter("lastdate", 's', date("YmdHis"));
+        $this->db->bindParameter("lastuser", 'i', $userId);
         $id = $this->db->pdbinsert($this->db->gt('lw_master'));
         
         if ($id && $array['opt2file']['size'] > 0) {
@@ -78,9 +80,9 @@ class CommandHandler
         return $id;
     }
     
-    public function saveEntity($id, $array)
+    public function saveEntity($id, $array, $userId)
     {
-        $this->db->setStatement("UPDATE t:lw_master SET name = :name, description = :description, published = :published, opt2number = :opt2number, opt1text = :opt1text, opt2text = :opt2text, opt3text = :opt3text, lw_last_date = :lastdate WHERE id = :id ");
+        $this->db->setStatement("UPDATE t:lw_master SET name = :name, description = :description, published = :published, opt2number = :opt2number, opt1text = :opt1text, opt2text = :opt2text, opt3text = :opt3text, lw_last_date = :lastdate, lw_last_user = :lastuser WHERE id = :id ");
         $this->db->bindParameter("id", 'i', $id);
         $this->db->bindParameter("name", 's', $array['name']);
         $this->db->bindParameter("description", 's', $array['description']);
@@ -90,6 +92,7 @@ class CommandHandler
         $this->db->bindParameter("opt2text", 's', $array['opt2text']);
         $this->db->bindParameter("opt3text", 's', $array['opt3text']);
         $this->db->bindParameter("lastdate", 's', date("YmdHis"));
+        $this->db->bindParameter("lastuser", 'i', $userId);
         $ok = $this->db->pdbquery();
         
         if ($ok && $array['opt2file']['size'] > 0) {

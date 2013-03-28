@@ -29,7 +29,7 @@ class add extends \LWddd\DomainEventResolver
     {
         $config = $this->dic->getConfiguration();
         $this->getCommandHandler()->setFilePath($config['path']['listtool']);
-        $id = $this->getCommandHandler()->addEntity($this->event->getParameterByKey("listId"), $entity->getValues());
+        $id = $this->getCommandHandler()->addEntity($this->event->getParameterByKey("listId"), $entity->getValues(), $this->event->getParameterByKey("userId"));
         $this->postSaveWork($id, $id, $entity);
         return $id;
     }
