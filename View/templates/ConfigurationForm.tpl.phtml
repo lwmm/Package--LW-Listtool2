@@ -268,6 +268,19 @@
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
+                    
+                    <div class="lw_entry lw_select" id="lw_listtool_archive" >
+                        <div class="lw_contentwrapper">
+                            <label for="listtooltype"><span>Archivieren</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <input type="checkbox" name="archive" value="1" <?php if ($this->entity->getValueByKey('archive') == 1): ?>checked ="checked"<?php endif; ?>>
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">8</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
 
                     <div class="lw_footnote">
                         <ol>
@@ -278,6 +291,7 @@
                             <li><span>Basis CSS: wenn dies eingeschaltet ist, dann wird eine rudiment&auml;re Grundformatierung verwendet. Wenn man via eigenem CSS die Ausgabe gestalten m&ouml;chte, sollte diese Option ausgeschaltet sein.</span></li>
                             <li><span>Verlinkung: wenn die Spalte "Name" eingeblendet ist, kann man statt einer eigenen Spalte zum Aufrufen des Downloads/Links auch den Namen entsprechend verlinken.</span></li>
                             <li><span>"ver&ouml;ffentlicht": wird in jedem Fall nur angezeigt, wenn man die LIste bearbeiten darf. Es kann entweder eine eigene Spalte mit dem Status "ver&ouml;ffentlicht" angezeigt werden oder es wird die Zeile mit einem nicht ver&ouml;ffentlichtem Eintrag leicht rot hinterlegt.</span></li>
+                            <li><span>Archivieren: Wird eine Datei nach der Bearbeitung zur&uuml;ckgegeben, dann wird eine Kopie der voherigen Version gespeichert, um die Verionshistorie nachvollziehen zuk&ouml;nnen.</span></li>
                         </ol>
                     </div>
                 </div>

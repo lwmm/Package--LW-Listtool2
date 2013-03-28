@@ -70,6 +70,7 @@ class save extends \LWddd\DomainEventResolver
             $parameter['readableby'] = $dataValueObject->getValueByKey("readableby");
             $parameter['title_link'] = $dataValueObject->getValueByKey("title_link");
             $parameter['title_download'] = $dataValueObject->getValueByKey("title_download");
+            $parameter['archive'] = $dataValueObject->getValueByKey("archive");
             $content = false;
             $result = $this->getCommandHandler()->savePluginData($this->event->getParameterByKey('id'), $parameter, $content);
             $this->event->getResponse()->setParameterByKey('saved', true);

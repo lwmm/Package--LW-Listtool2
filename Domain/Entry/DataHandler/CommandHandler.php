@@ -52,8 +52,9 @@ class CommandHandler
         }
     }
     
-    public function addEntity($listId, $array, $userId)
+    public function addEntity($listId, $array, $userId, $archive)
     {
+        print_r($array);die();
         $this->db->setStatement("INSERT INTO t:lw_master ( lw_object, category_id, name, description, published, opt1bool, opt2number, opt1text, opt2text, opt3text, lw_first_date, lw_first_user, lw_last_date, lw_last_user ) VALUES ( 'lw_listtool2', :listid, :name, :description, :published, :opt1bool, :opt2number, :opt1text, :opt2text, :opt3text, :firstdate, :firstuser, :lastdate, :lastuser ) ");
         $this->db->bindParameter("listid", 'i', $listId);
         $this->db->bindParameter("name", 's', $array['name']);
@@ -71,7 +72,7 @@ class CommandHandler
         $id = $this->db->pdbinsert($this->db->gt('lw_master'));
         
         if ($id && $array['opt2file']['size'] > 0) {
-            $this->saveEntryFile($id, $array, true);
+            $this->saveEntryFile($id, $array, $archive);
         }
         
         if ($id && $array['opt1file']['size'] > 0) {
@@ -80,7 +81,7 @@ class CommandHandler
         return $id;
     }
     
-    public function saveEntity($id, $array, $userId)
+    public function saveEntity($id, $array, $userId, $archive)
     {
         $this->db->setStatement("UPDATE t:lw_master SET name = :name, description = :description, published = :published, opt2number = :opt2number, opt1text = :opt1text, opt2text = :opt2text, opt3text = :opt3text, lw_last_date = :lastdate, lw_last_user = :lastuser WHERE id = :id ");
         $this->db->bindParameter("id", 'i', $id);
@@ -96,7 +97,7 @@ class CommandHandler
         $ok = $this->db->pdbquery();
         
         if ($ok && $array['opt2file']['size'] > 0) {
-            $this->saveEntryFile($id, $array, true);
+            $this->saveEntryFile($id, $array, $archive);
         }
         if ($ok && $array['opt1file']['size'] > 0) {
             $this->saveThumbnailFile($id, $array);
