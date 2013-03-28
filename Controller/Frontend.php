@@ -30,6 +30,7 @@ class Frontend extends \LWmvc\Controller
         $this->response = \lw_registry::getInstance()->getEntry("response");
         $this->request = \lw_registry::getInstance()->getEntry("request");
         $this->lwi18nQH = new \LwI18n\Model\queryHandler($this->dic->getDbObject());
+        $this->config = $this->dic->getConfiguration();
     }
     
     public function execute()
@@ -111,6 +112,17 @@ class Frontend extends \LWmvc\Controller
             }
             $entity = $response->getDataByKey('EntryEntity');
             $entity->setId($this->request->getInt("id"));
+            
+            $dir = \lw_directory::getInstance($this->config["path"]["listtool"]."archive/");
+            $files = $dir->getDirectoryContents('file');
+            $archivedFiles = array();
+            foreach ($files as $file) {
+                if(strstr($file->getName(), "_item_" . $this->request->getInt("id") . ".file")) {
+                    $archivedFiles[] = $file->getName();
+                }
+            }
+
+            $formView->setArchiveValues($this->listConfig->getValueByKey("archive"), $archivedFiles);
             $formView->setEntity($entity);
             $formView->setConfiguration($this->listConfig);
             if ($entity->isFile()) {
@@ -208,25 +220,29 @@ class Frontend extends \LWmvc\Controller
     public function downloadEntryAction()
     {
         if ($this->listRights->isReadAllowed()) {
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
-            $entity = $response->getDataByKey('EntryEntity');
-            $file = $entity->getFilePath();
-            if (is_file($file)) {
-                $extension = \lw_io::getFileExtension($data['opt2file']);
-                $mimeType = \lw_io::getMimeType($extension);
-                if (strlen($mimeType) < 1) {
-                    $mimeType = "application/octet-stream";
+                $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+                $entity = $response->getDataByKey('EntryEntity');
+                if($this->request->getAlnum("filedate")) {
+                    $file = $entity->getFilePath($this->request->getAlnum("filedate"));
+                } else {
+                    $file = $entity->getFilePath();
                 }
-                header("Pragma: public");
-                header("Expires: 0");
-                header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-                header("Content-Type: " . $mimeType);
-                header("Content-disposition: attachment; filename=\"".$entity->getValueByKey('opt2file')."\"");
-                readfile($file);
-                exit();
+                if (is_file($file)) {
+                    $extension = \lw_io::getFileExtension($data['opt2file']);
+                    $mimeType = \lw_io::getMimeType($extension);
+                    if (strlen($mimeType) < 1) {
+                        $mimeType = "application/octet-stream";
+                    }
+                    header("Pragma: public");
+                    header("Expires: 0");
+                    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+                    header("Content-Type: " . $mimeType);
+                    header("Content-disposition: attachment; filename=\"".$entity->getValueByKey('opt2file')."\"");
+                    readfile($file);
+                    exit();
+                }
+                die("not existing");
             }
-            die("not existing");
-        }
         die("not allowed");
     }
     

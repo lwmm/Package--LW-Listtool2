@@ -30,6 +30,12 @@ class EntryForm extends \LWmvc\View
         $this->entryType = $type;
     }
     
+    public function setArchiveValues($archive, $archivedFiles)
+    {
+        $this->archive = $archive;
+        $this->archivedFiles = $archivedFiles;
+    }
+
     public function render()
     {
         $this->view->mediaUrl = $this->systemConfiguration['url']['media'];
@@ -52,6 +58,12 @@ class EntryForm extends \LWmvc\View
         else {
             $this->view->lang = "en";
         }
+        
+        if($this->archive) {
+            $this->view->archive = true;
+            $this->view->archivedFiles = $this->archivedFiles;
+        }
+        $this->view->baseUrl = \lw_page::getInstance()->getUrl(array("cmd" => "downloadEntry", "id" => $this->view->entity->getId()));
         
         $this->view->isWriteAllowed = true;
         $this->view->entry = $this->view->entity;

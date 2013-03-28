@@ -135,7 +135,7 @@ class CommandHandler
         $dir = \lw_directory::getInstance($this->getFilePath());
         if ($dir->fileExists($name)) {
             if ($archive) {
-                $target = $dir->getPath().'archive/'.$name.'_'.date(YmdHis);
+                $target = $dir->getPath().'archive/'.date(YmdHis).'_'.$name;
                 copy($dir->getPath().$name, $target);
                 $this->_updatePermissions($target);
             }
@@ -146,9 +146,11 @@ class CommandHandler
         return true;
     }     
     
-    private function _updatePermissions($config, $file)
+    private function _updatePermissions($file)
     {
         return true;
+        $config = \lw_registry::getInstance()->getEntry("config");
+        
         if ($config['files']['chgrp']) {
             @chgrp($file, $config['files']['chgrp']);
         }

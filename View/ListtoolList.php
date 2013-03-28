@@ -109,14 +109,14 @@ class ListtoolList extends \LWmvc\View {
         if ($this->configuration->getValueByKey('showId') == 1) {
             $out.= '<th>ID</th>' . PHP_EOL;
         }
+        if ($this->configuration->getValueByKey('showThumbnail') == 1) {
+            $out.= '<th>' . $this->langPhrases["lang_thumbnail"] . '</th>' . PHP_EOL;
+        }
         if ($this->configuration->getValueByKey('showName') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_name"] . '</th>' . PHP_EOL;
         }
         if ($this->configuration->getValueByKey('showDescription') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_description"] . '</th>' . PHP_EOL;
-        }
-        if ($this->configuration->getValueByKey('showThumbnail') == 1) {
-            $out.= '<th>' . $this->langPhrases["lang_thumbnail"] . '</th>' . PHP_EOL;
         }
         if ($this->configuration->getValueByKey('showDate') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_date"] . '</th>' . PHP_EOL;
@@ -174,7 +174,7 @@ class ListtoolList extends \LWmvc\View {
         }
         $out.= '>' . PHP_EOL;
 
-        $columns = array("Id", "Name", "Description", "Thumbnail", "Date", "LastDate", "FreeDate","FileDate" , "Published", "Username", "KeyWords", "AdditionalInfo", "FirstUser", "LastUser", "LinkType", "AdminFunctions");
+        $columns = array("Id", "Thumbnail", "Name", "Description", "Date", "LastDate", "FreeDate","FileDate" , "Published", "Username", "KeyWords", "AdditionalInfo", "FirstUser", "LastUser", "LinkType", "AdminFunctions");
         foreach ($columns as $c) {
             $method = "buildColumn".$c;
             $out.= $this->$method($entry);

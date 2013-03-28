@@ -33,9 +33,13 @@ class entry extends \LWddd\Entity
         return false;
     }
     
-    public function getFilePath()
+    public function getFilePath($date = false)
     {
-        return $this->path.'item_'.$this->getValueByKey("id").'.file';
+        if($date) {
+            return $this->path.'archive/'.$date.'_item_'.$this->getValueByKey("id").'.file';
+        } else {
+            return $this->path.'item_'.$this->getValueByKey("id").'.file';
+        }
     }
     
     public function getThumbnailPath()
@@ -58,13 +62,19 @@ class entry extends \LWddd\Entity
     
     public function getFileRights()
     {
-        $file = new \lw_file($this->getFilePath());
+        $filename = substr($this->getFilePath(), strrpos($this->getFilePath(), "/") + 1 );
+        $path = str_replace($filename, "", $this->getFilePath());
+     
+        $file = new \lw_file($path, $filename);
         return $file->getRights();
     }
     
     public function getFileSize()
     {
-        $file = new \lw_file($this->getFilePath());
+        $filename = substr($this->getFilePath(), strrpos($this->getFilePath(), "/") + 1 );
+        $path = str_replace($filename, "", $this->getFilePath());
+        
+        $file = new \lw_file($path, $filename);
         return $file->getSize();
     }
     
