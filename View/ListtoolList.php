@@ -115,6 +115,9 @@ class ListtoolList extends \LWmvc\View {
         if ($this->configuration->getValueByKey('showDescription') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_description"] . '</th>' . PHP_EOL;
         }
+        if ($this->configuration->getValueByKey('showThumbnail') == 1) {
+            $out.= '<th>' . $this->langPhrases["lang_thumbnail"] . '</th>' . PHP_EOL;
+        }
         if ($this->configuration->getValueByKey('showDate') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_date"] . '</th>' . PHP_EOL;
         }
@@ -138,15 +141,12 @@ class ListtoolList extends \LWmvc\View {
         if ($this->configuration->getValueByKey('showKeyWords') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_keywords"] . '</th>' . PHP_EOL;
         }
-        
         if ($this->configuration->getValueByKey('showAdditionalInfo') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_additionalinfo"] . '</th>' . PHP_EOL;
         }
-        
         if ($this->configuration->getValueByKey('showFirstUser') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_firstuser"] . '</th>' . PHP_EOL;
         }
-        
         if ($this->configuration->getValueByKey('showLastUser') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_lastuser"] . '</th>' . PHP_EOL;
         }
@@ -174,7 +174,7 @@ class ListtoolList extends \LWmvc\View {
         }
         $out.= '>' . PHP_EOL;
 
-        $columns = array("Id", "Name", "Description", "Date", "LastDate", "FreeDate","FileDate" , "Published", "Username", "KeyWords", "AdditionalInfo", "FirstUser", "LastUser", "LinkType", "AdminFunctions");
+        $columns = array("Id", "Name", "Description", "Thumbnail", "Date", "LastDate", "FreeDate","FileDate" , "Published", "Username", "KeyWords", "AdditionalInfo", "FirstUser", "LastUser", "LinkType", "AdminFunctions");
         foreach ($columns as $c) {
             $method = "buildColumn".$c;
             $out.= $this->$method($entry);
@@ -215,6 +215,14 @@ class ListtoolList extends \LWmvc\View {
     {
         if ($this->configuration->getValueByKey('showDescription') == 1) {
             $out.= '<td>' . html_entity_decode($entry->getValueByKey('description')) . '</td>' . PHP_EOL;
+        }
+        return $out;
+    }
+    
+    protected function buildColumnThumbnail($entry)
+    {
+        if ($this->configuration->getValueByKey('showThumbnail') == 1) {
+            $out.= '<td><img src="' . \lw_page::getInstance()->getUrl(array("cmd" => "showthumbnail", "id" => $entry->getValueByKey("id"))) . '" ></td>' . PHP_EOL;
         }
         return $out;
     }

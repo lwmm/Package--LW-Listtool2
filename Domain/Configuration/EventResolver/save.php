@@ -70,6 +70,7 @@ class save extends \LWddd\DomainEventResolver {
             $parameter['archive'] = $dataValueObject->getValueByKey("archive");
             $parameter['showKeyWords'] = $dataValueObject->getValueByKey("showKeyWords");
             $parameter['showAdditionalInfo'] = $dataValueObject->getValueByKey("showAdditionalInfo");
+            $parameter['showThumbnail'] = $dataValueObject->getValueByKey("showThumbnail");
             $content = false;
             $result = $this->getCommandHandler()->savePluginData($this->event->getParameterByKey('id'), $parameter, $content);
             $this->event->getResponse()->setParameterByKey('saved', true);

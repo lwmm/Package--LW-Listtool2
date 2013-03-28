@@ -80,7 +80,8 @@ class ConfigurationForm extends \LWmvc\View
             "lang_borrow_title" => "Ausgeliehene Eintr&auml;ge k&ouml;nnen nur von dem Ausleiher und einem Administrator bearbeitet werden. Andere Nutzer haben keinen Schreibzugriff. Der Eintrag steht dar&uuml;ber hinaus aber zum Donwload/Verlinkung weiterhin zur Verf&uuml;gung.",
             "lang_reallydelete" => "wirklich l&ouml;schen?",
             "lang_borrowedby"   => "wird bearbeitet von",
-            "lang_noentries"    => "Es liegen keine Eintr&auml;ge vor."
+            "lang_noentries"    => "Es liegen keine Eintr&auml;ge vor.",
+            "lang_thumbnail"    => "Bildvorschau"
         )));
         
         $languageEN = array( "en" => array( "lw_listtool2" => array(
@@ -109,7 +110,8 @@ class ConfigurationForm extends \LWmvc\View
             "lang_borrow_title" => "checked out entries can only be edited by you or an administrator. Other users cannot edit this entry. It is still possible to use the link or download the file.",
             "lang_reallydelete" => "really delete?",
             "lang_borrowedby"   => "checked out by",
-            "lang_noentries"    => "no entries available"
+            "lang_noentries"    => "no entries available",
+            "lang_thumbnail"    => "Picture preview"
         )));
         
         if($lang == "de") {
