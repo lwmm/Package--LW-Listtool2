@@ -135,9 +135,18 @@ class ListtoolList extends \LWmvc\View {
                 $out.= '<th>' . $this->langPhrases["lang_published"] . '</th>' . PHP_EOL;
             }
         }
+        if ($this->configuration->getValueByKey('showKeyWords') == 1) {
+            $out.= '<th>' . $this->langPhrases["lang_keywords"] . '</th>' . PHP_EOL;
+        }
+        
+        if ($this->configuration->getValueByKey('showAdditionalInfo') == 1) {
+            $out.= '<th>' . $this->langPhrases["lang_additionalinfo"] . '</th>' . PHP_EOL;
+        }
+        
         if ($this->configuration->getValueByKey('showFirstUser') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_firstuser"] . '</th>' . PHP_EOL;
         }
+        
         if ($this->configuration->getValueByKey('showLastUser') == 1) {
             $out.= '<th>' . $this->langPhrases["lang_lastuser"] . '</th>' . PHP_EOL;
         }
@@ -165,7 +174,7 @@ class ListtoolList extends \LWmvc\View {
         }
         $out.= '>' . PHP_EOL;
 
-        $columns = array("Id", "Name", "Description", "Date", "LastDate", "FreeDate","FileDate" , "Published", "Username", "FirstUser", "LastUser", "LinkType", "AdminFunctions");
+        $columns = array("Id", "Name", "Description", "Date", "LastDate", "FreeDate","FileDate" , "Published", "Username", "KeyWords", "AdditionalInfo", "FirstUser", "LastUser", "LinkType", "AdminFunctions");
         foreach ($columns as $c) {
             $method = "buildColumn".$c;
             $out.= $this->$method($entry);
@@ -278,6 +287,22 @@ class ListtoolList extends \LWmvc\View {
     {
         if ($this->configuration->getValueByKey('showUser') == 1) {
             $out.= '<td>username</td>' . PHP_EOL;
+        }
+        return $out;
+    }
+    
+    protected function buildColumnKeyWords($entry)
+    {
+        if ($this->configuration->getValueByKey('showKeyWords') == 1) {
+            $out.= '<td align="left">' . $entry->getValueByKey("opt2text") . '</td>' . PHP_EOL;
+        }
+        return $out;
+    }
+    
+    protected function buildColumnAdditionalInfo($entry)
+    {
+        if ($this->configuration->getValueByKey('showKeyWords') == 1) {
+            $out.= '<td align="left">' . $entry->getValueByKey("opt1text") . '</td>' . PHP_EOL;
         }
         return $out;
     }

@@ -302,21 +302,30 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
+                                <!--
                                 <th><input type="checkbox" name="showName" value="1" <?php if ($this->entity->getValueByKey('showName') == 1): ?> checked="checked"<?php endif; ?>/><br/>Name</th>
                                 <th><input type="checkbox" name="showDescription" value="1" <?php if ($this->entity->getValueByKey('showDescription') == 1): ?> checked="checked"<?php endif; ?>/><br/>Beschreibung</th>
                                 <th><input type="checkbox" name="showId" value="1" <?php if ($this->entity->getValueByKey('showId') == 1): ?> checked="checked"<?php endif; ?>><br/>ID</th>
                                 <!--<div style="display:none;"><input type="checkbox" name="showUser" value="1" <?php if ($this->entity->getValueByKey('showUser') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;letzter Bearbeiter<br/></div>-->
-                                <th><input type="checkbox" name="showDate" value="1" <?php if ($this->entity->getValueByKey('showDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Erstelldatum</th>
+                                <!--<th><input type="checkbox" name="showDate" value="1" <?php if ($this->entity->getValueByKey('showDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Erstelldatum</th>
                                 <th><input type="checkbox" name="showLastDate" value="1" <?php if ($this->entity->getValueByKey('showLastDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Bearbeitungsdatum</th>
                                 <th><input type="checkbox" name="showFreeDate" value="1" <?php if ($this->entity->getValueByKey('showFreeDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>Bezugsdatum</th>
                                 <th><input type="checkbox" name="showFileDate" value="1" <?php if ($this->entity->getValueByKey('showFileDate') == 1): ?> checked="checked"<?php endif; ?>/><br/>letzte Datei&auml;nderung</th>
                                 <th><input type="checkbox" name="showTime" value="1" <?php if ($this->entity->getValueByKey('showTime') == 1): ?> checked="checked"<?php endif; ?>/><br/>Uhrzeit (nur bei eingeschaltetem Datum)</th>
                                 <th><input type="checkbox" name="showFirstUser" value="1" <?php if ($this->entity->getValueByKey('showFirstUser') == 1): ?> checked="checked"<?php endif; ?>/><br/>Erster User</th>
                                 <th><input type="checkbox" name="showLastUser" value="1" <?php if ($this->entity->getValueByKey('showLastUser') == 1): ?> checked="checked"<?php endif; ?>/><br/>Letzter User</th>
+                                -->
+                                <th style="width: 90%">Verf&uuml;gbare Spalten</th>
+                                <th>Anzeigen?</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
+                                <td>ID</td>
+                                <td><input type="checkbox" name="showId" value="1" <?php if ($this->entity->getValueByKey('showId') == 1): ?> checked="checked"<?php endif; ?>></td>
+                            </tr>
+                            <tr>
+                                <!--
                                 <td>LW</td>
                                 <td>Logic-Works</td>
                                 <td>1</td>
@@ -327,9 +336,61 @@
                                 <td>15:02</td>
                                 <td>User1</td>
                                 <td>User15</td>
-
+                                -->
+                                <td>Name</td>
+                                <td><input type="checkbox" name="showName" value="1" <?php if ($this->entity->getValueByKey('showName') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>Beschreibung</td>
+                                <td><input type="checkbox" name="showDescription" value="1" <?php if ($this->entity->getValueByKey('showDescription') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>Erstelldatum</td>
+                                <td><input type="checkbox" name="showDate" value="1" <?php if ($this->entity->getValueByKey('showDate') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>Bearbeitungsdatum</td>
+                                <td><input type="checkbox" name="showLastDate" value="1" <?php if ($this->entity->getValueByKey('showLastDate') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>Bezugsdatum</td>
+                                <td><input type="checkbox" name="showFreeDate" value="1" <?php if ($this->entity->getValueByKey('showFreeDate') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>letzte Datei&auml;nderung</td>
+                                <td><input type="checkbox" name="showFileDate" value="1" <?php if ($this->entity->getValueByKey('showFileDate') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>Stichworte</td>
+                                <td><input type="checkbox" name="showKeyWords" value="1" <?php if ($this->entity->getValueByKey('showKeyWords') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>Zusatzinfo</td>
+                                <td><input type="checkbox" name="showAdditionalInfo" value="1" <?php if ($this->entity->getValueByKey('showAdditionalInfo') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>Erster User</td>
+                                <td><input type="checkbox" name="showFirstUser" value="1" <?php if ($this->entity->getValueByKey('showFirstUser') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            <tr>
+                                <td>Letzter User</td>
+                                <td><input type="checkbox" name="showLastUser" value="1" <?php if ($this->entity->getValueByKey('showLastUser') == 1): ?> checked="checked"<?php endif; ?>/></td>
                             </tr>
                         </tbody>
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 90%">Erweiterungen</th>
+                                    <th>Aktivieren?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Datumsanzeigen werden um Uhrzeit erweitert</td>
+                                <td><input type="checkbox" name="showTime" value="1" <?php if ($this->entity->getValueByKey('showTime') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </table>
                 </div>
                 <!-- TAB2 SPALTEN ENDE -->
@@ -347,58 +408,7 @@
                     <div id="en">
                         <?php echo $this->en ?>
                     </div>
-                    <!--
-                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                        <div class="lw_contentwrapper">
-                            <label for="title_name"><span>Alternative f&uuml;r "Name"</span></label>
-                            <div class="lw_content">
-                                <span>
-                                    <input type="text"  name="title_name"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_name')); ?>"  />
-                                </span>
-                            </div>
-                            <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
-                            <div class="clearfix">&nbsp;</div>
-                        </div>
-                    </div>
-
-                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                        <div class="lw_contentwrapper">
-                            <label for="title_description"><span>Alternative f&uuml;r "Beschreibung"</span></label>
-                            <div class="lw_content">
-                                <span>
-                                    <input type="text"  name="title_description"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_description')); ?>"  />
-                                </span>
-                            </div>
-                            <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
-                            <div class="clearfix">&nbsp;</div>
-                        </div>
-                    </div>
-
-                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                        <div class="lw_contentwrapper">
-                            <label for="title_link"><span>Alternative f&uuml;r "Verlinkung"</span></label>
-                            <div class="lw_content">
-                                <span>
-                                    <input type="text"  name="title_link"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_link')); ?>"  />
-                                </span>
-                            </div>
-                            <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
-                            <div class="clearfix">&nbsp;</div>
-                        </div>
-                    </div>
-
-                    <div class="lw_entry lw_textfield" id="lw_listtool_titel" >
-                        <div class="lw_contentwrapper">
-                            <label for="title_download"><span>Alternative f&uuml;r "Herunterladen"</span></label>
-                            <div class="lw_content">
-                                <span>
-                                    <input type="text"  name="title_download"  id="lw_fe_inputelement_lw_listtool_titel"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('title_download')); ?>"  />
-                                </span>
-                            </div>
-                            <div class="lw_comment"><sup class="lw_footnote">optional</sup></div>
-                            <div class="clearfix">&nbsp;</div>
-                        </div>
-                    </div>-->
+                    
                 </div>
                 <!-- TAB3 SPRACHEN ENDE -->
                 <div class="lw_functions_bottom">
@@ -407,9 +417,6 @@
                 </div>
             </div>
         </form>
-
-
-
     </div>	        
 
 </fieldset>
