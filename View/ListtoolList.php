@@ -229,8 +229,13 @@ class ListtoolList extends \LWmvc\View
         
         $this->view->reg("listId", $this->listId);
         $this->view->putBlock("entry", $bout);
-        $listtoolbase = new \LwListtool\View\ListtoolBase();
-        return $listtoolbase->render()."\n".$this->view->parse();
+        if ($this->listRights->isWriteAllowed()) {
+            $listtoolbase = new \LwListtool\View\ListtoolBase();
+            return $listtoolbase->render()."\n".$this->view->parse();
+        }
+        else {
+            return $this->view->parse();
+        }
     }
     
     protected function setEnglishTexts($tpl)
