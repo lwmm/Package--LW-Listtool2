@@ -1,6 +1,43 @@
 <script language="javascript" type="text/javascript">
     $(function() {
 
+        var OnSiteMarker = 0;
+        var BorrowMarker = 0;
+
+        if ($('.lt_borrowed_entry').length > 0)  {
+            setBorrowedMarker(1);
+        }
+
+        function setBorrowedMarker(bool) {
+            BorrowMarker = bool;
+        }
+
+        function getBorrowedMarker() {
+            return BorrowMarker;
+        }
+
+        function setOnSiteMarker(bool) {
+            OnSiteMarker = bool;
+        }
+
+        function getOnSiteMarker() {
+            return OnSiteMarker;
+        }
+
+        window.onbeforeunload = function (e) {
+          if (getOnSiteMarker() != 1 && getBorrowedMarker() == 1) {
+              var message = "There are checked out items.",
+              e = e || window.event;
+              // For IE and Firefox
+              if (e) {
+                e.returnValue = message;
+              }
+
+              // For Safari
+              return message;
+          }
+        };
+
         $( "#listtool_iframe" ).dialog({
             autoOpen: false,
             height: 550,
@@ -32,6 +69,11 @@
             $("#listtool_iframe").html('<iframe frameborder="0" src="<?php echo $this->baseurl; ?>&cmd=showEditEntryForm&id='+ltid+'" width="99%" height="99%" name="new file"></iframe>');
             $("#listtool_iframe").dialog("open");
             return false;
+        });
+
+        $(".lt_onsite_link").click(function() {
+            setOnSiteMarker(1);
+            return true;
         });
 
     });

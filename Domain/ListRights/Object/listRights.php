@@ -109,10 +109,11 @@ class listRights extends \LWddd\Entity
     
     public function isWriteAllowed()
     {
-        if ($this->auth->isLoggedIn() && $this->isAuthInvolved()) {
+        $type = $this->listConfig->getValueByKey('listtooltype');
+        if ($this->auth->isLoggedIn() && $type != "intranet") {
             return true;
         }
-        if ($this->inAuth->isLoggedIn() && $this->isInAuthInvolved() && $this->isAssigned()) {
+        if ($this->inAuth->isLoggedIn() && $type != "backend" && $this->isAssigned()) {
             return true;
         }
         return false;
