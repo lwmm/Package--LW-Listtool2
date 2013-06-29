@@ -106,6 +106,22 @@ class entry extends \LWddd\Entity
         return $hour.':'.$min.':'.$sec;
     }
     
+    public function getFreeDate()
+    {
+        $date = substr($this->getValueByKey('opt2number'), 0, 8);
+        return \lw_object::formatDate($date);
+    }
+    
+    public function getFreeTime()
+    {
+        $hour = substr($this->getValueByKey('opt2number'), 8, 2);
+        $min = substr($this->getValueByKey('opt2number'), 10, 2);
+        $sec = substr($this->getValueByKey('opt2number'), 12, 2);
+        
+        return $hour.':'.$min.':'.$sec;
+    }
+    
+    
     public function getLastDate()
     {
         $date = substr($this->getValueByKey('lw_last_date'), 0, 8);

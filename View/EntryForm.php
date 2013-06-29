@@ -33,6 +33,7 @@ class EntryForm extends \LWmvc\View
     public function render()
     {
         $this->view->mediaUrl = $this->systemConfiguration['url']['media'];
+        $this->view->tinyMceLibraryPath = $this->systemConfiguration['tinymce']['libpath'];
         if ($this->view->entity->getId()<1) {
             $this->view->actionUrl = \lw_page::getInstance()->getUrl(array("cmd"=>"addEntry", "type" => $this->entryType));
             if ($this->entryType == "file") {

@@ -60,6 +60,7 @@ class ListtoolList extends \LWmvc\View
     
     public function render()
     {
+    	$listHasBorrowedItems = false;
         $this->view->reg("listtitle", $this->configuration->getValueByKey('name'));
         if ($this->listRights->isReadAllowed()) {
             $this->view->setIfVar('ltRead');
@@ -107,6 +108,15 @@ class ListtoolList extends \LWmvc\View
                 }
             }
             
+            if ($this->configuration->getValueByKey('showFreeDate') == 1) {
+                $btpl->setIfVar("showfreedate");
+                $btpl->reg("free_date", $entry->getFreeDate());
+                if ($this->configuration->getValueByKey('showTime') == 1) {
+                    $btpl->setIfVar("showtime");
+                    $btpl->reg("free_date", $entry->getFreeTime());
+                }
+            }    	
+
             if ($this->configuration->getValueByKey('showDescription') == 1) {
                 $btpl->setIfVar("showdescription");
                 $btpl->reg("description", html_entity_decode($entry->getValueByKey('description')));
@@ -125,6 +135,7 @@ class ListtoolList extends \LWmvc\View
             if ($this->configuration->getValueByKey('borrow') == 1) {
                 if ($entry->isBorrowed()) {
                     if ($this->auth->isLoggedIn() || $entry->isBorrower($this->inAuth->getUserdata("id"))) {
+                    	$listHasBorrowedItems = true;
                         $btpl->setIfVar('showEditOptions');
                         $btpl->setIfVar('showReleaseLink');
                         $btpl->reg("releaseurl", \lw_page::getInstance()->getUrl(array("cmd"=>"releaseEntry", "id"=>$entry->getValueByKey("id"))));
@@ -190,6 +201,10 @@ class ListtoolList extends \LWmvc\View
             $this->view->setIfVar("showlastdate");
         }
         
+        if ($this->configuration->getValueByKey('showFreeDate') == 1) {
+            $this->view->setIfVar("showfreedate");
+        }
+
         if ($this->configuration->getValueByKey('showDescription') == 1) {
             $this->view->setIfVar("showdescription");
         }
@@ -227,6 +242,10 @@ class ListtoolList extends \LWmvc\View
             $this->setEnglishTexts($this->view);
         }
         
+        if ($listHasBorrowedItems == true) {
+        	$this->view->setIfVar('listHasBorrowedItems');
+        }
+
         $this->view->reg("listId", $this->listId);
         $this->view->putBlock("entry", $bout);
         if ($this->listRights->isWriteAllowed()) {
@@ -251,6 +270,7 @@ class ListtoolList extends \LWmvc\View
         }
         $tpl->reg("lang_date", "Date");
         $tpl->reg("lang_lastdate", "Last change");
+        $tpl->reg("lang_freedate", "Date");
         $tpl->reg("lang_published", "Published");
         if ($this->configuration->getValueByKey('title_description')) {
             $tpl->reg("lang_description", $this->configuration->getValueByKey('title_description'));
@@ -278,6 +298,7 @@ class ListtoolList extends \LWmvc\View
         $tpl->reg("lang_reallydelete", "really delete?");
         $tpl->reg("lang_borrowedby", "checked out by");
         $tpl->reg("lang_noentries", "no entries available");
+        $tpl->reg("lang_borrow_message", '<strong>Attention:</strong> You checked out a document.<br/>Please check it in after editing.');
     }
 
     protected function setGermanTexts($tpl)
@@ -293,6 +314,7 @@ class ListtoolList extends \LWmvc\View
         }
         $tpl->reg("lang_date", "Datum");
         $tpl->reg("lang_lastdate", "letzte &Auml;nderung");
+        $tpl->reg("lang_freedate", "Datum");
         $tpl->reg("lang_published", "ver&ouml;ffentlicht");
         if ($this->configuration->getValueByKey('title_description')) {
             $tpl->reg("lang_description", $this->configuration->getValueByKey('title_description'));
@@ -320,5 +342,6 @@ class ListtoolList extends \LWmvc\View
         $tpl->reg("lang_reallydelete", "wirklich l&ouml;schen?");
         $tpl->reg("lang_borrowedby", "wird bearbeitet von");
         $tpl->reg("lang_noentries", "Es liegen keine Eintr&auml;ge vor.");
+        $tpl->reg("lang_borrow_message", '<strong>Achtung:</strong> Sie haben Dokumente zur Bearbeitung ausgeliehen.<br/>Bitte geben Sie diese Dokumente nach Aktualisierung zur&uuml;ck. Um dies zu tun, w&auml;hlen Sie bitte den Link "zur&uuml;ckgeben" in der entsprechenden Tabellenzeile.');
     }
 }

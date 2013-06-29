@@ -58,7 +58,8 @@
             </div>
             
             <div class="lw_entry lw_select" id="lw_listtool_sorting" >
-                <div class="lw_contentwrapper">
+                                     <input type="checkbox" name="showFreeDate" value="1" <?php if ($this->entity->getValueByKey('showFreeDate') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Freies Datum <br/>
+       <div class="lw_contentwrapper">
                     <label for="sorting"><span>Sortierung</span></label>
                     <div class="lw_content">
                         <span>    
@@ -196,6 +197,7 @@
                             <div style="display:none;"><input type="checkbox" name="showUser" value="1" <?php if ($this->entity->getValueByKey('showUser') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;letzter Bearbeiter<br/></div>
                             <input type="checkbox" name="showDate" value="1" <?php if ($this->entity->getValueByKey('showDate') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Erstelldatum<br/>
                             <input type="checkbox" name="showLastDate" value="1" <?php if ($this->entity->getValueByKey('showLastDate') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Bearbeitungsdatum<br/>
+                            <input type="checkbox" name="showFreeDate" value="1" <?php if ($this->entity->getValueByKey('showFreeDate') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Freies Datum <br/>
                             <input type="checkbox" name="showTime" value="1" <?php if ($this->entity->getValueByKey('showTime') == 1): ?> checked="checked"<?php endif; ?>/>&nbsp;&nbsp;Uhrzeit (nur bei eingeschaltetem Datum)<br/>
                         </span>
                     </div>

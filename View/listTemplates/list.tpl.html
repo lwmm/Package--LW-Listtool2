@@ -37,6 +37,13 @@
         </div>
     <!-- lw:endif ltWrite -->
     <!-- lw:if entries -->
+
+    	<!-- lw:if listHasBorrowedItems -->
+    	<div style="margin-top:10px;margin-bottom:10px;background-color:#ffdddd;padding:10px;border:1px solid #f00;">
+    	<!-- lw:var lang_borrow_message -->    	
+    	</div>
+    	<!-- lw:endif listHasBorrowedItems -->
+
         <table width="100%" border="1">
             <thead>
                 <tr>
@@ -55,6 +62,9 @@
                     <!-- lw:if showlastdate -->
                     <th><!-- lw:var lang_lastdate --></th>
                     <!-- lw:endif showlastdate -->
+                    <!-- lw:if showfreedate -->
+                    <th><!-- lw:var lang_freedate --></th>
+                    <!-- lw:endif showfreedate -->
                     <!-- lw:if showuser -->
                     <th><!-- lw:var lang_user --></th>
                     <!-- lw:endif showuser -->
@@ -107,6 +117,12 @@
                         <!-- lw:if showtime --><!-- lw:var lw_last_time --><!-- lw:endif showtime -->
                     </td>
                     <!-- lw:endif showlastdate -->
+                    <!-- lw:if showfreedate -->
+                    <td align="left">
+                        <!-- lw:if showfreedate --><!-- lw:var free_date --><!-- lw:endif showfreedate -->
+                        <!-- lw:if showtime --><!-- lw:var free_time --><!-- lw:endif showtime -->
+                    </td>
+                    <!-- lw:endif showfreedate -->
                     <!-- lw:if showuser -->
                     <td><!-- lw:var last_username --></td>
                     <!-- lw:endif showuser -->
