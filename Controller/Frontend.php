@@ -252,4 +252,16 @@ class Frontend extends \LWmvc\Controller
             return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
         }
     }
+    
+    public function showVersionsAction()
+    {
+        if (\lw_registry::getInstance()->getEntry('FeatureCollection')->getFeature('LwListtoolVersioning')->isActive()) {
+            $view = new \LwListtool\View\ListtoolVersionsList();
+            $view->setConfiguration($this->listConfig);
+            $view->setListRights($this->listRights);
+            $view->setListId($this->getContentObjectId());
+            return $this->returnRenderedView($view);     
+       }
+       return showListAction();
+    }
 }

@@ -111,18 +111,21 @@
                         <!-- lw:if showtime --><!-- lw:var lw_first_time --><!-- lw:endif showtime -->
                     </td>
                     <!-- lw:endif showdate -->
+
                     <!-- lw:if showlastdate -->
                     <td align="left">
-                        <!-- lw:if showlastdate --><!-- lw:var lw_last_date --><!-- lw:endif showlastdate -->
+                        <!-- lw:var lw_last_date -->
                         <!-- lw:if showtime --><!-- lw:var lw_last_time --><!-- lw:endif showtime -->
                     </td>
                     <!-- lw:endif showlastdate -->
+
                     <!-- lw:if showfreedate -->
                     <td align="left">
-                        <!-- lw:if showfreedate --><!-- lw:var free_date --><!-- lw:endif showfreedate -->
+                        <!-- lw:var free_date -->
                         <!-- lw:if showtime --><!-- lw:var free_time --><!-- lw:endif showtime -->
                     </td>
                     <!-- lw:endif showfreedate -->
+
                     <!-- lw:if showuser -->
                     <td><!-- lw:var last_username --></td>
                     <!-- lw:endif showuser -->
@@ -164,13 +167,53 @@
                         <span class="lt_adminfunctions">
                             <!-- lw:var lang_borrowedby --> <!-- lw:var borrower -->
                         </span>
+                        <span class="lt_adminfunctions">
+                             | <a href="" onclick="return confirm('wenn dieser Eintrag von dem Entleiher zur&uuml;ckgegeben wird, m&ouml;chte ich per E-Mail verst&auml;ndigt werden.');">Benachrichtigung bei R&uuml;ckgabe</a>
+                        </span>
                         <!-- lw:endif borrowed -->
                         <!-- lw:endif ltWrite -->
+                        
+                        <!-- lw:if versioning -->
+                        <span>
+                            | <a href="<!-- lw:var versioningurl -->">alte Versionen</a>
+                        </span>
+                        <!-- lw:endif versioning -->
+                        
                     </td>
                 </tr>
                 <!-- lw:blockend entry -->
+                <!-- lw:if showdeleted -->
+                <tr style="color:#cc0000;">
+                    <td>412</td>
+                    <td>alte Datei</td>
+                    <td>12.04.2012 11:34:17</td>
+                    <td>1</td>
+                    <td><a href="" class="lwlt_download lt_onsite_link"><!-- lw:var lang_download --></a></td>
+                    <td style="color:black;">
+                        <span class="lt_adminfunctions">
+                            <div style="display:none;" class="lt_borrowed_entry lt_onsite_link"></div>
+                            <a href="#" class="lt_edit_entry lt_onsite_link" id="lt_entry_<!-- lw:var id -->"><!-- lw:var lang_edit --></a>
+                        </span>
+                        | 
+                        <span>
+                            <a href="<!-- lw:var versioningurl -->">alte Versionen</a>
+                        </span>
+                        | 
+                        <span class="lt_adminfunctions">
+                            <a href="" class="lt_onsite_link" onclick="return confirm('Datei mit allen alten Versionen endg&uuml;ltig l&ouml;schen?');">endg&uuml;ltig l&ouml;schen</a>
+                        </span>
+                    </td>
+                </tr>
+                <!-- lw:endif showdeleted -->
             </tbody>
         </table>
+        <!-- lw:if markdeleted -->
+        <br/>
+        <div>
+            <a href="">als gel&ouml;scht markierte anzeigen</a>
+        </div>
+        <!-- lw:endif markdeleted -->
+        
     <!-- lw:endif entries -->
     <!-- lw:ifnot entries -->
         <div class="lt_noentries"><!-- lw:var lang_noentries --></div>

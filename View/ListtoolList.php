@@ -81,6 +81,10 @@ class ListtoolList extends \LWmvc\View
             if ($entry->isFile() && $entry->hasFile()) {
                 $btpl->setIfVar('file');
                 $btpl->reg("downloadurl", \lw_page::getInstance()->getUrl(array("cmd"=>"downloadEntry", "id"=>$entry->getValueByKey("id"))));
+                if (\lw_registry::getInstance()->getEntry('FeatureCollection')->getFeature('LwListtoolVersioning')->isActive()) {
+                	$btpl->setIfVar('versioning');
+                    $btpl->reg("versioningurl", \lw_page::getInstance()->getUrl(array("cmd"=>"showVersions", "id"=>$entry->getValueByKey("id"))));
+                }
             }
             $btpl->reg("deleteurl", \lw_page::getInstance()->getUrl(array("cmd"=>"deleteEntry", "id"=>$entry->getValueByKey("id"))));
             $btpl->reg("id", $entry->getValueByKey("id"));
@@ -246,6 +250,14 @@ class ListtoolList extends \LWmvc\View
         	$this->view->setIfVar('listHasBorrowedItems');
         }
 
+        if (\lw_registry::getInstance()->getEntry('FeatureCollection')->getFeature('LwListtoolMarkDeleted')->isActive()) {
+        	$this->view->setIfVar('markdeleted');
+        }
+        
+        if (\lw_registry::getInstance()->getEntry('FeatureCollection')->getFeature('TempShowDeleted')->isActive()) {
+        	$this->view->setIfVar('showdeleted');
+        }
+        
         $this->view->reg("listId", $this->listId);
         $this->view->putBlock("entry", $bout);
         if ($this->listRights->isWriteAllowed()) {
