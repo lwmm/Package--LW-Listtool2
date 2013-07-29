@@ -144,8 +144,8 @@ function showError($errors, $lang, $field) {
                     <div class="lt_fieldwrapper">
                         <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Free date"; else: echo "Freies Datum"; endif; ?></div>
                         <div class="lt_fieldvalue">
-                            <input id="opt2number" type="hidden" name="opt2number" value="<?php echo $this->entry->getValueByKey('opt2number'); ?>" />
-                            <input id="shown_opt2number" type="text" name="shown_opt2number" value="<?php echo $this->formatDate($this->entry->getValueByKey('opt2number')); ?>" class="lw_fe_datepicker" />
+                            <input autocomplete="off" id="opt2number" type="hidden" name="opt2number" value="<?php echo $this->entry->getValueByKey('opt2number'); ?>" />
+                            <input autocomplete="off" id="shown_opt2number" type="text" name="shown_opt2number" value="<?php echo $this->formatDate($this->entry->getValueByKey('opt2number')); ?>" class="lw_fe_datepicker" />
                         </div>
                     </div>                
 

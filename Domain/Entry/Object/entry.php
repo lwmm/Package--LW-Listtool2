@@ -33,9 +33,13 @@ class entry extends \LWddd\Entity
         return false;
     }
     
-    public function getFilePath()
+    public function getFilePath($date = false)
     {
-        return $this->path.'item_'.$this->getValueByKey("id").'.file';
+        if($date) {
+            return $this->path.'archive/'.$date.'_item_'.$this->getValueByKey("id").'.file';
+        } else {
+            return $this->path.'item_'.$this->getValueByKey("id").'.file';
+        }
     }
     
     public function getThumbnailPath()

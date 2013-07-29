@@ -42,6 +42,10 @@ class ListtoolList extends \LWmvc\View
         $this->configuration = $configuration;
     }
     
+    public function setLanguagePhrases($langPhrases) {
+        $this->langPhrases = $langPhrases;
+    }
+    
     public function setListId($id)
     {
         $this->listId = $id;
@@ -61,7 +65,7 @@ class ListtoolList extends \LWmvc\View
     public function render()
     {
     	$listHasBorrowedItems = false;
-        $this->view->reg("listtitle", $this->configuration->getValueByKey('name'));
+        $this->view->reg("listtitle", $this->langPhrases["lang_listtitle"]);
         if ($this->listRights->isReadAllowed()) {
             $this->view->setIfVar('ltRead');
         }
@@ -183,12 +187,7 @@ class ListtoolList extends \LWmvc\View
                 }
             }
             
-            if ($this->configuration->getValueByKey('language') == "de") {
-                $this->setGermanTexts($btpl);
-            }
-            else {
-                $this->setEnglishTexts($btpl);
-            }
+            $this->setTexts($btpl);
             
             $bout.= $btpl->parse();
         }
@@ -239,12 +238,8 @@ class ListtoolList extends \LWmvc\View
         else {
             $this->view->setIfVar("namelink");
         }
-        if ($this->configuration->getValueByKey('language') == "de") {
-            $this->setGermanTexts($this->view);
-        }
-        else {
-            $this->setEnglishTexts($this->view);
-        }
+        
+        $this->setTexts($this->view);
         
         if ($listHasBorrowedItems == true) {
         	$this->view->setIfVar('listHasBorrowedItems');
@@ -269,91 +264,37 @@ class ListtoolList extends \LWmvc\View
         }
     }
     
-    protected function setEnglishTexts($tpl)
+    protected function setTexts($tpl)
     {
-        $tpl->reg("lang_newfile", "add new file");
-        $tpl->reg("lang_newlink", "add new link");
-        $tpl->reg("lang_sortlist", "sort list");
-        if ($this->configuration->getValueByKey('title_name')) {
-            $tpl->reg("lang_name", $this->configuration->getValueByKey('title_name'));
-        }
-        else {
-            $tpl->reg("lang_name", "Name");
-        }
-        $tpl->reg("lang_date", "Date");
-        $tpl->reg("lang_lastdate", "Last change");
-        $tpl->reg("lang_freedate", "Date");
-        $tpl->reg("lang_published", "Published");
-        if ($this->configuration->getValueByKey('title_description')) {
-            $tpl->reg("lang_description", $this->configuration->getValueByKey('title_description'));
-        }
-        else {
-            $tpl->reg("lang_description", "Description");
-        }
-        $tpl->reg("lang_user", "User");
-        if ($this->configuration->getValueByKey('title_link')) {
-            $tpl->reg("lang_link", $this->configuration->getValueByKey('title_link'));
-        }
-        else {
-            $tpl->reg("lang_link", "Link");
-        }
-        if ($this->configuration->getValueByKey('title_download')) {
-            $tpl->reg("lang_download", $this->configuration->getValueByKey('title_download'));
-        }
-        else {
-            $tpl->reg("lang_download", "Download");
-        }
-        $tpl->reg("lang_edit", "edit");
-        $tpl->reg("lang_delete", "delete");
-        $tpl->reg("lang_release", '<span title="check the entry in to allow other persons to edit it">check in</span>');
-        $tpl->reg("lang_borrow", '<span title="checked out entries can only be edited by you or an administrator. Other users cannot edit this entry. It is still possible to use the link or download the file.">check out for editing</span>');
-        $tpl->reg("lang_reallydelete", "really delete?");
-        $tpl->reg("lang_borrowedby", "checked out by");
-        $tpl->reg("lang_noentries", "no entries available");
-        $tpl->reg("lang_borrow_message", '<strong>Attention:</strong> You checked out a document.<br/>Please check it in after editing.');
-    }
+        $tpl->reg("lang_newfile", $this->langPhrases["lang_newfile"]);
+        $tpl->reg("lang_newlink", $this->langPhrases["lang_newlink"]);
+        $tpl->reg("lang_sortlist", $this->langPhrases["lang_sortlist"]);
+        $tpl->reg("lang_name", $this->langPhrases["lang_name"]);
+        
+        $tpl->reg("lang_date", $this->langPhrases["lang_date"]);
+        $tpl->reg("lang_lastdate", $this->langPhrases["lang_lastdate"]);
+        $tpl->reg("lang_freedate", $this->langPhrases["lang_freedate"]);
+        $tpl->reg("lang_published", $this->langPhrases["lang_published"]);
+        
+        $tpl->reg("lang_description", $this->langPhrases["lang_description"]);
+        $tpl->reg("lang_user", $this->langPhrases["lang_user"]);
 
-    protected function setGermanTexts($tpl)
-    {
-        $tpl->reg("lang_newfile", "neue Datei anlegen");
-        $tpl->reg("lang_newlink", "neuen Link anlegen");
-        $tpl->reg("lang_sortlist", "Liste sortieren");
-        if ($this->configuration->getValueByKey('title_name')) {
-            $tpl->reg("lang_name", $this->configuration->getValueByKey('title_name'));
+        $tpl->reg("lang_link", $this->langPhrases["lang_link"]);       
+        $tpl->reg("lang_download", $this->langPhrases["lang_download"]);
+        
+        $tpl->reg("lang_edit", $this->langPhrases["lang_edit"]);
+        $tpl->reg("lang_delete", $this->langPhrases["lang_delete"]);
+        $tpl->reg("lang_release", '<span title="' . $this->langPhrases["lang_release_title"] . '">' . $this->langPhrases["lang_release"] . '</span>');
+        $tpl->reg("lang_borrow", '<span title="' . $this->langPhrases["lang_borrow_title"] . '">' . $this->langPhrases["lang_borrow"] . '</span>');
+        $tpl->reg("lang_reallydelete", $this->langPhrases["lang_reallydelete"]);
+        $tpl->reg("lang_borrowedby", $this->langPhrases["lang_borrowedby"]);
+        $tpl->reg("lang_noentries", $this->langPhrases["lang_noentries"]);
+        
+        if ($this->configuration->getValueByKey('language') == "de") {
+            $tpl->reg("lang_borrow_message", '<strong>Achtung:</strong> ' . $this->langPhrases["lang_borrow_msg"]);
         }
         else {
-            $tpl->reg("lang_name", "Name");
-        }
-        $tpl->reg("lang_date", "Datum");
-        $tpl->reg("lang_lastdate", "letzte &Auml;nderung");
-        $tpl->reg("lang_freedate", "Datum");
-        $tpl->reg("lang_published", "ver&ouml;ffentlicht");
-        if ($this->configuration->getValueByKey('title_description')) {
-            $tpl->reg("lang_description", $this->configuration->getValueByKey('title_description'));
-        }
-        else {
-            $tpl->reg("lang_description", "Beschreibung");
-        }
-        $tpl->reg("lang_user", "Benutzer");
-        if ($this->configuration->getValueByKey('title_link')) {
-            $tpl->reg("lang_link", $this->configuration->getValueByKey('title_link'));
-        }
-        else {
-            $tpl->reg("lang_link", "Verlinkung");
-        }
-        if ($this->configuration->getValueByKey('title_download')) {
-            $tpl->reg("lang_download", $this->configuration->getValueByKey('title_download'));
-        }
-        else {
-            $tpl->reg("lang_download", "Herunterladen");
-        }
-        $tpl->reg("lang_edit", "bearbeiten");
-        $tpl->reg("lang_delete", "l&oumlschen");
-        $tpl->reg("lang_release", '<span title="Den Eintrag zur&uuml;ckgeben, damit andere Personen diesen bearbeiten k&ouml;nnen.">zur&uuml;ckgeben</span>');
-        $tpl->reg("lang_borrow", '<span title="Ausgeliehene Eintr&auml;ge k&ouml;nnen nur von dem Ausleiher und einem Administrator bearbeitet werden. Andere Nutzer haben keinen Schreibzugriff. Der Eintrag steht dar&uuml;ber hinaus aber zum Donwload/Verlinkung weiterhin zur Verf&uuml;gung.">zur Bearbeitung ausleihen</span>');
-        $tpl->reg("lang_reallydelete", "wirklich l&ouml;schen?");
-        $tpl->reg("lang_borrowedby", "wird bearbeitet von");
-        $tpl->reg("lang_noentries", "Es liegen keine Eintr&auml;ge vor.");
-        $tpl->reg("lang_borrow_message", '<strong>Achtung:</strong> Sie haben Dokumente zur Bearbeitung ausgeliehen.<br/>Bitte geben Sie diese Dokumente nach Aktualisierung zur&uuml;ck. Um dies zu tun, w&auml;hlen Sie bitte den Link "zur&uuml;ckgeben" in der entsprechenden Tabellenzeile.');
+            $tpl->reg("lang_borrow_message", '<strong>Attention:</strong> ' . $this->langPhrases["lang_borrow_msg"]);
+        }        
     }
 }

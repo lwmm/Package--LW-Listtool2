@@ -29,6 +29,8 @@ class Frontend extends \LWmvc\Controller
         $this->dic = new \LwListtool\Services\dic();
         $this->response = \lw_registry::getInstance()->getEntry("response");
         $this->request = \lw_registry::getInstance()->getEntry("request");
+        $this->lwi18nQH = new \LwI18n\Model\queryHandler($this->dic->getDbObject());
+        $this->config = $this->dic->getConfiguration();
     }
     
     public function execute()
@@ -53,11 +55,18 @@ class Frontend extends \LWmvc\Controller
         if ($this->listRights->isReadAllowed()) {
             $this->response->useJQuery();
             $this->response->useJQueryUI();
+            
+            $result = $this->lwi18nQH->getAllEntriesForCategoryAndLang("lw_listtool2", $this->listConfig->getValueByKey("language"));
+            $temp = array();
+            foreach($result as $value) {
+                $temp[$value["lw_key"]] = $value["text"];
+            }
 
             $view = new \LwListtool\View\ListtoolList();
             $view->setConfiguration($this->listConfig);
             $view->setListRights($this->listRights);
             $view->setListId($this->getContentObjectId());
+            $view->setLanguagePhrases($temp);
             $view->init();
         
             $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getListEntriesAggregate', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
@@ -103,6 +112,17 @@ class Frontend extends \LWmvc\Controller
             }
             $entity = $response->getDataByKey('EntryEntity');
             $entity->setId($this->request->getInt("id"));
+            
+            $dir = \lw_directory::getInstance($this->config["path"]["listtool"]."archive/");
+            $files = $dir->getDirectoryContents('file');
+            $archivedFiles = array();
+            foreach ($files as $file) {
+                if(strstr($file->getName(), "_item_" . $this->request->getInt("id") . ".file")) {
+                    $archivedFiles[] = $file->getName();
+                }
+            }
+
+            $formView->setArchiveValues($this->listConfig->getValueByKey("archive"), $archivedFiles);
             $formView->setEntity($entity);
             $formView->setConfiguration($this->listConfig);
             if ($entity->isFile()) {
@@ -202,7 +222,11 @@ class Frontend extends \LWmvc\Controller
         if ($this->listRights->isReadAllowed()) {
             $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
-            $file = $entity->getFilePath();
+            if($this->request->getAlnum("filedate")) {
+                $file = $entity->getFilePath($this->request->getAlnum("filedate"));
+            } else {
+                $file = $entity->getFilePath();
+            }
             if (is_file($file)) {
                 $extension = \lw_io::getFileExtension($data['opt2file']);
                 $mimeType = \lw_io::getMimeType($extension);

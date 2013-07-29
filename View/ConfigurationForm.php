@@ -11,7 +11,6 @@ class ConfigurationForm extends \LWmvc\View
         $this->view = new \lw_view(dirname(__FILE__).'/templates/ConfigurationForm.tpl.phtml');
         $this->systemConfiguration = $this->dic->getConfiguration();
         $this->response = new \LwListtool\Domain\Configuration\Service\Response();
-        #print_r($this->reg);die();
     }
 
     public function render()
@@ -55,6 +54,7 @@ class ConfigurationForm extends \LWmvc\View
     public function fillPlaceHolderWithSelectedLanguage($lang)
     {
         $languageDE = array( "de" => array( "lw_listtool2" => array(
+            "lang_listtitle"    => "Listenname",
             "lang_newfile"      => "neue Datei anlegen",
             "lang_newlink"      => "neuen Link anlegen",
             "lang_sortlist"     => "Liste sortieren",
@@ -78,6 +78,7 @@ class ConfigurationForm extends \LWmvc\View
             "lang_release_title"=> "Den Eintrag zur&uuml;ckgeben, damit andere Personen diesen bearbeiten k&ouml;nnen.",
             "lang_borrow"       => "zur Bearbeitung ausleihen",
             "lang_borrow_title" => "Ausgeliehene Eintr&auml;ge k&ouml;nnen nur von dem Ausleiher und einem Administrator bearbeitet werden. Andere Nutzer haben keinen Schreibzugriff. Der Eintrag steht dar&uuml;ber hinaus aber zum Donwload/Verlinkung weiterhin zur Verf&uuml;gung.",
+            "lang_borrow_msg"   => "Sie haben Dokumente zur Bearbeitung ausgeliehen.Bitte geben Sie diese Dokumente nach Aktualisierung zur&uuml;ck. Um dies zu tun, w&auml;hlen Sie bitte den Link 'zur&uuml;ckgeben' in der entsprechenden Tabellenzeile.",
             "lang_reallydelete" => "wirklich l&ouml;schen?",
             "lang_borrowedby"   => "wird bearbeitet von",
             "lang_noentries"    => "Es liegen keine Eintr&auml;ge vor.",
@@ -85,6 +86,7 @@ class ConfigurationForm extends \LWmvc\View
         )));
         
         $languageEN = array( "en" => array( "lw_listtool2" => array(
+            "lang_listtitle"    => "Listname",
             "lang_newfile"      => "add new file",
             "lang_newlink"      => "add new link",
             "lang_sortlist"     => "sort list",
@@ -108,6 +110,7 @@ class ConfigurationForm extends \LWmvc\View
             "lang_release_title"=> "check the entry in to allow other persons to edit it",
             "lang_borrow"       => "check out for editing",
             "lang_borrow_title" => "checked out entries can only be edited by you or an administrator. Other users cannot edit this entry. It is still possible to use the link or download the file.",
+            "lang_borrow_msg"   => "You checked out a document.Please check it in after editing.",
             "lang_reallydelete" => "really delete?",
             "lang_borrowedby"   => "checked out by",
             "lang_noentries"    => "no entries available",
