@@ -16,6 +16,7 @@ class Autoloader
     
     private function loader($className) 
     {
+        die($className);
         if (strstr($className, 'LWddd')) {
             $config = \lw_registry::getInstance()->getEntry('config');
             $path = $this->config['plugin_path']['lw'].'lw_ddd';
@@ -25,6 +26,11 @@ class Autoloader
             $config = \lw_registry::getInstance()->getEntry('config');
             $path = $this->config['plugin_path']['lw'].'lw_mvc';
             $filename = str_replace('LWmvc', $path, $className);
+        }
+        elseif (strstr($className, 'LwI18n')) {
+            $config = \lw_registry::getInstance()->getEntry('config');
+            $path = $this->config['plugin_path']['lw'].'lw_i18n';
+            $filename = str_replace('LwI18n', $path, $className);
         }
         else {
             $path = dirname(__FILE__).'/../..';

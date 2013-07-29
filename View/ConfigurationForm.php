@@ -16,9 +16,9 @@ class ConfigurationForm extends \LWmvc\View
 
     public function render()
     {        
-        $Lw18nController = new \LwI18n\Controller\I18nController($this->dic->getDbObject(), $this->response);
-        $Lw18nController->execute( "lw_listtool2", "de", $this->fillPlaceHolderWithSelectedLanguage("de"));
-        $Lw18nController->execute( "lw_listtool2", "en", $this->fillPlaceHolderWithSelectedLanguage("en"));
+        $LwI18nController = new \LwI18n\Controller\I18nController($this->dic->getDbObject(), $this->response);
+        $LwI18nController->execute( "lw_listtool2", "de", $this->fillPlaceHolderWithSelectedLanguage("de"));
+        $LwI18nController->execute( "lw_listtool2", "en", $this->fillPlaceHolderWithSelectedLanguage("en"));
         
         $this->view->actionUrl = $this->systemConfiguration['url']['client']."admin.php?obj=content&cmd=open&oid=".$this->view->entity->getId()."&pcmd=save";
         $this->view->backUrl = $this->systemConfiguration['url']['client']."admin.php?obj=content";
