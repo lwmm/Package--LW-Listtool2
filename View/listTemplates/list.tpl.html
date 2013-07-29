@@ -31,12 +31,19 @@
     <h2><!-- lw:var listtitle --></h2>
     <!-- lw:if ltWrite -->
         <div class="lt_adminfunctions">
-            <a href="#" id="lt_new_file"><!-- lw:var lang_newfile --></a>
-            | <a href="#" id="lt_new_link"><!-- lw:var lang_newlink --></a>
-            <!-- lw:if manualsorting -->| <a href="#" id="lt_sorting"><!-- lw:var lang_sortlist --></a><!-- lw:endif manualsorting -->
+            <a href="#" id="lt_new_file" class="lt_onsite_link"><!-- lw:var lang_newfile --></a>
+            | <a href="#" id="lt_new_link" class="lt_onsite_link"><!-- lw:var lang_newlink --></a>
+            <!-- lw:if manualsorting -->| <a href="#" id="lt_sorting" class="lt_onsite_link"><!-- lw:var lang_sortlist --></a><!-- lw:endif manualsorting -->
         </div>
     <!-- lw:endif ltWrite -->
     <!-- lw:if entries -->
+
+    	<!-- lw:if listHasBorrowedItems -->
+    	<div style="margin-top:10px;margin-bottom:10px;background-color:#ffdddd;padding:10px;border:1px solid #f00;">
+    	<!-- lw:var lang_borrow_message -->    	
+    	</div>
+    	<!-- lw:endif listHasBorrowedItems -->
+
         <table width="100%" border="1">
             <thead>
                 <tr>
@@ -55,6 +62,9 @@
                     <!-- lw:if showlastdate -->
                     <th><!-- lw:var lang_lastdate --></th>
                     <!-- lw:endif showlastdate -->
+                    <!-- lw:if showfreedate -->
+                    <th><!-- lw:var lang_freedate --></th>
+                    <!-- lw:endif showfreedate -->
                     <!-- lw:if showuser -->
                     <th><!-- lw:var lang_user --></th>
                     <!-- lw:endif showuser -->
@@ -84,7 +94,7 @@
                         <a href="<!-- lw:var opt3text -->" class="lwlt_link"><!-- lw:var name --></a>
                         <!-- lw:endif link -->
                         <!-- lw:if file -->
-                        <a href="<!-- lw:var downloadurl -->" class="lwlt_download"><!-- lw:var name --></a>
+                        <a href="<!-- lw:var downloadurl -->" class="lwlt_download lt_onsite_link"><!-- lw:var name --></a>
                         <!-- lw:endif file -->                    
                     <!-- lw:endif namelink -->
                     <!-- lw:ifnot namelink -->
@@ -101,12 +111,21 @@
                         <!-- lw:if showtime --><!-- lw:var lw_first_time --><!-- lw:endif showtime -->
                     </td>
                     <!-- lw:endif showdate -->
+
                     <!-- lw:if showlastdate -->
                     <td align="left">
-                        <!-- lw:if showlastdate --><!-- lw:var lw_last_date --><!-- lw:endif showlastdate -->
+                        <!-- lw:var lw_last_date -->
                         <!-- lw:if showtime --><!-- lw:var lw_last_time --><!-- lw:endif showtime -->
                     </td>
                     <!-- lw:endif showlastdate -->
+
+                    <!-- lw:if showfreedate -->
+                    <td align="left">
+                        <!-- lw:var free_date -->
+                        <!-- lw:if showtime --><!-- lw:var free_time --><!-- lw:endif showtime -->
+                    </td>
+                    <!-- lw:endif showfreedate -->
+
                     <!-- lw:if showuser -->
                     <td><!-- lw:var last_username --></td>
                     <!-- lw:endif showuser -->
@@ -120,10 +139,10 @@
                     <!-- lw:if columnlink -->
                     <td align="left">
                         <!-- lw:if link -->
-                        <a href="<!-- lw:var opt3text -->" class="lwlt_link"><!-- lw:var lang_link --></a>
+                        <a href="<!-- lw:var opt3text -->" class="lwlt_link lt_onsite_link"><!-- lw:var lang_link --></a>
                         <!-- lw:endif link -->
                         <!-- lw:if file -->
-                        <a href="<!-- lw:var downloadurl -->" class="lwlt_download"><!-- lw:var lang_download --></a>
+                        <a href="<!-- lw:var downloadurl -->" class="lwlt_download lt_onsite_link"><!-- lw:var lang_download --></a>
                         <!-- lw:endif file -->
                     </td>
                     <!-- lw:endif columnlink -->
@@ -131,29 +150,70 @@
                         <!-- lw:if ltWrite -->
                         <!-- lw:if showEditOptions -->
                         <span class="lt_adminfunctions">
-                            <a href="#" class="lt_edit_entry" id="lt_entry_<!-- lw:var id -->"><!-- lw:var lang_edit --></a>
-                            | <a href="<!-- lw:var deleteurl -->" onclick="return confirm('<!-- lw:var lang_reallydelete -->');"><!-- lw:var lang_delete --></a>
+                            <div style="display:none;" class="lt_borrowed_entry lt_onsite_link"></div>
+                            <a href="#" class="lt_edit_entry lt_onsite_link" id="lt_entry_<!-- lw:var id -->"><!-- lw:var lang_edit --></a>
+                            | <a href="<!-- lw:var deleteurl -->" class="lt_onsite_link" onclick="return confirm('<!-- lw:var lang_reallydelete -->');"><!-- lw:var lang_delete --></a>
                             <!-- lw:if showReleaseLink -->
-                            | <a href="<!-- lw:var releaseurl -->"><span title="<!-- lw:var lang_release_title"><!-- lw:var lang_release --></span></a>
+                            | <a href="<!-- lw:var releaseurl -->" class="lt_onsite_link"><!-- lw:var lang_release --></a>
                             <!-- lw:endif showReleaseLink -->
                         </span>
                         <!-- lw:endif showEditOptions -->
                         <!-- lw:if borrow -->
                         <span class="lt_adminfunctions">
-                            <a href="<!-- lw:var borrowurl -->"><span title="<!-- lw:var lang_borrow_title"><!-- lw:var lang_borrow --></span></a>
+                            <a href="<!-- lw:var borrowurl -->" class="lt_onsite_link"><!-- lw:var lang_borrow --></a>
                         </span>
                         <!-- lw:endif borrow -->
                         <!-- lw:if borrowed -->
                         <span class="lt_adminfunctions">
                             <!-- lw:var lang_borrowedby --> <!-- lw:var borrower -->
                         </span>
+                        <span class="lt_adminfunctions">
+                             | <a href="" onclick="return confirm('wenn dieser Eintrag von dem Entleiher zur&uuml;ckgegeben wird, m&ouml;chte ich per E-Mail verst&auml;ndigt werden.');">Benachrichtigung bei R&uuml;ckgabe</a>
+                        </span>
                         <!-- lw:endif borrowed -->
                         <!-- lw:endif ltWrite -->
+                        
+                        <!-- lw:if versioning -->
+                        <span>
+                            | <a href="<!-- lw:var versioningurl -->">alte Versionen</a>
+                        </span>
+                        <!-- lw:endif versioning -->
+                        
                     </td>
                 </tr>
                 <!-- lw:blockend entry -->
+                <!-- lw:if showdeleted -->
+                <tr style="color:#cc0000;">
+                    <td>412</td>
+                    <td>alte Datei</td>
+                    <td>12.04.2012 11:34:17</td>
+                    <td>1</td>
+                    <td><a href="" class="lwlt_download lt_onsite_link"><!-- lw:var lang_download --></a></td>
+                    <td style="color:black;">
+                        <span class="lt_adminfunctions">
+                            <div style="display:none;" class="lt_borrowed_entry lt_onsite_link"></div>
+                            <a href="#" class="lt_edit_entry lt_onsite_link" id="lt_entry_<!-- lw:var id -->"><!-- lw:var lang_edit --></a>
+                        </span>
+                        | 
+                        <span>
+                            <a href="<!-- lw:var versioningurl -->">alte Versionen</a>
+                        </span>
+                        | 
+                        <span class="lt_adminfunctions">
+                            <a href="" class="lt_onsite_link" onclick="return confirm('Datei mit allen alten Versionen endg&uuml;ltig l&ouml;schen?');">endg&uuml;ltig l&ouml;schen</a>
+                        </span>
+                    </td>
+                </tr>
+                <!-- lw:endif showdeleted -->
             </tbody>
         </table>
+        <!-- lw:if markdeleted -->
+        <br/>
+        <div>
+            <a href="">als gel&ouml;scht markierte anzeigen</a>
+        </div>
+        <!-- lw:endif markdeleted -->
+        
     <!-- lw:endif entries -->
     <!-- lw:ifnot entries -->
         <div class="lt_noentries"><!-- lw:var lang_noentries --></div>

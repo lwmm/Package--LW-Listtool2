@@ -61,22 +61,13 @@ class listRights extends \LWddd\Entity
         return true;
     }
     
-    public function getUserIdByLoggedInUser()
-    {
-        if($this->auth->isLoggedIn()) {
-            return -1;
-        }
-        if($this->inAuth->isLoggedIn()) {
-            return $this->inAuth->getUserdata("id");
-        }
-    }
-    
     public function isInAuthInvolved()
     {
-        if ($this->listConfig->getValueByKey('listtooltype') == "backend") {
-            return false;
+        $type = $this->listConfig->getValueByKey('listtooltype');
+        if ($type == "intranet" || $type="intranet_backend") {
+            return true;
         }
-        return true;
+        return false;
     }
     
     public function isReadAllowed()
@@ -118,10 +109,11 @@ class listRights extends \LWddd\Entity
     
     public function isWriteAllowed()
     {
-        if ($this->auth->isLoggedIn() && $this->isAuthInvolved()) {
+        $type = $this->listConfig->getValueByKey('listtooltype');
+        if ($this->auth->isLoggedIn() && $type != "intranet") {
             return true;
         }
-        if ($this->inAuth->isLoggedIn() && $this->isInAuthInvolved() && $this->isAssigned()) {
+        if ($this->inAuth->isLoggedIn() && $type != "backend" && $this->isAssigned()) {
             return true;
         }
         return false;

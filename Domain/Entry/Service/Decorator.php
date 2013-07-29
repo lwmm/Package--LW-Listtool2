@@ -30,4 +30,13 @@ class Decorator
         return new \LWddd\ValueObject($filteredValues);
     }
     
+    public function opt3textFilter($value)
+    {
+        if (substr($value, 0, 7) != "http://" && substr($value, 0, 8) != "https://") {
+            $value = "http://".$value;
+        }
+        return $value;
+    }
+    
+    
 }

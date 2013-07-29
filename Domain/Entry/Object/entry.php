@@ -33,13 +33,9 @@ class entry extends \LWddd\Entity
         return false;
     }
     
-    public function getFilePath($date = false)
+    public function getFilePath()
     {
-        if($date) {
-            return $this->path.'archive/'.$date.'_item_'.$this->getValueByKey("id").'.file';
-        } else {
-            return $this->path.'item_'.$this->getValueByKey("id").'.file';
-        }
+        return $this->path.'item_'.$this->getValueByKey("id").'.file';
     }
     
     public function getThumbnailPath()
@@ -62,19 +58,13 @@ class entry extends \LWddd\Entity
     
     public function getFileRights()
     {
-        $filename = substr($this->getFilePath(), strrpos($this->getFilePath(), "/") + 1 );
-        $path = str_replace($filename, "", $this->getFilePath());
-     
-        $file = new \lw_file($path, $filename);
+        $file = new \lw_file($this->getFilePath());
         return $file->getRights();
     }
     
     public function getFileSize()
     {
-        $filename = substr($this->getFilePath(), strrpos($this->getFilePath(), "/") + 1 );
-        $path = str_replace($filename, "", $this->getFilePath());
-        
-        $file = new \lw_file($path, $filename);
+        $file = new \lw_file($this->getFilePath());
         return $file->getSize();
     }
     
@@ -107,12 +97,6 @@ class entry extends \LWddd\Entity
         return \lw_object::formatDate($date);
     }
     
-    public function getFreeDate()
-    {
-        $date = substr($this->getValueByKey('opt2number'), 0, 8);
-        return \lw_object::formatDate($date);
-    }
-    
     public function getFirstTime()
     {
         $hour = substr($this->getValueByKey('lw_first_date'), 8, 2);
@@ -122,20 +106,21 @@ class entry extends \LWddd\Entity
         return $hour.':'.$min.':'.$sec;
     }
     
-    public function getFileDate()
+    public function getFreeDate()
     {
-        $date = substr($this->getValueByKey('opt3number'), 0, 8);
+        $date = substr($this->getValueByKey('opt2number'), 0, 8);
         return \lw_object::formatDate($date);
     }
     
-    public function getFileTime()
+    public function getFreeTime()
     {
-        $hour = substr($this->getValueByKey('opt3number'), 8, 2);
-        $min = substr($this->getValueByKey('opt3number'), 10, 2);
-        $sec = substr($this->getValueByKey('opt3number'), 12, 2);
+        $hour = substr($this->getValueByKey('opt2number'), 8, 2);
+        $min = substr($this->getValueByKey('opt2number'), 10, 2);
+        $sec = substr($this->getValueByKey('opt2number'), 12, 2);
         
         return $hour.':'.$min.':'.$sec;
     }
+    
     
     public function getLastDate()
     {
