@@ -148,6 +148,17 @@ class Frontend extends \LWmvc\Controller
            return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
        }
     }
+    
+    protected function deleteEntryThumbnailAction()
+    {
+       if ($this->listRights->isWriteAllowed()) {
+           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'deleteThumbnail', array("id"=>$this->request->getInt("id")), array());
+           if ($response->getParameterByKey("error")) {
+               return $this->showEditEntryFormAction($response->getDataByKey("error"));
+           }
+           return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
+       }
+    }
      
     protected function showAddFileFormAction($error=false)
     {

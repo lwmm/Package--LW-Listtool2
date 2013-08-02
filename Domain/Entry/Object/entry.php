@@ -110,6 +110,21 @@ class entry extends \LWddd\Entity
         return $hour.':'.$min.':'.$sec;
     }
     
+    public function getFileDate()
+    {
+        $date = substr($this->getValueByKey('opt3number'), 0, 8);
+        return \lw_object::formatDate($date);
+    }
+    
+    public function getFileTime()
+    {
+        $hour = substr($this->getValueByKey('opt3number'), 8, 2);
+        $min = substr($this->getValueByKey('opt3number'), 10, 2);
+        $sec = substr($this->getValueByKey('opt3number'), 12, 2);
+        
+        return $hour.':'.$min.':'.$sec;
+    }
+    
     public function getFreeDate()
     {
         $date = substr($this->getValueByKey('opt2number'), 0, 8);
@@ -166,6 +181,20 @@ class entry extends \LWddd\Entity
     {
         $db = $this->dic->getDbObject();
         $result = $db->select1("SELECT name FROM ".$db->gt("lw_in_user")." WHERE id = ".intval($this->getValueByKey('opt6number')));
+        return $result['name'];
+    }
+    
+    public function getFirstUserName()
+    {
+        $db = $this->dic->getDbObject();
+        $result = $db->select1("SELECT name FROM ".$db->gt("lw_in_user")." WHERE id = ".intval($this->getValueByKey('lw_first_user')));
+        return $result['name'];
+    }
+    
+    public function getLastUserName()
+    {
+        $db = $this->dic->getDbObject();
+        $result = $db->select1("SELECT name FROM ".$db->gt("lw_in_user")." WHERE id = ".intval($this->getValueByKey('lw_last_user')));
         return $result['name'];
     }
 }

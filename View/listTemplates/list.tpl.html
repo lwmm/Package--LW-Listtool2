@@ -50,29 +50,61 @@
                     <!-- lw:if showid -->
                     <th>ID</th>
                     <!-- lw:endif showid -->
+                    
                     <!-- lw:if showname -->
                     <th><!-- lw:var lang_name --></th>
                     <!-- lw:endif showname -->
+                    
                     <!-- lw:if showdescription -->
                     <th><!-- lw:var lang_description --></th>
                     <!-- lw:endif showdescription -->
+                    
+                    <!-- lw:if showthumbnail -->
+                    <th><!-- lw:var lang_thumbnail --></th>
+                    <!-- lw:endif showthumbnail -->
+                    
                     <!-- lw:if showdate -->
                     <th><!-- lw:var lang_date --></th>
                     <!-- lw:endif showdate -->
+                    
                     <!-- lw:if showlastdate -->
                     <th><!-- lw:var lang_lastdate --></th>
                     <!-- lw:endif showlastdate -->
+                    
                     <!-- lw:if showfreedate -->
                     <th><!-- lw:var lang_freedate --></th>
                     <!-- lw:endif showfreedate -->
+                    
+                    <!-- lw:if showfiledate -->
+                    <th><!-- lw:var lang_filedate --></th>
+                    <!-- lw:endif showfiledate -->
+                    
+                    <!-- lw:if showkeywords -->
+                    <th><!-- lw:var lang_keywords --></th>
+                    <!-- lw:endif showkeywords -->
+                    
+                    <!-- lw:if showadditionalinfo -->
+                    <th><!-- lw:var lang_additionalinfo --></th>
+                    <!-- lw:endif showadditionalinfo -->
+                    
+                    <!-- lw:if showfirstuser -->
+                    <th><!-- lw:var lang_firstuser --></th>
+                    <!-- lw:endif showfirstuser -->
+                    
+                    <!-- lw:if showlastuser -->
+                    <th><!-- lw:var lang_lastuser --></th>
+                    <!-- lw:endif showlastuser -->
+                    
                     <!-- lw:if showuser -->
                     <th><!-- lw:var lang_user --></th>
                     <!-- lw:endif showuser -->
+                    
                     <!-- lw:if ltWrite -->
                     <!-- lw:if columnpublished -->
                     <th><!-- lw:var lang_published --></th>
                     <!-- lw:endif columnpublished -->
                     <!-- lw:endif ltWrite -->
+                    
                     <!-- lw:if columnlink -->
                     <th>&nbsp;</th>
                     <!-- lw:endif columnlink -->
@@ -105,6 +137,16 @@
                     <!-- lw:if showdescription -->
                     <td><!-- lw:var description --></td>
                     <!-- lw:endif showdescription -->
+                    <!-- lw:if showthumbnail -->
+                    <td>
+                        <!-- lw:if thumbnail_exists -->
+                        <img src="<!-- lw:var thumbnail_url -->" />
+                        <!-- lw:endif thumbnail_exists -->
+                        <!-- lw:ifnot thumbnail_exists -->
+                        &nbsp;
+                        <!-- lw:endifnot thumbnail_exists -->
+                    </td>
+                    <!-- lw:endif showthumbnail -->
                     <!-- lw:if showdate -->
                     <td align="left">
                         <!-- lw:if showdate --><!-- lw:var lw_first_date --><!-- lw:endif showdate -->
@@ -125,6 +167,34 @@
                         <!-- lw:if showtime --><!-- lw:var free_time --><!-- lw:endif showtime -->
                     </td>
                     <!-- lw:endif showfreedate -->
+                    
+                    <!-- lw:if showfiledate -->
+                    <td align="left">
+                        <!-- lw:if file_exists -->
+                        <!-- lw:var file_date -->
+                        <!-- lw:if showtime --><!-- lw:var file_time --><!-- lw:endif showtime -->
+                        <!-- lw:endif file_exists -->
+                        <!-- lw:ifnot file_exists -->
+                        &nbsp;
+                        <!-- lw:endifnot file_exists -->
+                    </td>
+                    <!-- lw:endif showfiledate -->
+                    
+                    <!-- lw:if showkeywords -->
+                    <td><!-- lw:var keywords --></td>
+                    <!-- lw:endif showkeywords -->
+                    
+                    <!-- lw:if showadditionalinfo -->
+                    <td><!-- lw:var additionalinfo --></td>
+                    <!-- lw:endif showadditionalinfo -->
+                    
+                    <!-- lw:if showfirstuser -->
+                    <td><!-- lw:var firstuser --></td>
+                    <!-- lw:endif showfirstuser -->
+                    
+                    <!-- lw:if showlastuser -->
+                    <td><!-- lw:var lastuser --></td>
+                    <!-- lw:endif showlastuser -->
 
                     <!-- lw:if showuser -->
                     <td><!-- lw:var last_username --></td>

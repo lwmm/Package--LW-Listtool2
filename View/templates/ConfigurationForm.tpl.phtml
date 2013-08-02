@@ -344,20 +344,20 @@
                                 <td><input type="checkbox" name="showLastUser" value="1" <?php if ($this->entity->getValueByKey('showLastUser') == 1): ?> checked="checked"<?php endif; ?>/></td>
                             </tr>
                         </tbody>
-                        <table class="table table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th style="width: 90%">Erweiterungen</th>
-                                    <th>Aktivieren?</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    </table>
+                    <table class="table table-hover table-bordered">
+                        <thead>
                             <tr>
-                                <td>Datumsanzeigen werden um Uhrzeit erweitert</td>
-                                <td><input type="checkbox" name="showTime" value="1" <?php if ($this->entity->getValueByKey('showTime') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                                <th style="width: 90%">Erweiterungen</th>
+                                <th>Aktivieren?</th>
                             </tr>
-                            </tbody>
-                        </table>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Datumsanzeigen werden um Uhrzeit erweitert</td>
+                            <td><input type="checkbox" name="showTime" value="1" <?php if ($this->entity->getValueByKey('showTime') == 1): ?> checked="checked"<?php endif; ?>/></td>
+                        </tr>
+                        </tbody>
                     </table>
                 </div>
                 <!-- TAB2 SPALTEN ENDE -->

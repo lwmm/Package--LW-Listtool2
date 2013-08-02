@@ -130,6 +130,61 @@ class ListtoolList extends \LWmvc\View
                 $btpl->reg("description", html_entity_decode($entry->getValueByKey('description')));
             }
             
+            
+            
+            
+            if ($this->configuration->getValueByKey('showThumbnail') == 1) {
+                $btpl->setIfVar("showthumbnail");
+                
+                if($entry->getValueByKey('opt1file') != ""){
+                    $btpl->setIfVar("thumbnail_exists");
+                    $btpl->reg("thumbnail_url", $entry->getThumbnailUrl());
+                }
+            }
+            
+            if ($this->configuration->getValueByKey('showFileDate') == 1) {
+                $btpl->setIfVar("showfiledate");
+                
+               if($entry->getValueByKey('opt2file') != ""){
+                    $btpl->setIfVar("file_exists");
+                    $btpl->reg("file_date", $entry->getFileDate());
+                    if ($this->configuration->getValueByKey('showTime') == 1) {
+                        $btpl->setIfVar("showtime");
+                        $btpl->reg("file_time", $entry->getFileTime());
+                    }
+                }
+            }
+            
+            if ($this->configuration->getValueByKey('showKeyWords') == 1) {
+                $btpl->setIfVar("showkeywords");
+                $btpl->reg("keywords", html_entity_decode($entry->getValueByKey('opt2text')));
+            }
+            
+            if ($this->configuration->getValueByKey('showAdditionalInfo') == 1) {
+                $btpl->setIfVar("showadditionalinfo");
+                $btpl->reg("additionalinfo", html_entity_decode($entry->getValueByKey('opt1text')));
+            }
+            
+            if ($this->configuration->getValueByKey('showFirstUser') == 1) {
+                $btpl->setIfVar("showfirstuser");
+                if($entry->getFirstUserName() == ""){
+                    $btpl->reg('firstuser', "Admin");
+                }else{
+                    $btpl->reg('firstuser', $entry->getFirstUserName());
+                }
+            }
+            
+            if ($this->configuration->getValueByKey('showLastUser') == 1) {
+                $btpl->setIfVar("showlastuser");
+                if($entry->getLastUserName() == ""){
+                    $btpl->reg('lastuser', "Admin");
+                }else{
+                    $btpl->reg('lastuser', $entry->getLastUserName());
+                }
+            }
+            
+            
+            
             $btpl->reg("published", $entry->getValueByKey("published"));
             
             if ($this->listRights->isReadAllowed()) {
@@ -150,7 +205,11 @@ class ListtoolList extends \LWmvc\View
                     }
                     else  {
                         $btpl->setIfVar('borrowed');
-                        $btpl->reg('borrower', $entry->getBorrowerName().' <!-- borrower_id: '.$entry->getBorrowerId().' --> ');
+                        if($entry->getBorrowerName() == ""){
+                            $btpl->reg('borrower', "Admin");
+                        }else{
+                            $btpl->reg('borrower', $entry->getBorrowerName().' <!-- borrower_id: '.$entry->getBorrowerId().' --> ');
+                        }
                     }
                 }
                 else {
@@ -196,6 +255,10 @@ class ListtoolList extends \LWmvc\View
             $this->view->setIfVar("showname");
         }
         
+         if ($this->configuration->getValueByKey('showThumbnail') == 1) {
+            $this->view->setIfVar("showthumbnail");
+        }
+        
         if ($this->configuration->getValueByKey('showDate') == 1) {
             $this->view->setIfVar("showdate");
         }
@@ -206,6 +269,26 @@ class ListtoolList extends \LWmvc\View
         
         if ($this->configuration->getValueByKey('showFreeDate') == 1) {
             $this->view->setIfVar("showfreedate");
+        }
+        
+        if ($this->configuration->getValueByKey('showFileDate') == 1) {
+            $this->view->setIfVar("showfiledate");
+        }
+        
+        if ($this->configuration->getValueByKey('showKeyWords') == 1) {
+            $this->view->setIfVar("showkeywords");
+        }
+        
+        if ($this->configuration->getValueByKey('showAdditionalInfo') == 1) {
+            $this->view->setIfVar("showadditionalinfo");
+        }
+        
+        if ($this->configuration->getValueByKey('showFirstUser') == 1) {
+            $this->view->setIfVar("showfirstuser");
+        }
+        
+        if ($this->configuration->getValueByKey('showLastUser') == 1) {
+            $this->view->setIfVar("showlastuser");
         }
 
         if ($this->configuration->getValueByKey('showDescription') == 1) {
@@ -270,6 +353,12 @@ class ListtoolList extends \LWmvc\View
         $tpl->reg("lang_newlink", $this->langPhrases["lang_newlink"]);
         $tpl->reg("lang_sortlist", $this->langPhrases["lang_sortlist"]);
         $tpl->reg("lang_name", $this->langPhrases["lang_name"]);
+        $tpl->reg("lang_thumbnail", $this->langPhrases["lang_thumbnail"]);
+        $tpl->reg("lang_filedate", $this->langPhrases["lang_filedate"]);
+        $tpl->reg("lang_keywords", $this->langPhrases["lang_keywords"]);
+        $tpl->reg("lang_additionalinfo", $this->langPhrases["lang_additionalinfo"]);
+        $tpl->reg("lang_firstuser", $this->langPhrases["lang_firstuser"]);
+        $tpl->reg("lang_lastuser", $this->langPhrases["lang_lastuser"]);
         
         $tpl->reg("lang_date", $this->langPhrases["lang_date"]);
         $tpl->reg("lang_lastdate", $this->langPhrases["lang_lastdate"]);

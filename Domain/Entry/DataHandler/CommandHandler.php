@@ -54,7 +54,6 @@ class CommandHandler
     
     public function addEntity($listId, $array, $userId, $archive)
     {
-        print_r($array);die();
         $this->db->setStatement("INSERT INTO t:lw_master ( lw_object, category_id, name, description, published, opt1bool, opt2number, opt1text, opt2text, opt3text, lw_first_date, lw_first_user, lw_last_date, lw_last_user ) VALUES ( 'lw_listtool2', :listid, :name, :description, :published, :opt1bool, :opt2number, :opt1text, :opt2text, :opt3text, :firstdate, :firstuser, :lastdate, :lastuser ) ");
         $this->db->bindParameter("listid", 'i', $listId);
         $this->db->bindParameter("name", 's', $array['name']);
@@ -105,6 +104,16 @@ class CommandHandler
         return $ok;
     }
     
+    public function deleteThumbnail($id)
+    {
+        $this->db->setStatement("UPDATE t:lw_master SET opt1file = '' WHERE id = :id ");
+        $this->db->bindParameter("id", "i", $id);
+        
+        $this->db->pdbquery();
+        
+        return $this->deleteExistingThumbnail($id);
+    }
+    
     protected function saveEntryFile($id, $array, $archive=false)
     {
         $filename = 'item_'.$id.'.file';
@@ -121,8 +130,12 @@ class CommandHandler
     protected function saveThumbnailFile($id, $array)
     {
         $thumbnail = 'item_'.$id.'.'.\lw_io::getFileExtension($array['opt1file']['name']);
+        $this->deleteExistingThumbnail($id);
         $saved = $this->saveFile($array['opt1file']['tmp_name'], $thumbnail, false);
         if ($saved) {
+            $this->resizeThumbnail($thumbnail);
+            
+            
             $this->db->setStatement("UPDATE t:lw_master SET opt1file = :opt1file WHERE id = :id ");
             $this->db->bindParameter("opt1file", 's', $thumbnail);
             $this->db->bindParameter("id", 'i', $id);
@@ -130,7 +143,34 @@ class CommandHandler
         }
     }
     
-    public function saveFile($tmp, $name, $archive=false)
+    private function deleteExistingThumbnail($id)
+    {
+        $dir = \lw_directory::getInstance($this->getFilePath());
+        $files = $dir->getDirectoryContents("file");
+        foreach($files as $file){
+            if (strstr($file->getName(), 'item_'.$id)) {
+                if($file->getName() != 'item_'.$id.".file"){
+                    $file->delete();
+                }
+            }
+            #echo $file->getName()."<br>";
+        }
+        #die();
+        return true;
+    }
+    
+    private function resizeThumbnail($filename)
+    {
+        list($width) = @getimagesize($this->getFilePath().$filename);
+        if($width > 100){
+            $image = new \LwListtool\Domain\Entry\Service\ThumbnailResizer($this->getFilePath().$filename);
+            $image->setParams(100, 100);
+            $image->resize();
+            $image->saveImage();        
+        }
+    }
+    
+    private function saveFile($tmp, $name, $archive=false)
     {
         $dir = \lw_directory::getInstance($this->getFilePath());
         if ($dir->fileExists($name)) {

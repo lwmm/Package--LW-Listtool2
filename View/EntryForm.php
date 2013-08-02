@@ -65,6 +65,9 @@ class EntryForm extends \LWmvc\View
         }
         $this->view->baseUrl = \lw_page::getInstance()->getUrl(array("cmd" => "downloadEntry", "id" => $this->view->entity->getId()));
         
+        $this->view->deleteThumbnailUrl = \lw_page::getInstance()->getUrl(array("cmd" => "deleteEntryThumbnail"));
+        $this->view->entryType = $this->entryType;
+        
         $this->view->isWriteAllowed = true;
         $this->view->entry = $this->view->entity;
         $form = $this->view->render();
