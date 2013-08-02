@@ -1,0 +1,291 @@
+<?php if ($this->configuration->getValueByKey('showcss') == 1): ?>
+<style>
+    div.lwlt_list table tr td, div.lwlt_list table tr, div.lwlt_list table {
+        border-collapse:collapse;
+    }
+    
+    div.lwlt_list table {
+        border:0px;
+    }
+    
+    div.lwlt_list table tr td, div.lwlt_list table tr th {
+        border-left:0px;
+        border-right:0px;
+        border-bottom:1px solid grey;
+        text-align:left;
+        padding:2px;
+        vertical-align: top;
+    }
+    
+    div.lwlt_list table tbody tr:nth-child(odd) { background-color:#f3f3f3; }
+    div.lwlt_list table tbody tr:nth-child(even) { background-color:#fff; }
+    
+    div.lt_adminfunctions {
+        margin-bottom:15px;
+    }
+    
+</style>
+<?php endif; ?>
+
+<div class="lwlt_list" id="list_<?php echo $this->listId ?>">
+<?php if($this->ltRead): ?>
+    <h2><?php echo $this->lang["lang_listtitle"]; ?></h2>
+    <?php if($this->ltWrite):?>
+        <div class="lt_adminfunctions">
+            <a href="#" id="lt_new_file" class="lt_onsite_link"><?php echo $this->lang["lang_newfile"]; ?></a>
+            | <a href="#" id="lt_new_link" class="lt_onsite_link"><?php echo $this->lang["lang_link"]; ?></a>
+            <?php if($this->manualsorting): ?>| <a href="#" id="lt_sorting" class="lt_onsite_link"><?php echo $this->lang["lang_sortlist"]; ?></a><?php endif; ?>
+        </div>
+    <?php endif; ?>
+    <?php if(count($this->entries) > 0): ?>
+
+    	<?php if($this->listHasBorrowedItems): ?>
+            <div style="margin-top:10px;margin-bottom:10px;background-color:#ffdddd;padding:10px;border:1px solid #f00;">
+                <?php if ($this->configuration->getValueByKey('language') == "de"): ?>
+                    <?php echo "<strong>Achtung:</strong> " . $this->lang["lang_borrow_msg"]; ?>
+                <?php else: ?>
+                    <?php echo "<strong>Attention:</strong> " . $this->lang["lang_borrow_msg"]; ?>
+                <?php endif; ?>
+            </div>
+    	<?php endif; ?>
+
+        <table width="100%" border="1">
+            <thead>
+                <tr>
+                    <?php if ($this->configuration->getValueByKey('showId') == 1): ?>
+                        <th>ID</th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showName') == 1): ?>
+                        <th><?php echo $this->lang["lang_name"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showDescription') == 1): ?>
+                        <th><?php echo $this->lang["lang_description"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showThumbnail') == 1): ?>
+                        <th><?php echo $this->lang["lang_thumbnail"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showDate') == 1): ?>
+                        <th><?php echo $this->lang["lang_date"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showLastDate') == 1): ?>
+                        <th><?php echo $this->lang["lang_lastdate"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showFreeDate') == 1): ?>
+                        <th><?php echo $this->lang["lang_freedate"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showFileDate') == 1): ?>
+                        <th><?php echo $this->lang["lang_filedate"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showKeyWords') == 1): ?>
+                        <th><?php echo $this->lang["lang_keywords"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showAdditionalInfo') == 1): ?>
+                        <th><?php echo $this->lang["lang_additionalinfo"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showFirstUser') == 1): ?>
+                        <th><?php echo $this->lang["lang_firstuser"]; ?></th>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('showLastUser') == 1): ?>
+                        <th><?php echo $this->lang["lang_lastuser"]; ?></th>
+                    <?php endif; ?>
+                    
+                    
+                    <?php if($this->ltWrite): ?>
+                        <?php if ($this->configuration->getValueByKey('publishedoption') == 0): ?>
+                            <th><?php echo $this->lang["lang_published"]; ?></th>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    
+                    <?php if ($this->configuration->getValueByKey('linktype') == 1): ?>
+                        <th>&nbsp;</th>
+                    <?php endif; ?>
+                    <th>&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->entries as $entry): ?>
+                    <tr<?php if($this->ltWrite): ?><?php if ($this->configuration->getValueByKey('publishedoption') == 1 && $entry->getValueByKey("published") == 0): ?> style="background-color:#fcc;"<?php endif; ?><?php endif; ?>>
+                        <?php if ($this->configuration->getValueByKey('showId') == 1): ?>
+                            <td align="left">
+                                <?php echo $entry->getValueByKey("id"); ?>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showName') == 1): ?>
+                            <td align="left">
+                                <?php if ($this->configuration->getValueByKey('linktype') == 0): ?>
+                                    <?php if ($entry->isLink()): ?>
+                                        <a href="<?php echo $entry->getValueByKey("opt3text"); ?>" class="lwlt_link"><?php echo $entry->getValueByKey("name"); ?></a>
+                                    <?php endif; ?>
+                                    <?php if ($entry->isFile() && $entry->hasFile()): ?>
+                                        <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"downloadEntry", "id"=>$entry->getValueByKey("id"))); ?>" class="lwlt_download lt_onsite_link"><?php echo $entry->getValueByKey("name"); ?></a>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <?php echo $entry->getValueByKey("name"); ?>
+                                <?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showDescription') == 1): ?>
+                            <td><?php echo html_entity_decode($entry->getValueByKey('description')); ?></td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showThumbnail') == 1): ?>
+                            <td>
+                                <?php if($entry->getValueByKey('opt1file') != ""): ?>
+                                    <img src="<?php echo $entry->getThumbnailUrl(); ?>" />
+                                <?php else: ?>
+                                    &nbsp;
+                                <?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showDate') == 1): ?>
+                            <td align="left">
+                                <?php echo $entry->getFirstDate(); ?> <?php if ($this->configuration->getValueByKey('showTime') == 1): ?><?php echo $entry->getFirstTime(); ?><?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showLastDate') == 1): ?>
+                            <td align="left">
+                                <?php echo $entry->getLastDate(); ?> <?php if ($this->configuration->getValueByKey('showTime') == 1): ?><?php echo $entry->getLastTime(); ?><?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showFreeDate') == 1): ?>
+                            <td align="left">
+                                <?php echo $entry->getFreeDate(); ?> <?php if ($this->configuration->getValueByKey('showTime') == 1): ?><?php echo $entry->getFreeTime(); ?><?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showFileDate') == 1): ?>
+                            <td align="left">
+                                <?php if($entry->getValueByKey('opt2file') != ""): ?>
+                                    <?php echo $entry->getFileDate(); ?> <?php if ($this->configuration->getValueByKey('showTime') == 1): ?><?php echo $entry->getFileTime(); ?><?php endif; ?>
+                                <?php else: ?>
+                                    &nbsp;
+                                <?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showKeywords') == 1): ?>
+                            <td><?php echo html_entity_decode($entry->getValueByKey('opt2text')); ?></td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showAdditionalInfo') == 1): ?>
+                            <td><?php echo html_entity_decode($entry->getValueByKey('opt1text')); ?></td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showFirstUser') == 1): ?>
+                            <td>
+                                <?php if($entry->getFirstUserName() == ""): ?>
+                                    Admin
+                                <?php else: ?>
+                                    <?php echo $entry->getFirstUserName(); ?>
+                                <?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+
+                        <?php if ($this->configuration->getValueByKey('showLastUser') == 1): ?>
+                            <td>
+                                <?php if($entry->getLastUserName() == ""): ?>
+                                    Admin
+                                <?php else: ?>
+                                    <?php echo $entry->getLastUserName(); ?>
+                                <?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+
+
+                        <?php if($this->ltWrite): ?>
+                            <?php if ($this->configuration->getValueByKey('publishedoption') == 0): ?>
+                                <td align="left"><?php echo $entry->getValueByKey("published"); ?></td>
+                            <?php endif; ?>
+                        <?php endif; #ltwrite ?>
+                            
+                        <?php if ($this->configuration->getValueByKey('linktype') == 1): ?>
+                            <td align="left">
+                                <?php if ($entry->isLink()): ?>
+                                    <a href="<?php echo $entry->getValueByKey("opt3text"); ?>" class="lwlt_link lt_onsite_link"><?php echo $this->lang["lang_link"]; ?></a>
+                                <?php endif; ?>
+                                <?php if ($entry->isFile() && $entry->hasFile()): ?>
+                                    <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"downloadEntry", "id"=>$entry->getValueByKey("id"))); ?>" class="lwlt_download lt_onsite_link"><?php echo $this->lang["lang_download"]; ?></a>
+                                <?php endif; ?>
+                            </td>
+                        <?php endif; ?>
+                            
+                        <td>
+                            <?php if($this->ltWrite): ?>                            
+                            <?php
+                                $borrow = $borrowed = $showEditOptions = $showReleaseLink = false;
+                                if ($this->configuration->getValueByKey('borrow') == 1) {
+                                    if ($entry->isBorrowed()) {
+                                        if ($this->auth->isLoggedIn() || $entry->isBorrower($this->inAuth->getUserdata("id"))) {
+                                            $showEditOptions = true;
+                                            $showReleaseLink = true;
+                                        }
+                                        else  {
+                                            $borrowed = true;
+                                        }
+                                    }
+                                    else {
+                                        $borrow = true;
+                                    }
+                                }
+                                else {
+                                    $showEditOptions = true;
+                                }
+                            ?>
+                            
+                            
+                            
+                            
+                            <?php if($showEditOptions): ?>
+                                <span class="lt_adminfunctions">
+                                    <div style="display:none;" class="lt_borrowed_entry lt_onsite_link"></div>
+                                    <a href="#" class="lt_edit_entry lt_onsite_link" id="lt_entry_<?php echo $entry->getValueByKey("id"); ?>"><?php echo $this->lang["lang_edit"]; ?></a>
+                                    | <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"deleteEntry", "id"=>$entry->getValueByKey("id"))); ?>" class="lt_onsite_link" onclick="return confirm('<?php echo $this->lang["lang_reallydelete"]; ?>');"><?php echo $this->lang["lang_delete"]; ?></a>
+                                    <?php if($showReleaseLink): ?>
+                                    | <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"releaseEntry", "id"=>$entry->getValueByKey("id"))); ?>" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_release_title"] . '">' . $this->lang["lang_release"] . '</span>'; ?></a>
+                                    <?php endif; ?>
+                                </span>
+                            <?php endif; ?>
+                                <?php if($borrow): ?>
+                                <span class="lt_adminfunctions">
+                                    <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"borrowEntry", "id"=>$entry->getValueByKey("id"))); ?>" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_borrow_title"] . '">' . $this->lang["lang_borrow"] . '</span>'; ?></a>
+                                </span>
+                            <?php endif; ?>
+                            <?php if($borrowed): ?>
+                                <span class="lt_adminfunctions">
+                                    <?php echo $this->lang["lang_borrowedby"]; ?> <?php if($entry->getBorrowerName() == "") { echo "Admin"; }else{ echo $entry->getBorrowerName();}; ?>
+                                </span>
+                                <span class="lt_adminfunctions">
+                                     | <a href="" onclick="return confirm('wenn dieser Eintrag von dem Entleiher zur&uuml;ckgegeben wird, m&ouml;chte ich per E-Mail verst&auml;ndigt werden.');">Benachrichtigung bei R&uuml;ckgabe</a>
+                                </span>
+                            <?php endif; ?>
+                            <?php endif; #ltwrite ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                
+            </tbody>
+        </table>
+        
+    <?php else: #entries ?>
+        <div class="lt_noentries"><?php echo $this->lang["lang_noentries"]; ?></div>
+    <?php endif; #entries ?>
+<?php else: #ltRead ?> 
+    Keine Lese-Berechtigung! 
+<?php endif; #ltRead?>
+</div>
