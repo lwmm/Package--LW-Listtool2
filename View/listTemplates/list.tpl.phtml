@@ -33,7 +33,7 @@
     <?php if($this->ltWrite):?>
         <div class="lt_adminfunctions">
             <a href="#" id="lt_new_file" class="lt_onsite_link"><?php echo $this->lang["lang_newfile"]; ?></a>
-            | <a href="#" id="lt_new_link" class="lt_onsite_link"><?php echo $this->lang["lang_link"]; ?></a>
+            | <a href="#" id="lt_new_link" class="lt_onsite_link"><?php echo $this->lang["lang_newlink"]; ?></a>
             <?php if($this->manualsorting): ?>| <a href="#" id="lt_sorting" class="lt_onsite_link"><?php echo $this->lang["lang_sortlist"]; ?></a><?php endif; ?>
         </div>
     <?php endif; ?>
@@ -41,11 +41,13 @@
 
     	<?php if($this->listHasBorrowedItems): ?>
             <div style="margin-top:10px;margin-bottom:10px;background-color:#ffdddd;padding:10px;border:1px solid #f00;">
-                <?php if ($this->configuration->getValueByKey('language') == "de"): ?>
-                    <?php echo "<strong>Achtung:</strong> " . $this->lang["lang_borrow_msg"]; ?>
-                <?php else: ?>
-                    <?php echo "<strong>Attention:</strong> " . $this->lang["lang_borrow_msg"]; ?>
-                <?php endif; ?>
+                <?php 
+                if ($this->configuration->getValueByKey('language') == "de"): 
+                    echo "<strong>Achtung:</strong> " . $this->lang["lang_borrow_msg"]; 
+                else:
+                    echo "<strong>Attention:</strong> " . $this->lang["lang_borrow_msg"]; 
+                endif; 
+                ?>
             </div>
     	<?php endif; ?>
 

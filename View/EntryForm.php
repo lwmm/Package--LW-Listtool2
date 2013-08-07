@@ -2,7 +2,7 @@
 
 namespace LwListtool\View;
 
-class EntryForm extends \LWmvc\View
+class EntryForm extends \LWmvc\View\View
 {
     public function __construct($type)
     {

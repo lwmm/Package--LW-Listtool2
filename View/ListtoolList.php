@@ -21,7 +21,7 @@
 
 namespace LwListtool\View;
 
-class ListtoolList extends \LWmvc\View
+class ListtoolList extends \LWmvc\View\View
 {
 
     public function __construct()
@@ -66,7 +66,7 @@ class ListtoolList extends \LWmvc\View
         $this->view->listId = $this->listId;
         $this->view->auth = $this->auth;
         $this->view->inAuth = $this->inAuth;
-        $this->view->entries = $this->view->aggregate;
+        $this->view->entries = $this->view->collection;
         $this->view->configuration = $this->configuration;
 
         if ($this->listRights->isReadAllowed()) {
@@ -76,7 +76,7 @@ class ListtoolList extends \LWmvc\View
             $this->view->ltWrite = true;
         }
 
-        foreach ($this->view->aggregate as $entry) {
+        foreach ($this->view->collection as $entry) {
             if ($this->configuration->getValueByKey('borrow') == 1) {
                 if ($entry->isBorrowed()) {
                     if ($this->auth->isLoggedIn() || $entry->isBorrower($this->inAuth->getUserdata("id"))) {

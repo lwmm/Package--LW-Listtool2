@@ -2,7 +2,7 @@
 
 namespace LwListtool\View;
 
-class ListtoolVersionsList extends \LWmvc\View
+class ListtoolVersionsList extends \LWmvc\View\View
 {
     public function __construct($type)
     {

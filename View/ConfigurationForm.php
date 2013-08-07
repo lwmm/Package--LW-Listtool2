@@ -2,7 +2,7 @@
 
 namespace LwListtool\View;
 
-class ConfigurationForm extends \LWmvc\View
+class ConfigurationForm extends \LWmvc\View\View
 {
     public function __construct($type)
     {

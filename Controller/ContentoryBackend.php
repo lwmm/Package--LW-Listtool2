@@ -39,14 +39,14 @@ class ContentoryBackend extends \LWmvc\Controller
         }
         $PathTest->checkPathSecurity();
         
-        $response = $this->executeDomainEvent('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
         $this->listConfig = $response->getDataByKey('ConfigurationEntity');
         
         if (!$this->listConfig) {
             die("List isn't configured!");
         }
         
-        $response = $this->executeDomainEvent('LwListtool', 'ListRights', 'getListRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getListRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
         $this->listRights = $response->getDataByKey('rightsObject');
 
         $method = $this->getCommand()."Action";
@@ -60,25 +60,25 @@ class ContentoryBackend extends \LWmvc\Controller
 
     protected function deleteListAction($error = false)
     {
-        $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getListEntriesAggregate', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getListEntriesAggregate', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
         $listEntriesAggregate = $response->getDataByKey('listEntriesAggregate');
 
         foreach($listEntriesAggregate as $entry) {
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'delete', array("id"=>$entry->getValueByKey("id"), "listId"=>$this->getContentObjectId()));
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'delete', array("id"=>$entry->getValueByKey("id"), "listId"=>$this->getContentObjectId()));
         }
-        $response = $this->executeDomainEvent('LwListtool', 'Configuration', 'delete', array("id"=>$this->getContentObjectId()));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'delete', array("id"=>$this->getContentObjectId()));
         return $response;
     }
     
     protected function showFormAction($error = false)
     {
         if ($error) {
-            $response = $this->executeDomainEvent('LwListtool', 'Configuration', 'getConfigurationEntityFromArray', array(), array("postArray"=>$this->request->getPostArray()));
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getConfigurationEntityFromArray', array(), array("postArray"=>$this->request->getPostArray()));
             $entity = $response->getDataByKey('ConfigurationEntity');
             $entity->setId($this->getContentObjectId());
         }
         else {
-            $response = $this->executeDomainEvent('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('ConfigurationEntity');
             $entity->setId($this->getContentObjectId());
         }
@@ -86,10 +86,10 @@ class ContentoryBackend extends \LWmvc\Controller
         $formView->setEntity($entity);
         $formView->setErrors($error);
         
-        $response = $this->executeDomainEvent('LwListtool', 'ListRights', 'getIntranetsByListId', array("listId"=>$this->getContentObjectId()));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getIntranetsByListId', array("listId"=>$this->getContentObjectId()));
         $formView->setAssignedIntranets($response->getDataByKey('IntranetsArray'));
 
-        $response = $this->executeDomainEvent('LwListtool', 'ListRights', 'getUserByListId', array("listId"=>$this->getContentObjectId()));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getUserByListId', array("listId"=>$this->getContentObjectId()));
         $formView->setAssignedUser($response->getDataByKey('UserArray'));
         
         return $this->returnRenderedView($formView);
@@ -97,7 +97,7 @@ class ContentoryBackend extends \LWmvc\Controller
 
     protected function saveAction()
     {
-        $response = $this->executeDomainEvent('LwListtool', 'Configuration', 'save', array("id"=>$this->getContentObjectId()), array("postArray"=>$this->request->getPostArray()));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'save', array("id"=>$this->getContentObjectId()), array("postArray"=>$this->request->getPostArray()));
         if ($response->getParameterByKey("error")) {
             return $this->editFormAction($response->getDataByKey("error"));
         }

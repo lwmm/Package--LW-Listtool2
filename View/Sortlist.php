@@ -21,7 +21,7 @@
 
 namespace LwListtool\View;
 
-class Sortlist extends \LWmvc\View
+class Sortlist extends \LWmvc\View\View
 {
     public function __construct($type)
     {

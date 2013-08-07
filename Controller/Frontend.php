@@ -35,10 +35,10 @@ class Frontend extends \LWmvc\Controller
     
     public function execute()
     {
-        $response = $this->executeDomainEvent('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
         $this->listConfig = $response->getDataByKey('ConfigurationEntity');
         
-        $response = $this->executeDomainEvent('LwListtool', 'ListRights', 'getListRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getListRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
         $this->listRights = $response->getDataByKey('rightsObject');
 
         $method = $this->getCommand()."Action";
@@ -69,10 +69,10 @@ class Frontend extends \LWmvc\Controller
             $view->setLanguagePhrases($temp);
             $view->init();
         
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getListEntriesAggregate', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
-            $view->setAggregate($response->getDataByKey('listEntriesAggregate'));
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getListEntriesCollection', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
+            $view->setCollection($response->getDataByKey('listEntriesCollection'));
 
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getIsDeletableSpecification');
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getIsDeletableSpecification');
             $view->setIsDeletableSpecification($response->getDataByKey('isDeletableSpecification'));
             return $this->returnRenderedView($view);    
         }
@@ -87,7 +87,7 @@ class Frontend extends \LWmvc\Controller
      {
         if ($this->listRights->isWriteAllowed()) {
 
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'add', array("listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'add', array("listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
             if ($response->getParameterByKey("error")) {
                 if ($this->request->getAlnum("type") == "file") {
                     return $this->showAddFileFormAction($response->getDataByKey("error"));
@@ -105,10 +105,10 @@ class Frontend extends \LWmvc\Controller
          if ($this->listRights->isWriteAllowed()) {
             $formView = new \LwListtool\View\EntryForm('edit');
             if ($error) {
-                $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getEntryEntityFromPostArray', array(), array("postArray"=>$this->request->getPostArray()));
+                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityFromPostArray', array(), array("postArray"=>$this->request->getPostArray()));
             }
             else {
-                $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             }
             $entity = $response->getDataByKey('EntryEntity');
             $entity->setId($this->request->getInt("id"));
@@ -141,7 +141,7 @@ class Frontend extends \LWmvc\Controller
     protected function saveEntryAction()
     {
        if ($this->listRights->isWriteAllowed()) {
-           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'save', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'save', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
            if ($response->getParameterByKey("error")) {
                return $this->showEditEntryFormAction($response->getDataByKey("error"));
            }
@@ -152,7 +152,7 @@ class Frontend extends \LWmvc\Controller
     protected function deleteEntryThumbnailAction()
     {
        if ($this->listRights->isWriteAllowed()) {
-           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'deleteThumbnail', array("id"=>$this->request->getInt("id")), array());
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'deleteThumbnail', array("id"=>$this->request->getInt("id")), array());
            if ($response->getParameterByKey("error")) {
                return $this->showEditEntryFormAction($response->getDataByKey("error"));
            }
@@ -178,7 +178,7 @@ class Frontend extends \LWmvc\Controller
     {
        if ($this->listRights->isWriteAllowed()) {
            $formView = new \LwListtool\View\EntryForm("add");
-           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getEntryEntityFromPostArray', array(), array("postArray"=>$this->request->getPostArray()));
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityFromPostArray', array(), array("postArray"=>$this->request->getPostArray()));
            $formView->setConfiguration($this->listConfig);
            $formView->setEntity($response->getDataByKey('EntryEntity'));
            $formView->setEntryType($type);
@@ -192,7 +192,7 @@ class Frontend extends \LWmvc\Controller
     protected function deleteEntryAction()
     {
        if ($this->listRights->isWriteAllowed()) {
-           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'delete', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'delete', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
            return $this->buildReloadResponse(array("cmd"=>"showList"));
        }
     }
@@ -200,7 +200,7 @@ class Frontend extends \LWmvc\Controller
     protected function borrowEntryAction()
     {
        if ($this->listRights->isWriteAllowed()) {
-           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'borrow', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "borrowerId"=>$this->dic->getLwInAuth()->getUserdata("id")));
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'borrow', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "borrowerId"=>$this->dic->getLwInAuth()->getUserdata("id")));
            return $this->buildReloadResponse(array("cmd"=>"showList"));
        }
     }
@@ -208,7 +208,7 @@ class Frontend extends \LWmvc\Controller
     protected function releaseEntryAction()
     {
        if ($this->listRights->isWriteAllowed()) {
-           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'release', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "borrowerId"=>$this->dic->getLwInAuth()->getUserdata("id")));
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'release', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "borrowerId"=>$this->dic->getLwInAuth()->getUserdata("id")));
            return $this->buildReloadResponse(array("cmd"=>"showList"));
        }
     }
@@ -216,7 +216,7 @@ class Frontend extends \LWmvc\Controller
     protected function showThumbnailAction()
     {
        if ($this->listRights->isReadAllowed()) {
-           $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
            $file = $response->getDataByKey('EntryEntity')->getThumbnailPath();
            if (is_file($file)) {
                header("Content-type: ".\lw_io::getMimeType(\lw_io::getFileExtension($file)));
@@ -231,7 +231,7 @@ class Frontend extends \LWmvc\Controller
     public function downloadEntryAction()
     {
         if ($this->listRights->isReadAllowed()) {
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             if($this->request->getAlnum("filedate")) {
                 $file = $entity->getFilePath($this->request->getAlnum("filedate"));
@@ -268,8 +268,8 @@ class Frontend extends \LWmvc\Controller
             $view->setListRights($this->listRights);
             $view->init();
         
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'getListEntriesAggregate', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
-            $view->setAggregate($response->getDataByKey('listEntriesAggregate'));
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getListEntriesCollection', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
+            $view->setCollection($response->getDataByKey('listEntriesCollection'));
 
             $response = $this->returnRenderedView($view);
             $response->setParameterByKey('die', 1);
@@ -283,7 +283,7 @@ class Frontend extends \LWmvc\Controller
     public function saveSortingAction()
     {
         if ($this->listRights->isWriteAllowed()) {
-            $response = $this->executeDomainEvent('LwListtool', 'Entry', 'sort', array("listId"=>$this->getContentObjectId()), array("postArray" => $this->request->getPostArray()));
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'sort', array("listId"=>$this->getContentObjectId()), array("postArray" => $this->request->getPostArray()));
             return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
         }
     }

@@ -18,7 +18,7 @@
     <legend class="lwadminform">Listtooleintr&auml;ge</legend>
     <div class="lw_adminform_infotext">Eintr&auml;ge zum Sortieren mit der Maus ziehen und abschliessend speichern:</div>
    
-    <?php if($this->aggregate): ?>
+    <?php if($this->collection): ?>
     
     <table class="itemslist" id="sorttable">
         <THEAD>
@@ -29,7 +29,7 @@
             </tr>
         </THEAD>
         <TBODY>
-            <?php foreach($this->aggregate as $entry): ?>
+            <?php foreach($this->collection as $entry): ?>
             <tr id="<?php echo $entry->getValueByKey("id"); ?>">
                 <td><?php echo $entry->getValueByKey("id"); ?> <!-- seq: <?php echo $entry->getValueByKey("opt1number"); ?> --></td>
                 <td><?php echo $entry->getValueByKey("name"); ?></td>

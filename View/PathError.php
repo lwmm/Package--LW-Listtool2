@@ -2,7 +2,7 @@
 
 namespace LwListtool\View;
 
-class PathError extends \LWmvc\View
+class PathError extends \LWmvc\View\View
 {
     public function __construct($type)
     {

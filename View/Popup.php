@@ -2,7 +2,7 @@
 
 namespace LwListtool\View;
 
-class Popup extends \LWmvc\View
+class Popup extends \LWmvc\View\View
 {
     public function __construct()
     {
