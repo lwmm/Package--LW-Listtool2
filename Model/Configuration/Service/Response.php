@@ -7,7 +7,7 @@
  * @package LwListtool
  */
 
-namespace LwListtool\Domain\Configuration\Service;
+namespace LwListtool\Model\Configuration\Service;
 
 class Response
 {

@@ -10,7 +10,7 @@ class ConfigurationForm extends \LWmvc\View\View
         $this->dic = new \LwListtool\Services\dic();
         $this->view = new \lw_view(dirname(__FILE__).'/templates/ConfigurationForm.tpl.phtml');
         $this->systemConfiguration = $this->dic->getConfiguration();
-        $this->response = new \LwListtool\Domain\Configuration\Service\Response();
+        $this->response = new \LwListtool\Model\Configuration\Service\Response();
     }
 
     public function render()
