@@ -37,6 +37,11 @@ class ListtoolList extends \LWmvc\View\View
     {
         $this->listRights = $rights;
     }
+    
+    public function setApprovalRights($rights)
+    {
+        $this->approvalRights = $rights;
+    }
 
     public function setConfiguration($configuration)
     {
@@ -75,7 +80,11 @@ class ListtoolList extends \LWmvc\View\View
         if ($this->listRights->isWriteAllowed()) {
             $this->view->ltWrite = true;
         }
-
+        
+        if($this->approvalRights->isApprovalAllowed()){
+            $this->view->ltApproval = true;
+        }
+        
         foreach ($this->view->collection as $entry) {
             if ($this->configuration->getValueByKey('borrow') == 1) {
                 if ($entry->isBorrowed()) {

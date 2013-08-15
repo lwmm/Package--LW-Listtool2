@@ -21,7 +21,7 @@ class ConfigurationForm extends \LWmvc\View\View
         
         $this->view->actionUrl = $this->systemConfiguration['url']['client']."admin.php?obj=content&cmd=open&oid=".$this->view->entity->getId()."&pcmd=save";
         $this->view->backUrl = $this->systemConfiguration['url']['client']."admin.php?obj=content";
-        $this->view->rightslink = '<a href="#" onClick="openNewWindow(\'' . $this->systemConfiguration['url']['client']."admin.php?obj=content&cmd=open&oid=".$this->view->entity->getId()."&pcmd=assignIntranets&ltid=".$this->view->entity->getId().'\');">Rechtezuweisung</a>';
+        $this->view->rightslink = '<input type="button" class="btn" value="Rechtezuweisung" onClick="openNewWindow(\'' . $this->systemConfiguration['url']['client']."admin.php?obj=content&cmd=open&oid=".$this->view->entity->getId()."&pcmd=assignIntranets&ltid=".$this->view->entity->getId().'\');">';
         $this->view->entity->renderView($this->view);
         
         $this->view->jqUI         = $this->systemConfiguration["url"]["media"] . "jquery/ui/jquery-ui-1.8.7.custom.min.js";
@@ -81,7 +81,10 @@ class ConfigurationForm extends \LWmvc\View\View
             "lang_reallydelete" => "wirklich l&ouml;schen?",
             "lang_borrowedby"   => "wird bearbeitet von",
             "lang_noentries"    => "Es liegen keine Eintr&auml;ge vor.",
-            "lang_thumbnail"    => "Bildvorschau"
+            "lang_thumbnail"    => "Bildvorschau",
+            "lang_approval_title"=> "Dateien im Genehmigungsverfahren können nicht bearbeitet werden. Alle Bearbeiter müssen den Status der Datei bestätigen.",
+            "lang_approval"     => "Genehmigung starten",
+            "lang_approval_started_by" => "Genehmigungsverfahren eingeleitet von "
         )));
         
         $languageEN = array( "en" => array( "lw_listtool2" => array(
@@ -112,7 +115,10 @@ class ConfigurationForm extends \LWmvc\View\View
             "lang_reallydelete" => "really delete?",
             "lang_borrowedby"   => "checked out by",
             "lang_noentries"    => "no entries available",
-            "lang_thumbnail"    => "Picture preview"
+            "lang_thumbnail"    => "Picture preview",
+            "lang_approval_title"=> "Files in approval state can not be edited. All editors have to confirm the version of the file.",
+            "lang_approval"     => "start approval",
+            "lang_approval_started_by" => "Approval started by "
         )));
         
         if($lang == "de") {

@@ -164,6 +164,22 @@ class entry extends \LWmvc\Model\Entity
         return false;
     }
     
+    public function isInApproval()
+    {
+        if ($this->getValueByKey('opt3bool') == 1) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function isApprovalStarter($userId)
+    {
+        if ($this->isInApproval() && $this->getValueByKey('opt6number') == $userId) {
+            return true;
+        }
+        return false;
+    }
+    
     public function isBorrower($userId)
     {
         if ($this->getValueByKey('opt6number') == $userId) {
@@ -171,10 +187,15 @@ class entry extends \LWmvc\Model\Entity
         }
         return false;
     }
-    
+
     public function getBorrowerId()
     {
         return $this->getValueByKey('opt6number');
+    }
+    
+    public function getApprovalStarterName()
+    {
+        return $this->getBorrowerName();
     }
     
     public function getBorrowerName()

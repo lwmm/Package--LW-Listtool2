@@ -1,6 +1,6 @@
 <?php
 
-namespace lwListtool\Model\Entry\Service;
+namespace LwListtool\Model\Entry\Service;
 
 class ThumbnailResizer
 {

@@ -146,7 +146,7 @@
                         <?php if ($this->configuration->getValueByKey('showThumbnail') == 1): ?>
                             <td>
                                 <?php if($entry->getValueByKey('opt1file') != ""): ?>
-                                    <img src="<?php echo $entry->getThumbnailUrl(); ?>" />
+                                    <img style="max-width:150px;" src="<?php echo $entry->getThumbnailUrl(); ?>" />
                                 <?php else: ?>
                                     &nbsp;
                                 <?php endif; ?>
@@ -248,11 +248,12 @@
                                 else {
                                     $showEditOptions = true;
                                 }
+                                
+                                if($entry->isInApproval()){
+                                    $borrow = $borrowed = $showReleaseLink = $showEditOptions = false;
+                                }
                             ?>
-                            
-                            
-                            
-                            
+                           
                             <?php if($showEditOptions): ?>
                                 <span class="lt_adminfunctions">
                                     <div style="display:none;" class="lt_borrowed_entry lt_onsite_link"></div>
@@ -276,6 +277,31 @@
                                      | <a href="" onclick="return confirm('wenn dieser Eintrag von dem Entleiher zur&uuml;ckgegeben wird, m&ouml;chte ich per E-Mail verst&auml;ndigt werden.');">Benachrichtigung bei R&uuml;ckgabe</a>
                                 </span>
                             <?php endif; ?>
+                            
+                            
+                            <?php if($this->ltApproval && $entry->isFile()): ?>
+                                <?php if(!$entry->isInApproval()): ?>
+                                    | <span class="lt_adminfunctions">
+                                        <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"startApproval", "id"=>$entry->getValueByKey("id"))); ?>" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_approval_title"] . '">' . $this->lang["lang_approval"] . '</span>'; ?></a>
+                                    </span>
+                                <?php endif; ?>
+                                <?php if($entry->isInApproval() && $this->auth->isLoggedIn() || $entry->isApprovalStarter($this->inAuth->getUserdata("id"))): ?>
+                                    <span class="lt_adminfunctions">
+                                        <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"stoppApproval", "id"=>$entry->getValueByKey("id"))); ?>" class="lt_onsite_link"><?php echo '<span title="' . "test" . '">' . "stopp approval" . '</span>'; ?></a>
+                                    </span>                                        
+                                <?php elseif($entry->isInApproval()): ?>
+                                    <span class="lt_adminfunctions">
+                                        <?php echo $this->lang["lang_approval_started_by"]; ?> <?php if($entry->getApprovalStarterName() == "") { echo "Admin"; }else{ echo $entry->getApprovalStarterName();}; ?>
+                                    </span>
+                                <?php endif; ?>
+                            <?php else:;?>
+                                <?php if($entry->isInApproval()): ?>
+                                    <span class="lt_adminfunctions">
+                                        <?php echo $this->lang["lang_approval_started_by"]; ?> <?php if($entry->getApprovalStarterName() == "") { echo "Admin"; }else{ echo $entry->getApprovalStarterName();}; ?>
+                                    </span>
+                                <?php endif; ?>
+                            <?php endif;?>
+                                    
                             <?php endif; #ltwrite ?>
                         </td>
                     </tr>

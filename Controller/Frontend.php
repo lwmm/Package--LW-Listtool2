@@ -40,6 +40,9 @@ class Frontend extends \LWmvc\Controller
         
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getListRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
         $this->listRights = $response->getDataByKey('rightsObject');
+        
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ApprovalRights', 'getApprovalRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
+        $this->approvalRights = $response->getDataByKey('approvalRightsObject');
 
         $method = $this->getCommand()."Action";
         if (method_exists($this, $method)) {
@@ -65,6 +68,7 @@ class Frontend extends \LWmvc\Controller
             $view = new \LwListtool\View\ListtoolList();
             $view->setConfiguration($this->listConfig);
             $view->setListRights($this->listRights);
+            $view->setApprovalRights($this->approvalRights);
             $view->setListId($this->getContentObjectId());
             $view->setLanguagePhrases($temp);
             $view->init();
@@ -239,7 +243,7 @@ class Frontend extends \LWmvc\Controller
                 $file = $entity->getFilePath();
             }
             if (is_file($file)) {
-                $extension = \lw_io::getFileExtension($data['opt2file']);
+                $extension = \lw_io::getFileExtension($entity->getValueByKey('opt2file'));
                 $mimeType = \lw_io::getMimeType($extension);
                 if (strlen($mimeType) < 1) {
                     $mimeType = "application/octet-stream";
@@ -298,5 +302,23 @@ class Frontend extends \LWmvc\Controller
             return $this->returnRenderedView($view);     
        }
        return showListAction();
+    }
+    
+    protected function startApprovalAction()
+    {
+        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed()) {
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'startApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id")));
+            return $this->buildReloadResponse(array("cmd"=>"showList"));
+        }
+        return $this->showListAction();
+    }
+    
+    protected function stoppApprovalAction()
+    {
+        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed()) {
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'stoppApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id")));
+            return $this->buildReloadResponse(array("cmd"=>"showList"));
+        }
+        return $this->showListAction();
     }
 }

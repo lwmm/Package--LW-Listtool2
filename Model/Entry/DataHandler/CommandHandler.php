@@ -161,7 +161,7 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
     {
         list($width) = @getimagesize($this->getFilePath().$filename);
         if($width > 100){
-            $image = new \LwListtool\Domain\Entry\Service\ThumbnailResizer($this->getFilePath().$filename);
+            $image = new \LwListtool\Model\Entry\Service\ThumbnailResizer($this->getFilePath().$filename);
             $image->setParams(100, 100);
             $image->resize();
             $image->saveImage();        
@@ -213,7 +213,22 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         $this->db->bindParameter('opt6number', 'i', $userId);
         return $this->db->pdbquery();
     }
+    
+    public function startApprovalEntity($id, $userId)
+    {
+        $this->db->setStatement("UPDATE t:lw_master SET opt3bool = 1, opt2bool = 0, opt5number = 0, opt6number = :opt6number WHERE id = :id");
+        $this->db->bindParameter('id', 'i', $id);
+        $this->db->bindParameter('opt6number', 'i', $userId);
+        return $this->db->pdbquery();
+    }
    
+    public function stoppApprovalEntity($id)
+    {
+        $this->db->setStatement("UPDATE t:lw_master SET opt3bool = 0, opt5number = 0, opt6number = 0 WHERE id = :id");
+        $this->db->bindParameter('id', 'i', $id);
+        return $this->db->pdbquery();
+    }
+    
     public function releaseEntity($id)
     {
         $this->db->setStatement("UPDATE t:lw_master SET opt2bool = 0, opt5number = 0, opt6number = 0 WHERE id = :id");

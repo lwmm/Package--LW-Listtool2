@@ -58,6 +58,17 @@
     
     #language div h5{color: #fff;}
     
+    div#container_rights{
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    
+    div#container_rights p{margin-left: 50px;}
+    div#container_rights ul{margin-left: 80px;}
+    div#container_rights p{font-weight: bold;}
+    
 </style>
 <script language="javascript" type="text/javascript">
     $(document).ready(function() {
@@ -262,10 +273,29 @@
                             <label for="listtooltype"><span>Archivieren</span></label>
                             <div class="lw_content">
                                 <span>
-                                    <input type="checkbox" name="archive" value="1" <?php if ($this->entity->getValueByKey('archive') == 1): ?>checked ="checked"<?php endif; ?>>
+                                    <select  name="archive"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                        <option value="1"<?php if ($this->entity->getValueByKey('archive') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
+                                        <option value="0"<?php if ($this->entity->getValueByKey('archive') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
+                                    </select>
                                 </span>
                             </div>
                             <div class="lw_comment"><sup class="lw_footnote">8</sup></div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+                    
+                    <div class="lw_entry lw_select" id="lw_listtool_approval" >
+                        <div class="lw_contentwrapper">
+                            <label for="listtooltype"><span>Genehmigung</span></label>
+                            <div class="lw_content">
+                                <span>
+                                    <select  name="approval"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                        <option value="1"<?php if ($this->entity->getValueByKey('approval') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
+                                        <option value="0"<?php if ($this->entity->getValueByKey('approval') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="lw_comment"><sup class="lw_footnote">9</sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
@@ -280,6 +310,7 @@
                             <li><span>Verlinkung: wenn die Spalte "Name" eingeblendet ist, kann man statt einer eigenen Spalte zum Aufrufen des Downloads/Links auch den Namen entsprechend verlinken.</span></li>
                             <li><span>"ver&ouml;ffentlicht": wird in jedem Fall nur angezeigt, wenn man die Liste bearbeiten darf. Es kann entweder eine eigene Spalte mit dem Status "ver&ouml;ffentlicht" angezeigt werden oder es wird die Zeile mit einem nicht ver&ouml;ffentlichtem Eintrag leicht rot hinterlegt.</span></li>
                             <li><span>Archivieren: Wird eine Datei nach der Bearbeitung zur&uuml;ckgegeben, dann wird eine Kopie der voherigen Version gespeichert, um die Verionshistorie nachvollziehen zuk&ouml;nnen.</span></li>
+                            <li><span>Genehmigung: Autorisierte Nutzer k&ouml;nnen ein Genehmigungsverfahren f&uuml;r eine Datei einleiten. Alle Bearbeiter m&uuml;ssen abstimmen, ob die Datei zur Abgabe bereit ist oder es noch an &Uuml;berarbeitung bedarf. Die Datei kann w&auml;hrend des Genehmigungsverfahrens nicht bearbeitet werden.</span></li>
                         </ol>
                     </div>
                 </div>
@@ -391,27 +422,27 @@
 <fieldset class="lwadminform">
 
     <legend class="lwadminform">Rechtezuweisung</legend>
+    <div id="container_rights">
     <?php echo $this->rightslink; ?>
-    <br/>	
+        <div>&nbsp;</div>
+        <?php if (is_array($this->intranets) && count($this->intranets) > 0): ?>
+            <br/>
+            <p>zugeordnete Intranets:</p>
+            <ul>
+                <?php foreach ($this->intranets as $intranet): ?>
+                    <li><?php echo $intranet['name']; ?></li>
+                <?php endforeach; ?>
+            </ul>	
+        <?php endif; ?>
 
-    <?php if (is_array($this->intranets) && count($this->intranets) > 0): ?>
-        <br/>
-        zugeordnete Intranets:
-        <ul>
-            <?php foreach ($this->intranets as $intranet): ?>
-                <li><?php echo $intranet['name']; ?></li>
-            <?php endforeach; ?>
-        </ul>	
-    <?php endif; ?>
-
-    <?php if (is_array($this->users) && count($this->users) > 0): ?>
-        <br/>
-        zugeordnete Benutzer:
-        <ul>
-            <?php foreach ($this->users as $user): ?>
-                <li><?php echo $user['name']; ?></li>
-            <?php endforeach; ?>
-        </ul>	
-    <?php endif; ?>
-
+        <?php if (is_array($this->users) && count($this->users) > 0): ?>
+            <br/>
+            <p>zugeordnete Benutzer:</p>
+            <ul>
+                <?php foreach ($this->users as $user): ?>
+                    <li><?php echo $user['name']; ?></li>
+                <?php endforeach; ?>
+            </ul>	
+        <?php endif; ?>
+    </div>
 </fieldset>
