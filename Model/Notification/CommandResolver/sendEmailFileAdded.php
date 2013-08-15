@@ -31,31 +31,35 @@ class sendEmailFileAdded extends \LWmvc\Model\CommandResolver
         
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getMailTemplate', array("templateName"=>'newListoolFileMailtext'));
         $template = $this->listConfig = $response->getDataByKey('template');
+        $template = str_replace("{_listurl_}", \lw_page::getInstance()->getUrl(), $template);
+        $template = str_replace("{_filename_}", $filename, $template);
+        $template = str_replace("{_listname_}", $listname, $template);
+        $template = str_replace("{_entryname_}", $entryname, $template);
+        
         $subject = trim(substr($template, 0, strpos($template, PHP_EOL)));
-        $content = substr(str_replace($subject, "", $template), 4);
-        $content = str_replace("{_listurl_}", \lw_page::getInstance()->getUrl(), $content);
-        $content = str_replace("{_filename_}", $filename, $content);
-        $content = str_replace("{_listname_}", $listname, $content);
-        $content = str_replace("{_entryname_}", $entryname, $content);
+        $content = substr(str_replace($subject, "", $template), 4);        
 
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getAllReadersByPageId', array("pageId"=>\lw_page::getInstance()->getId()));
         $users = $response->getDataByKey('UserArray');
         $mailer = new \LwMailer\Controller\LwMailer($config["mailConfig"], $config);
         
+        $sendEmails = array();
         foreach($users as $userId){
             $email = $this->getQueryHandler()->getEmailByInUserId($userId);
             
             if(!empty($email)){
-                $mailInformationArray = array(
-                   "toMail"    => $email,
-                   "subject"   => $subject,
-                   "message"   => $content
-               );
-                
-               $mailer->sendMail($mailInformationArray);
+                if(!array_key_exists($email, $sendEmails)){
+                    $mailInformationArray = array(
+                       "toMail"    => $email,
+                       "subject"   => $subject,
+                       "message"   => $content
+                   );
+
+                   $mailer->sendMail($mailInformationArray);
+                   $sendEmails[$email] = true;
+                }
             }
         }
-        
         return true;
     }
 }
