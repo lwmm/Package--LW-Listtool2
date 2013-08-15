@@ -16,8 +16,8 @@ class ConfigurationForm extends \LWmvc\View\View
     public function render()
     {        
         $LwI18nController = new \LwI18n\Controller\I18nController($this->dic->getDbObject(), $this->response);
-        $LwI18nController->execute( "lw_listtool2", "de", $this->fillPlaceHolderWithSelectedLanguage("de"));
-        $LwI18nController->execute( "lw_listtool2", "en", $this->fillPlaceHolderWithSelectedLanguage("en"));
+        $LwI18nController->execute( "lw_listtool2_".$this->listId, "de", $this->fillPlaceHolderWithSelectedLanguage("de"));
+        $LwI18nController->execute( "lw_listtool2_".$this->listId, "en", $this->fillPlaceHolderWithSelectedLanguage("en"));
         
         $this->view->actionUrl = $this->systemConfiguration['url']['client']."admin.php?obj=content&cmd=open&oid=".$this->view->entity->getId()."&pcmd=save";
         $this->view->backUrl = $this->systemConfiguration['url']['client']."admin.php?obj=content";
@@ -44,6 +44,11 @@ class ConfigurationForm extends \LWmvc\View\View
         $this->view->intranets = $array;
     }
     
+    public function setListId($listId)
+    {
+        $this->listId = $listId;
+    }
+    
     /**
      * All placholders will be set with the output text. 
      * These arrays are used as base information.
@@ -53,7 +58,7 @@ class ConfigurationForm extends \LWmvc\View\View
      */
     public function fillPlaceHolderWithSelectedLanguage($lang)
     {
-        $languageDE = array( "de" => array( "lw_listtool2" => array(
+        $languageDE = array( "de" => array( "lw_listtool2_".$this->listId => array(
             "lang_listtitle"    => "Listenname",
             "lang_newfile"      => "neue Datei anlegen",
             "lang_newlink"      => "neuen Link anlegen",
@@ -84,7 +89,7 @@ class ConfigurationForm extends \LWmvc\View\View
             "lang_thumbnail"    => "Bildvorschau"
         )));
         
-        $languageEN = array( "en" => array( "lw_listtool2" => array(
+        $languageEN = array( "en" => array( "lw_listtool2_".$this->listId => array(
             "lang_listtitle"    => "Listname",
             "lang_newfile"      => "add new file",
             "lang_newlink"      => "add new link",

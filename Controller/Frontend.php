@@ -56,7 +56,7 @@ class Frontend extends \LWmvc\Controller
             $this->response->useJQuery();
             $this->response->useJQueryUI();
             
-            $result = $this->lwi18nQH->getAllEntriesForCategoryAndLang("lw_listtool2", $this->listConfig->getValueByKey("language"));
+            $result = $this->lwi18nQH->getAllEntriesForCategoryAndLang("lw_listtool2_".$this->getContentObjectId(), $this->listConfig->getValueByKey("language"));
             $temp = array();
             foreach($result as $value) {
                 $temp[$value["lw_key"]] = $value["text"];

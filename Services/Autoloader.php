@@ -32,6 +32,12 @@ class Autoloader
             $path = $this->config['plugin_path']['lw'].'lw_i18n';
             $filename = str_replace('LwI18n', $path, $className);
         }
+        elseif (strstr($className, 'LwMailer')) {
+            $config = \lw_registry::getInstance()->getEntry('config');
+            $path = $this->config['path']['package'].'LwMailer/Controller/';
+            $filename = $path . $className;
+            die($filename);
+        }
         else {
             $path = dirname(__FILE__).'/../..';
             $filename = str_replace('lwListtool', $path.'/lw_listtool2', $className);

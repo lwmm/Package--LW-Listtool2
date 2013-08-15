@@ -49,6 +49,7 @@ class save extends \LWmvc\Model\CommandResolver
     {
         $array = $this->command->getDataByKey('postArray');
         $array['id'] = $this->command->getParameterByKey('id');
+        $array['listId'] = $this->command->getParameterByKey('listId');
         $array['opt1file'] = $this->command->getDataByKey('opt1file');
         $array['opt2file'] = $this->command->getDataByKey('opt2file');        
         $entity = $this->getFilteredObject(new \LWmvc\Model\DTO($array));

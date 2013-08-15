@@ -146,7 +146,7 @@
                         <?php if ($this->configuration->getValueByKey('showThumbnail') == 1): ?>
                             <td>
                                 <?php if($entry->getValueByKey('opt1file') != ""): ?>
-                                    <img src="<?php echo $entry->getThumbnailUrl(); ?>" />
+                                    <img style="max-width: 150px;" src="<?php echo $entry->getThumbnailUrl(); ?>" />
                                 <?php else: ?>
                                     &nbsp;
                                 <?php endif; ?>

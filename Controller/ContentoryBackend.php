@@ -85,6 +85,7 @@ class ContentoryBackend extends \LWmvc\Controller
         $formView = new \LwListtool\View\ConfigurationForm('edit');
         $formView->setEntity($entity);
         $formView->setErrors($error);
+        $formView->setListId($this->getContentObjectId());
         
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getIntranetsByListId', array("listId"=>$this->getContentObjectId()));
         $formView->setAssignedIntranets($response->getDataByKey('IntranetsArray'));
