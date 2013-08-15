@@ -32,7 +32,7 @@ class Decorator
     
     public function opt3textFilter($value)
     {
-        if (substr($value, 0, 7) != "http://" && substr($value, 0, 8) != "https://") {
+        if (substr($value, 0, 7) != "http://" && substr($value, 0, 8) != "https://" && substr($value, 0, 6) != "ftp://" && substr($value, 0, 7) != "sftp://") {
             $value = "http://".$value;
         }
         return $value;
