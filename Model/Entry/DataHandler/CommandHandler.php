@@ -126,9 +126,9 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
             $featureCollection = \lw_registry::getInstance()->getEntry("FeatureCollection");
             if($featureCollection->getFeature("LwListtool_EmailNotification")->isActive()){
                 if($cmd == "add"){
-                    $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendEmailFileAdded', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName));
+                    $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName,"cmd" => "add"));
                 }else{
-                    $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendEmailFileChanged', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName));
+                    $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName, "cmd" => "edit"));
                 }
             }
         }
