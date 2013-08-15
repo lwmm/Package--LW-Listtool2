@@ -46,4 +46,26 @@ class QueryHandler extends \LWmvc\Model\DataQueryHandler
         $this->db->bindParameter('objectid', 'i', $listId);
         return $this->db->pselect();    
     }
+    
+    public function getAllReadersByPageId($pageId)
+    {
+        $this->db->setStatement("SELECT * FROM t:lw_intra_assign WHERE object_type = 'page' AND object_id = :pageid ");
+        $this->db->bindParameter('pageid', 'i', $pageId);
+        $array = $this->db->pselect();    
+        foreach($array as $entry) {
+            if ($entry['right_type'] == 'intranet') {
+                $this->db->setStatement("SELECT id FROM t:lw_in_user WHERE intranet_id =  :intraid ");
+                $this->db->bindParameter('intraid', 'i', $entry['right_id']);
+                $intranetusers = $this->db->pselect();
+                foreach ($intranetusers as $single) {
+                    $users[] = $single['id'];
+                }
+                    
+            }
+            elseif ($entry['right_type'] == 'user') {
+                $users[] = $entry['right_id'];
+            }
+        }        
+        return $users;
+    }    
 }
