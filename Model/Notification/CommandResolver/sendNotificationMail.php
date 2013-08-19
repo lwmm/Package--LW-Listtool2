@@ -2,7 +2,7 @@
 
 namespace LwListtool\Model\Notification\CommandResolver;
 
-class sendEmailFileAdded extends \LWmvc\Model\CommandResolver
+class sendNotificationMail extends \LWmvc\Model\CommandResolver
 {
     public function __construct($command)
     {
@@ -13,7 +13,7 @@ class sendEmailFileAdded extends \LWmvc\Model\CommandResolver
     
     public function getInstance($command)
     {
-        return new sendEmailFileAdded($command);
+        return new sendNotificationMail($command);
     }
     
     public function resolve()
@@ -21,6 +21,7 @@ class sendEmailFileAdded extends \LWmvc\Model\CommandResolver
         $listId = $this->command->getParameterByKey('listId');
         $filename = $this->command->getParameterByKey('filename');
         $entryname =$this->command->getParameterByKey('entryname');
+        $cmd =$this->command->getParameterByKey('cmd');
 
         $config = $this->dic->getConfiguration();               
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=> $listId));
@@ -29,7 +30,13 @@ class sendEmailFileAdded extends \LWmvc\Model\CommandResolver
         
         $listname = $this->getQueryHandler()->getListnameByListId($listId, $lang);
         
-        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getMailTemplate', array("templateName"=>'newListoolFileMailtext'));
+        if($cmd == "add"){
+            $emailTemplateName = "newListoolFileMailtext";
+        }else{
+            $emailTemplateName = "editListoolFileMailtext";
+        }
+        
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getMailTemplate', array("templateName"=> $emailTemplateName));
         $template = $this->listConfig = $response->getDataByKey('template');
         $template = str_replace("{_listurl_}", \lw_page::getInstance()->getUrl(), $template);
         $template = str_replace("{_filename_}", $filename, $template);
@@ -37,7 +44,7 @@ class sendEmailFileAdded extends \LWmvc\Model\CommandResolver
         $template = str_replace("{_entryname_}", $entryname, $template);
         
         $subject = trim(substr($template, 0, strpos($template, PHP_EOL)));
-        $content = substr(str_replace($subject, "", $template), 4);        
+        $content = trim(str_replace($subject, "", $template));        
 
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getAllReadersByPageId', array("pageId"=>\lw_page::getInstance()->getId()));
         $users = $response->getDataByKey('UserArray');
