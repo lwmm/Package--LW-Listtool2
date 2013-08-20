@@ -29,7 +29,7 @@
 
 <div class="lwlt_list" id="list_<?php echo $this->listId ?>">
 <?php if($this->ltRead): ?>
-    <h2><?php echo $this->lang["lang_listtitle"]; ?></h2>
+    <h2><?php echo $this->listtitle; ?></h2>
     <?php if($this->ltWrite):?>
         <div class="lt_adminfunctions">
             <a href="#" id="lt_new_file" class="lt_onsite_link"><?php echo $this->lang["lang_newfile"]; ?></a>
@@ -37,7 +37,7 @@
             <?php if($this->manualsorting): ?>| <a href="#" id="lt_sorting" class="lt_onsite_link"><?php echo $this->lang["lang_sortlist"]; ?></a><?php endif; ?>
         </div>
     <?php endif; ?>
-    <?php if(count($this->entries) > 0): ?>
+    <?php if($this->entries->count() > 0): ?>
 
     	<?php if($this->listHasBorrowedItems): ?>
             <div style="margin-top:10px;margin-bottom:10px;background-color:#ffdddd;padding:10px;border:1px solid #f00;">

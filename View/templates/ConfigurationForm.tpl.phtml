@@ -94,6 +94,19 @@
 
                 <!-- TAB1 GRUNDDATEN START -->
                 <div id="base_data">
+
+                    <div class="lw_entry lw_textfield" id="lw_listtool_name" >
+                        <div class="lw_contentwrapper">
+                            <label for="name"><span>Listenname</span></label>
+                            <div class="lw_content">
+                                <span>    
+                                    <input type="text"  name="name"  id="lw_fe_inputelement_lw_listtool_name"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('name')); ?>"  />
+                                </span>
+                            </div>
+                            <div class="clearfix">&nbsp;</div>
+                        </div>
+                    </div>
+
                     <div class="lw_entry lw_select" id="lw_listtool_type" >
                         <div class="lw_contentwrapper">
                             <label for="listtooltype"><span>Verwaltbar durch</span></label>
