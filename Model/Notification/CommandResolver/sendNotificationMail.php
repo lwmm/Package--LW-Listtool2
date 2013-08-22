@@ -18,9 +18,11 @@ class sendNotificationMail extends \LWmvc\Model\CommandResolver
     
     public function resolve()
     {
+        $emails = array();
         $listId = $this->command->getParameterByKey('listId');
         $filename = $this->command->getParameterByKey('filename');
         $entryname =$this->command->getParameterByKey('entryname');
+        $entryid =$this->command->getParameterByKey('entryid');
         $cmd =$this->command->getParameterByKey('cmd');
 
         $config = $this->dic->getConfiguration();               
@@ -28,44 +30,67 @@ class sendNotificationMail extends \LWmvc\Model\CommandResolver
         $listConfig = $response->getDataByKey('ConfigurationEntity');
         $lang = $listConfig->getValueByKey('language');
         
-        $listname = $this->getQueryHandler()->getListnameByListId($listId, $lang);
-        
-        if($cmd == "add"){
-            $emailTemplateName = "newListoolFileMailtext";
+        if($listConfig->getValueByKey('name') == ""){
+            $listname = $this->getQueryHandler()->getListnameByListId($lang);
         }else{
-            $emailTemplateName = "editListoolFileMailtext";
+            $listname = $listConfig->getValueByKey('name');
+        }
+        
+        switch ($cmd) {
+            case "addFile":
+                $emailTemplateName = "newListoolFileMailtext";
+                break;
+            case "editFile":
+                $emailTemplateName = "editListoolFileMailtext";
+                break;
+            case "startApproval":
+                $emailTemplateName = "startApprovalListoolMailtext";
+                break;
+            case "stoppApproval":
+                $emailTemplateName = "releaseApprovalListoolMailtext";
+                break;
+            case "remindApproval":
+                $emailTemplateName = "remindApprovalListoolMailtext";
+                break;
         }
         
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getMailTemplate', array("templateName"=> $emailTemplateName));
-        $template = $this->listConfig = $response->getDataByKey('template');
+        $template = $response->getDataByKey('template');
         $template = str_replace("{_listurl_}", \lw_page::getInstance()->getUrl(), $template);
         $template = str_replace("{_filename_}", $filename, $template);
         $template = str_replace("{_listname_}", $listname, $template);
         $template = str_replace("{_entryname_}", $entryname, $template);
         
         $subject = trim(substr($template, 0, strpos($template, PHP_EOL)));
-        $content = trim(str_replace($subject, "", $template));        
-
-        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getAllReadersByPageId', array("pageId"=>\lw_page::getInstance()->getId()));
-        $users = $response->getDataByKey('UserArray');
-        $mailer = new \LwMailer\Controller\LwMailer($config["mailConfig"], $config);
+        $content = trim(str_replace($subject, "", $template));    
         
-        $sendEmails = array();
-        foreach($users as $userId){
-            $email = $this->getQueryHandler()->getEmailByInUserId($userId);
+        if($cmd == "addFile" || $cmd == "editFile" ){
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getAllReadersByPageId', array("pageId"=>\lw_page::getInstance()->getId()));
+            $users = $response->getDataByKey('UserArray');
             
-            if(!empty($email)){
-                if(!array_key_exists($email, $sendEmails)){
-                    $mailInformationArray = array(
-                       "toMail"    => $email,
-                       "subject"   => $subject,
-                       "message"   => $content
-                   );
-
-                   $mailer->sendMail($mailInformationArray);
-                   $sendEmails[$email] = true;
+            foreach($users as $userId){
+                $email = $this->getQueryHandler()->getEmailByInUserId($userId);
+                if(!empty($email)){
+                    $emails[$email] = true;
                 }
-            }
+            }            
+        }else if($cmd == "startApproval" || "stoppApproval"){
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'getAllAssignedUserEmails', array("listId"=> $listId));
+            $emails = $response->getDataByKey('emails');
+        }else if($cmd == "remindApproval"){
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getApprovalStatistics', array("id"=>$entryid, "listId"=>$listId));
+            $emails = $response->getDataByKey('emailsOfNotVotedUsers');
+        }
+        
+        $mailer = new \LwMailer\Controller\LwMailer($config["mailConfig"], $config);
+        foreach($emails as $email => $flagg){
+            $mailInformationArray = array(
+               "toMail"    => $email,
+               "subject"   => $subject,
+               "message"   => $content
+           );
+
+           $mailer->sendMail($mailInformationArray);
         }
         return true;
     }

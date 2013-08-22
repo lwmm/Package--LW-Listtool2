@@ -249,7 +249,7 @@
                                     $showEditOptions = true;
                                 }
                                 
-                                if($entry->isInApproval()){
+                                if($entry->isInApproval() || $entry->isApproved()){
                                     $borrow = $borrowed = $showReleaseLink = $showEditOptions = false;
                                 }
                             ?>
@@ -278,29 +278,48 @@
                                 </span>
                             <?php endif; ?>
                             
-                            
-                            <?php if($this->ltApproval && $entry->isFile()): ?>
-                                <?php if(!$entry->isInApproval()): ?>
-                                    | <span class="lt_adminfunctions">
-                                        <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"startApproval", "id"=>$entry->getValueByKey("id"))); ?>" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_approval_title"] . '">' . $this->lang["lang_approval"] . '</span>'; ?></a>
-                                    </span>
+                            <?php if($this->useApprovalSystemFeatureList && $this->useApprovalSystemListConfig): ?>
+                                <?php if($this->ltApproval && $entry->isFile()): ?>
+                                    <?php if($entry->isApproved()): ?>
+                                        <span class="lt_adminfunctions">
+                                            <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"deleteEntry", "id"=>$entry->getValueByKey("id"))); ?>" class="lt_onsite_link" onclick="return confirm('<?php echo $this->lang["lang_reallydelete"]; ?>');"><?php echo $this->lang["lang_delete"]; ?></a>
+                                            | <?php echo $this->lang["lang_approval_approved_file"]; ?>
+                                        </span>
+                                    <?php else : ?>
+                                        <?php if(!$entry->isInApproval()): ?>
+                                            | <span class="lt_adminfunctions">
+                                                <a id="lt_entry_<?php echo $entry->getValueByKey("id"); ?>" class="lt_start_approval_entry" href="#" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_approval_title"] . '">' . $this->lang["lang_approval"] . '</span>'; ?></a>
+                                            </span>
+                                        <?php endif; ?>
+                                        <?php if($entry->isVoteAllowed() && $entry->isInApproval() && ( $this->auth->isLoggedIn() || $entry->isApprovalStarter($this->inAuth->getUserdata("id") ))): ?>
+                                            <span class="lt_adminfunctions">
+                                                <a id="lt_entry_<?php echo $entry->getValueByKey("id"); ?>" class="lt_status_approval_entry" href="#" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_approval_status_title"] . '">' . $this->lang["lang_approval_status"] . '</span>'; ?></a>
+                                            </span>                                        
+                                        <?php elseif(!$entry->isVoteAllowed() && $entry->isInApproval() && ( $this->auth->isLoggedIn() || $entry->isApprovalStarter($this->inAuth->getUserdata("id") ))): ?>
+                                            <span class="lt_adminfunctions">
+                                                <a id="lt_entry_<?php echo $entry->getValueByKey("id"); ?>" class="lt_status_approval_entry" href="#" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_approval_status_title"] . '">' . $this->lang["lang_approval_ended_status"] . '</span>'; ?></a>
+                                            </span>                                        
+                                        <?php endif; ?>
+                                    <?php endif; #isApproved?>
+                                <?php endif; #ltApproval?>
+
+                                <?php if($entry->isApproved() && !$this->ltApproval): ?>
+                                    <span class="lt_adminfunctions"><?php echo $this->lang["lang_approval_approved_file"]; ?></span>
                                 <?php endif; ?>
-                                <?php if($entry->isInApproval() && $this->auth->isLoggedIn() || $entry->isApprovalStarter($this->inAuth->getUserdata("id"))): ?>
-                                    <span class="lt_adminfunctions">
-                                        <a href="<?php echo \lw_page::getInstance()->getUrl(array("cmd"=>"stoppApproval", "id"=>$entry->getValueByKey("id"))); ?>" class="lt_onsite_link"><?php echo '<span title="' . "test" . '">' . "stopp approval" . '</span>'; ?></a>
-                                    </span>                                        
-                                <?php elseif($entry->isInApproval()): ?>
+                                            
+                                <?php if($entry->isInApproval() && !$this->auth->isLoggedIn()): ?>
                                     <span class="lt_adminfunctions">
                                         <?php echo $this->lang["lang_approval_started_by"]; ?> <?php if($entry->getApprovalStarterName() == "") { echo "Admin"; }else{ echo $entry->getApprovalStarterName();}; ?>
+                                        <?php if(!$entry->hasLoggedInInUserVoted() && $entry->isVoteAllowed()): ?>
+                                            | <a id="lt_entry_<?php echo $entry->getValueByKey("id"); ?>" class="lt_vote_approval_entry" href="#" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_approval_title"] . '">' . $this->lang["lang_approval_vote"] . '</span>'; ?></a>
+                                        <?php elseif($entry->hasLoggedInInUserVoted()): ?>
+                                            | <?php echo $this->lang["lang_approval_voted"]; ?>
+                                        <?php elseif(!$entry->hasLoggedInInUserVoted() && !$entry->isVoteAllowed()): ?>
+                                            | <?php echo $this->lang["lang_approval_missed_voting"]; ?>
+                                        <?php endif; ?>
                                     </span>
                                 <?php endif; ?>
-                            <?php else:;?>
-                                <?php if($entry->isInApproval()): ?>
-                                    <span class="lt_adminfunctions">
-                                        <?php echo $this->lang["lang_approval_started_by"]; ?> <?php if($entry->getApprovalStarterName() == "") { echo "Admin"; }else{ echo $entry->getApprovalStarterName();}; ?>
-                                    </span>
-                                <?php endif; ?>
-                            <?php endif;?>
+                            <?php endif; #useApprovalSystem?>
                                     
                             <?php endif; #ltwrite ?>
                         </td>

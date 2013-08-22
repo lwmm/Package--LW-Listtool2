@@ -70,6 +70,27 @@
             $("#listtool_iframe").dialog("open");
             return false;
         });
+        
+        $(".lt_start_approval_entry").click(function() {
+            var ltid = $(this).attr('id').replace(/lt_entry_/g, "");
+            $("#listtool_iframe").html('<iframe frameborder="0" src="<?php echo $this->baseurl; ?>&cmd=showStartApprovalEntryForm&id='+ltid+'" width="99%" height="99%" name="new file"></iframe>');
+            $("#listtool_iframe").dialog("open");
+            return false;
+        });
+        
+        $(".lt_status_approval_entry").click(function() {
+            var ltid = $(this).attr('id').replace(/lt_entry_/g, "");
+            $("#listtool_iframe").html('<iframe frameborder="0" src="<?php echo $this->baseurl; ?>&cmd=showApprovalEntryStatus&id='+ltid+'" width="99%" height="99%" name="new file"></iframe>');
+            $("#listtool_iframe").dialog("open");
+            return false;
+        });
+        
+        $(".lt_vote_approval_entry").click(function() {
+            var ltid = $(this).attr('id').replace(/lt_entry_/g, "");
+            $("#listtool_iframe").html('<iframe frameborder="0" src="<?php echo $this->baseurl; ?>&cmd=showApprovalEntryVote&id='+ltid+'" width="99%" height="99%" name="new file"></iframe>');
+            $("#listtool_iframe").dialog("open");
+            return false;
+        });
 
         $(".lt_onsite_link").click(function() {
             setOnSiteMarker(1);

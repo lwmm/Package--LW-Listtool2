@@ -55,17 +55,42 @@
                 <div id="tabs-1">
 
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Status</div>
-                        <div class="lt_fieldvalue"><span style="font-size: 14px;color: <?php if(date("YmdHis") > $this->entry->getValueByKey('opt7number')): echo "darkred"; else: echo "green"; endif;?>;"><b><?php if(date("YmdHis") > $this->entry->getValueByKey('opt7number')): echo "Finished"; else: echo "Running"; endif;?></b></span></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "State"; else: echo "Status"; endif; ?>:</div>
+                        <div class="lt_fieldvalue"><span style="font-size: 14px;color: 
+                            <?php
+                                if(date("YmdHis") > $this->entry->getValueByKey('opt7number')){
+                                    echo "darkred"; 
+                                }else{
+                                    echo "green";
+                                }
+                                ?>;"><b>
+                            <?php 
+                                if(date("YmdHis") > $this->entry->getValueByKey('opt7number')){ 
+                                    if($this->lang =="en"){
+                                        echo "finished";
+                                        
+                                    }else{ 
+                                        echo "beendet";
+                                    }
+                                } else { 
+                                    if($this->lang =="en"){
+                                        echo "running";
+                                        
+                                    }else{ 
+                                        echo "laufend";
+                                    }
+                                }
+                            ?></b></span></div>
+
                     </div>
                     <hr>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Name</div>
+                        <div class="lt_fieldlabel">Name:</div>
                         <div class="lt_fieldvalue"><?php echo $this->entry->getValueByKey('name'); ?></div>
                     </div>
 
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Description"; else: echo "Beschreibung"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Description"; else: echo "Beschreibung"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><?php echo html_entity_decode($this->entry->getValueByKey('description')); ?></div>
                     </div>                
                     <hr>
@@ -110,27 +135,27 @@
                         <div><?php if($this->lang =="en"): echo "Approvalstatus:"; else: echo "Genehmigungsstatus:"; endif; ?></div>
                     </div>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Teilnehmer:</div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Participants"; else: echo "Teilnehmer"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><?php echo $this->results["participants"]; ?></div>
                     </div>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Stimmabgaben:</div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Votings"; else: echo "Stimmabgaben"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><?php echo $this->results["voted"]; ?></div>
                     </div>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Teilnahmequote:</div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Participation quote"; else: echo "Teilnahmequote"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><?php echo $this->results["participant_quote"]. " %"; ?></div>
-                    </div>
+                    </div><br>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Anworten:</div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Answers"; else: echo "Antworten"; endif; ?>:</div>
                         <div class="lt_fieldvalue">
                             <div class="clearfix" style="position: relative;">
                                 <div class="legend">
                                     <div style="margin-bottom: 10px; float:left;margin-left: 10px;margin-right: 15px;">
-                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[0]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php echo "Ja" ?></span>&nbsp;( <?php echo $this->results["voted_yes"]; ?> )
+                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[0]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php if($this->lang =="en"): echo "Yes"; else: echo "Ja"; endif; ?></span>&nbsp;( <?php echo $this->results["voted_yes"]; ?> )
                                     </div>
                                     <div>
-                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[1]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php echo "Nein" ?></span>&nbsp;( <?php echo $this->results["voted_no"]; ?> )
+                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[1]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php if($this->lang =="en"): echo "No"; else: echo "Nein"; endif; ?></span>&nbsp;( <?php echo $this->results["voted_no"]; ?> )
                                     </div> 
                                 </div>
                                 
@@ -142,7 +167,7 @@
                         </div>
                     </div>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Kommentare:</div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Comments"; else: echo "Kommentare"; endif; ?>:</div>
                         <div class="lt_fieldvalue">
                             <ol>
                                 <?php foreach($this->results["comments"] as $comment): ?>
@@ -151,15 +176,23 @@
                             </ol>
                         </div>
                     </div>
-                    
+                    <br><br>
+                    <?php if($this->entry->getValueByKey('opt8number') > 0): ?>
+                        <div class="lt_fieldwrapper">
+                            <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Reminder sent"; else: echo "Erinnerungsmail verschickt"; endif; ?>:</div>
+                            <div class="lt_fieldvalue"><?php echo $this->formatDate($this->entry->getValueByKey('opt8number')); ?></div>
+                        </div>
+                        <br><br>
+                    <?php endif; ?>
                     <div>
                         <?php if($this->results["participant_quote"] < 100 && date("YmdHis") < $this->entry->getValueByKey('opt7number')): ?>
-                            <input type="button" value="Erinnerungsmail verschicken" onclick='if(confirm("Es wird eine Erinnerungsmail an diejenigen geschickt, die noch nicht abgestimmt haben.")) { self.location.href="<?php echo "#;" ?>";}else{return false;}'>
+                            <input type="button" value="<?php echo $this->langPhrases["lang_approval_send_reminder"]; ?>" onclick='if(confirm("<?php echo $this->langPhrases["lang_approval_send_reminder_title"]; ?>")) { self.location.href="<?php echo $this->remindApprovalUrl; ?>";}else{return false;}'>
                         <?php endif; ?>
                         <?php if($this->results["voted_yes_percent"] >= 75 && ( date("YmdHis") >= $this->entry->getValueByKey('opt7number') || $this->results["participant_quote"] == 100 ) ): ?>
-                            <input type="button" value="Datei genehmigen" onclick='if(confirm("Sobald Sie die Datei genehmigt haben, kann die Datei nicht mehr bearbeitet werden.")) { self.location.href="<?php echo "#;" ?>";}else{return false;}'>
+                            <input type="button" value="<?php echo $this->langPhrases["lang_approval_approve"]; ?>" onclick='if(confirm("<?php echo $this->langPhrases["lang_approval_approve_title"]; ?>")) { self.location.href="<?php echo $this->approveEntryUrl; ?>";}else{return false;}'>
+                            <input type="button" value="<?php echo $this->langPhrases["lang_approval_release_file"]; ?>" onclick='if(confirm("<?php echo $this->langPhrases["lang_approval_release_file_title"]; ?>")) { self.location.href="<?php echo $this->stoppApprovalUrl; ?>";}else{return false;}'>
                         <?php else: ?>
-                            <input type="button" value="Datei freigeben" onclick='if(confirm("Genehmigungsverfahren beenden und die Datei wieder freigeben ?")) { self.location.href="<?php echo $this->stoppApprovalUrl; ?>";}else{return false;}'>
+                            <input type="button" value="<?php echo $this->langPhrases["lang_approval_release_file"]; ?>" onclick='if(confirm("<?php echo $this->langPhrases["lang_approval_release_file_title"]; ?>")) { self.location.href="<?php echo $this->stoppApprovalUrl; ?>";}else{return false;}'>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -169,5 +202,4 @@
         </div>   
 
     </form>
-
 </div>

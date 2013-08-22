@@ -2,7 +2,7 @@
 
 namespace LwListtool\Model\Entry\CommandResolver;
 
-class startApproval extends \LWmvc\Model\CommandResolver
+class setDateSendApprovalReminder extends \LWmvc\Model\CommandResolver
 {
     public function __construct($command)
     {
@@ -14,19 +14,20 @@ class startApproval extends \LWmvc\Model\CommandResolver
     
     public function getInstance($command)
     {
-        return new startApproval($command);
+        return new setDateSendApprovalReminder($command);
     }
     
     public function resolve()
     {
-        $ok = $this->getCommandHandler()->startApprovalEntity($this->command->getParameterByKey("id"), $this->command->getParameterByKey("approvalUserId"));
+        $ok = $this->getCommandHandler()->setDateSendApprovalReminder($this->command->getParameterByKey("id"));
         if ($ok) {
-            $this->command->getResponse()->setParameterByKey('startApproval', true);
+            $this->command->getResponse()->setParameterByKey('approvalReminder', true);
         }
         else {
-            $this->command->getResponse()->setDataByKey('error', 'error startApproval');
+            $this->command->getResponse()->setDataByKey('error', 'error setDateSendApprovalReminder');
             $this->command->getResponse()->setParameterByKey('error', true);
-        }                    
+        }     
+
         return $this->command->getResponse();
     }
 }

@@ -126,25 +126,25 @@ function showError($errors, $lang, $field) {
                 <div id="tabs-1">
 
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "published"; else: echo "ver&ouml;ffentlicht"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "published"; else: echo "ver&ouml;ffentlicht"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><input type="checkbox" name="published" value="1"<?php if($this->entry->getValueByKey('published') == 1): echo ' checked="checked"'; endif; ?>/></div>
                     </div>
 
                     <?php showError($this->errors, $this->lang, 'name'); ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Name</div>
+                        <div class="lt_fieldlabel">Name:</div>
                         <div class="lt_fieldvalue"><input type="text" name="name" value="<?php echo $this->entry->getValueByKey('name'); ?>" size="40" /></div>
                     </div>                
 
                     <?php showError($this->errors, $this->lang, 'description'); ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Description"; else: echo "Beschreibung"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Description"; else: echo "Beschreibung"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><textarea name="description" rows="3" cols="38" class="listtoolmceEditor" /><?php echo $this->entry->getValueByKey('description'); ?></textarea></div>
                     </div>                
 
                     <?php showError($this->errors, $this->lang, 'opt2number'); ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Free date"; else: echo "Freies Datum"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Free date"; else: echo "Freies Datum"; endif; ?>:</div>
                         <div class="lt_fieldvalue">
                             <input autocomplete="off" id="opt2number" type="hidden" name="opt2number" value="<?php echo $this->entry->getValueByKey('opt2number'); ?>" />
                             <input autocomplete="off" id="shown_opt2number" type="text" name="shown_opt2number" value="<?php echo $this->formatDate($this->entry->getValueByKey('opt2number')); ?>" class="lw_fe_datepicker" />
@@ -154,7 +154,7 @@ function showError($errors, $lang, $field) {
                     <?php if($this->entry->isLink() || $this->addLink): ?>
                     <?php showError($this->errors, $this->lang, 'opt3text'); ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Link"; else: echo "Verlinkung"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Link"; else: echo "Verlinkung"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><input type="text" name="opt3text" value="<?php echo $this->entry->getValueByKey('opt3text'); ?>" size="40" /></div>
                     </div>                
                     <?php endif; ?>
@@ -162,7 +162,7 @@ function showError($errors, $lang, $field) {
                     <?php if($this->entry->isFile() && !$this->addLink): ?>
                     <?php showError($this->errors, $this->lang, 'opt2file'); ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File"; else: echo "Datei"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File"; else: echo "Datei"; endif; ?>:</div>
                         <div class="lt_fieldvalue">
                             <input type="file" name="opt2file" /><br/>
                         </div>
@@ -177,7 +177,7 @@ function showError($errors, $lang, $field) {
                         <div class="lt_fieldvalue"><?php echo $this->entry->getFileRights(); ?></div>
                     </div>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Fiel Upload Date"; else: echo "Uploaddatum"; endif; ?>:</div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File Upload Date"; else: echo "Uploaddatum"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><?php echo $this->formatDate($this->entry->getValueByKey('opt3number')); ?></div>
                     </div>
                     <div class="lt_fieldwrapper">
@@ -187,47 +187,47 @@ function showError($errors, $lang, $field) {
                     <?php endif; ?>
                     <?php endif; ?>
 
-                    <input type="submit" value="speichern" />
+                    <input type="submit" value="<?php if($this->lang =="en"): echo "save"; else: echo "speichern"; endif; ?>" />
 
                 </div>
                 <div id="tabs-2" >
 
                     <?php showError($this->errors, $this->lang, 'opt1text'); ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Additional Info"; else: echo "Zusatzinfo"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Additional Info"; else: echo "Zusatzinfo"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><textarea name="opt1text" rows="3" cols="37" /><?php echo $this->entry->getValueByKey('opt1text'); ?></textarea></div>
                     </div>                
 
                     <?php showError($this->errors, $this->lang, 'opt2text'); ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Keywords"; else: echo "Stichworte"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Keywords"; else: echo "Stichworte"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><textarea name="opt2text" rows="3" cols="37" /><?php echo $this->entry->getValueByKey('opt2text'); ?></textarea></div>
                     </div>                
 
                     <?php if($this->entry->hasLastDate()): ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Last change"; else: echo "letzte &Auml;nderung"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Last change"; else: echo "letzte &Auml;nderung"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><?php echo $this->formatDate($this->entry->getValueByKey('lw_last_date')); ?></div>
                     </div>                
                     <?php endif; ?>
                     
                     <?php if($this->entry->hasUsername()): ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Last user"; else: echo "Letzter Bearbeiter"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Last user"; else: echo "Letzter Bearbeiter"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><?php echo $this->entry->getValueByKey('last_username'); ?></div>
                     </div>
                     <?php endif; ?>
                     
                     <?php if($this->entry->hasFirstDate()): ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "added"; else: echo "angelegt"; endif; ?></div>
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "added"; else: echo "angelegt"; endif; ?>:</div>
                         <div class="lt_fieldvalue"><?php echo $this->formatDate($this->entry->getValueByKey('lw_first_date')); ?></div>
                     </div>                 
                     <?php endif; ?>
                     
                     <?php showError($this->errors, $this->lang, 'opt1file'); ?>
                     <div class="lt_fieldwrapper">
-                        <div class="lt_fieldlabel">Thumbnail</div>
+                        <div class="lt_fieldlabel">Thumbnail:</div>
                         <div class="lt_fieldvalue">
                             <input type="file" name="opt1file" /><br/>
                         </div>
@@ -246,7 +246,7 @@ function showError($errors, $lang, $field) {
                     </div>
                     <?php endif; ?>
 
-                    <input type="submit" value="speichern" />
+                    <input type="submit" value="<?php if($this->lang =="en"): echo "save"; else: echo "speichern"; endif; ?>" />
 
                 </div>
                 

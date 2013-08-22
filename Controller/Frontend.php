@@ -31,12 +31,14 @@ class Frontend extends \LWmvc\Controller
         $this->request = \lw_registry::getInstance()->getEntry("request");
         $this->lwi18nQH = new \LwI18n\Model\queryHandler($this->dic->getDbObject());
         $this->config = $this->dic->getConfiguration();
+        $this->featureCollection = \lw_registry::getInstance()->getEntry("FeatureCollection");
     }
     
     public function execute()
     {
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
         $this->listConfig = $response->getDataByKey('ConfigurationEntity');
+        $this->useApprovalSystemListConfig = $this->listConfig->getValueByKey('approval');
         
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getListRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
         $this->listRights = $response->getDataByKey('rightsObject');
@@ -44,6 +46,12 @@ class Frontend extends \LWmvc\Controller
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ApprovalRights', 'getApprovalRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
         $this->approvalRights = $response->getDataByKey('approvalRightsObject');
 
+        $result = $this->lwi18nQH->getAllEntriesForCategoryAndLang("lw_listtool2", $this->listConfig->getValueByKey("language"));
+        $this->lang = array();
+        foreach($result as $value) {
+            $this->lang[$value["lw_key"]] = $value["text"];
+        }
+        
         $method = $this->getCommand()."Action";
         if (method_exists($this, $method)) {
             return $this->$method();
@@ -58,19 +66,14 @@ class Frontend extends \LWmvc\Controller
         if ($this->listRights->isReadAllowed()) {
             $this->response->useJQuery();
             $this->response->useJQueryUI();
-            
-            $result = $this->lwi18nQH->getAllEntriesForCategoryAndLang("lw_listtool2_".$this->getContentObjectId(), $this->listConfig->getValueByKey("language"));
-            $temp = array();
-            foreach($result as $value) {
-                $temp[$value["lw_key"]] = $value["text"];
-            }
 
             $view = new \LwListtool\View\ListtoolList();
             $view->setConfiguration($this->listConfig);
             $view->setListRights($this->listRights);
             $view->setApprovalRights($this->approvalRights);
             $view->setListId($this->getContentObjectId());
-            $view->setLanguagePhrases($temp);
+            $view->setLanguagePhrases($this->lang);
+            $view->setApprovalSystemUsage($this->useApprovalSystemListConfig);
             $view->init();
         
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getListEntriesCollection', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
@@ -145,9 +148,15 @@ class Frontend extends \LWmvc\Controller
     protected function saveEntryAction()
     {
        if ($this->listRights->isWriteAllowed()) {
-           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'save', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
-           if ($response->getParameterByKey("error")) {
-               return $this->showEditEntryFormAction($response->getDataByKey("error"));
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+           $entity = $response->getDataByKey('EntryEntity');
+           
+           if(!$entity->isInApproval()){
+               $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'save', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
+               if ($response->getParameterByKey("error")) {
+                   return $this->showEditEntryFormAction($response->getDataByKey("error"));
+               }
+               return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
            }
            return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
        }
@@ -156,9 +165,15 @@ class Frontend extends \LWmvc\Controller
     protected function deleteEntryThumbnailAction()
     {
        if ($this->listRights->isWriteAllowed()) {
-           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'deleteThumbnail', array("id"=>$this->request->getInt("id")), array());
-           if ($response->getParameterByKey("error")) {
-               return $this->showEditEntryFormAction($response->getDataByKey("error"));
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+           $entity = $response->getDataByKey('EntryEntity');
+           
+           if(!$entity->isInApproval()){
+               $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'deleteThumbnail', array("id"=>$this->request->getInt("id")), array());
+               if ($response->getParameterByKey("error")) {
+                   return $this->showEditEntryFormAction($response->getDataByKey("error"));
+               }
+               return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
            }
            return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
        }
@@ -304,20 +319,156 @@ class Frontend extends \LWmvc\Controller
        return showListAction();
     }
     
+    public function showStartApprovalEntryFormAction($error = false)
+    {
+        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $entity = $response->getDataByKey('EntryEntity');
+            
+            if(!$entity->isInApproval()){
+                $entity->setId($this->request->getInt("id"));
+
+                $formView = new \LwListtool\View\StartApprovalForm();
+                $formView->setEntity($entity);
+                $formView->setConfiguration($this->listConfig);
+                $formView->setError($error);
+
+                $response = $this->returnRenderedView($formView);
+                $response->setParameterByKey('die', 1);
+                return $response;
+            }
+        }
+        return $this->showListAction();
+    }
+
+    public function showApprovalEntryStatusAction()
+    {
+        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $entity = $response->getDataByKey('EntryEntity');
+            
+            if($entity->isInApproval()){                
+                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getApprovalStatistics', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+                $results = $response->getDataByKey('results'); 
+                
+                $entity->setId($this->request->getInt("id"));
+
+                $formView = new \LwListtool\View\StatusApproval();
+                $formView->setEntity($entity);
+                $formView->setConfiguration($this->listConfig);
+                $formView->setResults($results);
+                $formView->setLanguagePhrases($this->lang);
+
+                $response = $this->returnRenderedView($formView);
+                $response->setParameterByKey('die', 1);
+                return $response;
+            }
+        }
+        return $this->showListAction();
+    }
+    
+    public function showApprovalEntryVoteAction($error = false)
+    {
+        if ($this->listRights->isWriteAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {   
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $entity = $response->getDataByKey('EntryEntity');
+            
+            if($entity->isInApproval()){
+                $entity->setId($this->request->getInt("id"));
+
+                $formView = new \LwListtool\View\VoteApproval();
+                $formView->setEntity($entity);
+                $formView->setError($error);
+                $formView->setConfiguration($this->listConfig);
+
+                $response = $this->returnRenderedView($formView);
+                $response->setParameterByKey('die', 1);
+                return $response;
+            }
+        }
+         return $this->showListAction();
+    }
+
     protected function startApprovalAction()
     {
-        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed()) {
-            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'startApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id")));
-            return $this->buildReloadResponse(array("cmd"=>"showList"));
+        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {            
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $entity = $response->getDataByKey('EntryEntity');
+            
+            if(!$entity->isInApproval()){
+                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'startApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id"), "enddate" => $this->request->getInt("opt8number")));
+                if($response->getParameterByKey("errordate")){
+                    return $this->showStartApprovalEntryFormAction($response->getParameterByKey("errordate"));
+                }
+                \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "startApproval"));
+                return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
+            }
         }
         return $this->showListAction();
     }
     
     protected function stoppApprovalAction()
     {
-        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed()) {
-            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'stoppApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id")));
-            return $this->buildReloadResponse(array("cmd"=>"showList"));
+        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $entity = $response->getDataByKey('EntryEntity');
+            
+            if($entity->isInApproval()){
+                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'stoppApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id")));
+                \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "stoppApproval"));
+                return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
+            }
+        }
+        return $this->showListAction();
+    }
+    
+    protected function voteApprovalAction()
+    {
+        if ($this->listRights->isWriteAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $entity = $response->getDataByKey('EntryEntity');
+            
+            if($entity->isInApproval()){
+                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'voteApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id"), "listId"=>$this->getContentObjectId()), array("postArray" => $this->request->getPostArray()));            
+                if($response->getParameterByKey("errorvote")){
+                    return $this->showApprovalEntryVoteAction($response->getParameterByKey("errorvote"));
+                }
+                return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
+            }
+        }
+        return $this->showListAction();
+    }
+    
+    public function sendReminderApprovalMailAction()
+    {
+        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $entity = $response->getDataByKey('EntryEntity');
+            
+            if($entity->isInApproval()){
+                \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "remindApproval"));
+                \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'setDateSendApprovalReminder', array("id"=>$this->request->getInt("id")));
+
+                return $this->showApprovalEntryStatusAction();
+            }
+        }
+        return $this->showListAction();
+    }
+    
+    public function approveEntryAction()
+    {
+        if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+            $entity = $response->getDataByKey('EntryEntity');
+            
+            if($entity->isInApproval()){
+                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getApprovalStatistics', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+                $results = $response->getDataByKey('results'); 
+                if($results["voted_yes_percent"] >= 75 && ( date("YmdHis") >= $entity->getValueByKey('opt7number') || $results["participant_quote"] == 100 ) ){
+                    \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'setEntryApproved', array("id"=>$this->request->getInt("id")));
+                     return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
+                }
+            }
         }
         return $this->showListAction();
     }

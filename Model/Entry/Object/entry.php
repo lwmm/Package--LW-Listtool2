@@ -180,6 +180,14 @@ class entry extends \LWmvc\Model\Entity
         return false;
     }
     
+    public function isApproved()
+    {
+        if($this->getValueByKey('opt4bool') == 1){
+            return true;
+        }
+        return false;
+    }
+    
     public function isBorrower($userId)
     {
         if ($this->getValueByKey('opt6number') == $userId) {
@@ -217,5 +225,35 @@ class entry extends \LWmvc\Model\Entity
         $db = $this->dic->getDbObject();
         $result = $db->select1("SELECT name FROM ".$db->gt("lw_in_user")." WHERE id = ".intval($this->getValueByKey('lw_last_user')));
         return $result['name'];
+    }
+    
+    public function isVoteAllowed()
+    {
+        if($this->getValueByKey('opt3bool') == 1 && $this->getValueByKey('opt7number') > date("YmdHis")){
+            return true;
+        }
+        return false;
+    }
+    
+    public function hasLoggedInInUserVoted()
+    {
+        $inAuth = $this->dic->getLwInAuth();        
+        if($inAuth->isLoggedIn()){
+            $db = $this->dic->getDbObject();
+
+            $this->getValueByKey("id");
+            $db->setStatement("SELECT * FROM t:lw_master WHERE lw_object = :lw_object AND category_id = :category_id AND opt1number = :opt1number AND lw_first_user = :lw_first_user ");
+            $db->bindParameter("lw_object", "s", "lw_listtool2_vote");
+            $db->bindParameter("category_id", "i", $this->getValueByKey("category_id"));
+            $db->bindParameter("opt1number", "i", $this->getValueByKey("id"));
+            $db->bindParameter("lw_first_user", "i", $inAuth->getUserdata("id"));
+
+            $result = $db->pselect1();
+            if(empty($result)){
+                return false;
+            }
+            return true;
+        }
+        return -1;
     }
 }

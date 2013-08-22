@@ -126,9 +126,9 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
             $featureCollection = \lw_registry::getInstance()->getEntry("FeatureCollection");
             if($featureCollection->getFeature("LwListtool_EmailNotification")->isActive()){
                 if($cmd == "add"){
-                    $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName,"cmd" => "add"));
+                    \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName,"cmd" => "addFile"));
                 }else{
-                    $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName, "cmd" => "edit"));
+                    \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName, "cmd" => "editFile"));
                 }
             }
         }
@@ -221,18 +221,70 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         return $this->db->pdbquery();
     }
     
-    public function startApprovalEntity($id, $userId)
+    public function startApprovalEntity($id, $userId, $enddate)
     {
-        $this->db->setStatement("UPDATE t:lw_master SET opt3bool = 1, opt2bool = 0, opt5number = 0, opt6number = :opt6number WHERE id = :id");
+        $sek = date("His");
+        $this->db->setStatement("UPDATE t:lw_master SET opt3bool = 1, opt2bool = 0, opt5number = 0, opt6number = :opt6number, opt5number = :opt5number, opt7number = :opt7number WHERE id = :id");
         $this->db->bindParameter('id', 'i', $id);
         $this->db->bindParameter('opt6number', 'i', $userId);
+        $this->db->bindParameter('opt5number', 'i', date("Ymd").$sek);
+        $this->db->bindParameter('opt7number', 'i', $enddate.$sek);
         return $this->db->pdbquery();
     }
    
     public function stoppApprovalEntity($id)
     {
-        $this->db->setStatement("UPDATE t:lw_master SET opt3bool = 0, opt5number = 0, opt6number = 0 WHERE id = :id");
+        $this->deleteVoteApprovalEntriesByEntryId($id);
+        
+        $this->db->setStatement("UPDATE t:lw_master SET opt3bool = 0, opt5number = 0, opt6number = 0, opt7number = 0, opt8number = 0 WHERE id = :id ");
         $this->db->bindParameter('id', 'i', $id);
+        return $this->db->pdbquery();
+    }
+    
+    protected function deleteVoteApprovalEntriesByEntryId($id)
+    {
+        $this->db->setStatement("DELETE FROM t:lw_master WHERE lw_object = :lw_object AND opt1number = :opt1number ");
+        $this->db->bindParameter("lw_object", "s", "lw_listtool2_vote");
+        $this->db->bindParameter("opt1number", "i", $id);
+        
+        return $this->db->pdbquery();
+    }
+
+
+    public function addVoteApprovalEntry($id, $userId, $listId, $array)
+    {
+        if($array["lt_vote"] == 0){
+            $this->db->setStatement("INSERT INTO t:lw_master (lw_object, category_id, opt1number, opt1bool, opt1text, lw_first_user, lw_first_date) VALUES (:lw_object, :category_id, :opt1number, :opt1bool, :opt1text, :lw_first_user, :lw_first_date) ");
+            $this->db->bindParameter("opt1text", "s", htmlentities($array["lt_comment"]));
+        }else{            
+            $this->db->setStatement("INSERT INTO t:lw_master (lw_object, category_id, opt1number, opt1bool, lw_first_user, lw_first_date) VALUES (:lw_object, :category_id, :opt1number, :opt1bool, :lw_first_user, :lw_first_date) ");
+        }
+        $this->db->bindParameter("lw_object", "s", "lw_listtool2_vote");
+        $this->db->bindParameter("category_id", "i", $listId);
+        $this->db->bindParameter("opt1number", "i", $id);
+        $this->db->bindParameter("opt1bool", "i", $array["lt_vote"]);
+        $this->db->bindParameter("lw_first_user", "i", $userId);
+        $this->db->bindParameter("lw_first_date", "i", date("YmdHis"));
+
+        return $this->db->pdbquery();
+    }
+    
+    public function setDateSendApprovalReminder($id)
+    {
+        $this->db->setStatement("UPDATE t:lw_master SET opt8number = :date WHERE id = :id ");
+        $this->db->bindParameter("id", "i", $id);
+        $this->db->bindParameter("date", "i", date("YmdHis"));
+        
+        return $this->db->pdbquery();
+    }
+    
+    public function setEntryApproved($id)
+    {
+        $this->deleteVoteApprovalEntriesByEntryId($id);
+        
+        $this->db->setStatement("UPDATE t:lw_master SET opt3bool = 0, opt4bool = 1, opt5number = :date, opt6number = 0, opt7number = 0, opt8number = 0 WHERE id = :id ");
+        $this->db->bindParameter('id', 'i', $id);
+        $this->db->bindParameter("date", "i", date("YmdHis"));
         return $this->db->pdbquery();
     }
     

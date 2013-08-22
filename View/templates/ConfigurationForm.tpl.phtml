@@ -297,22 +297,23 @@
                         </div>
                     </div>
                     
-                    <div class="lw_entry lw_select" id="lw_listtool_approval" >
-                        <div class="lw_contentwrapper">
-                            <label for="listtooltype"><span>Genehmigung</span></label>
-                            <div class="lw_content">
-                                <span>
-                                    <select  name="approval"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
-                                        <option value="1"<?php if ($this->entity->getValueByKey('approval') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
-                                        <option value="0"<?php if ($this->entity->getValueByKey('approval') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
-                                    </select>
-                                </span>
+                    <?php if($this->useApprovalSystemFeatureList) :?>
+                        <div class="lw_entry lw_select" id="lw_listtool_approval" >
+                            <div class="lw_contentwrapper">
+                                <label for="listtooltype"><span>Genehmigung</span></label>
+                                <div class="lw_content">
+                                    <span>
+                                        <select  name="approval"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                            <option value="1"<?php if ($this->entity->getValueByKey('approval') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
+                                            <option value="0"<?php if ($this->entity->getValueByKey('approval') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
+                                        </select>
+                                    </span>
+                                </div>
+                                <div class="lw_comment"><sup class="lw_footnote">9</sup></div>
+                                <div class="clearfix">&nbsp;</div>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">9</sup></div>
-                            <div class="clearfix">&nbsp;</div>
                         </div>
-                    </div>
-
+                    <?php endif; ?>
                     <div class="lw_footnote">
                         <ol>
                             <li><span><i>via Backenduser</i>: darf nur von Administratoren und Redakteuren bearbeitet werden!<br/><i>via Intranetuser</i>: darf nur von Intranetusern bearbeitet werden!<br/><i>via Backend- und Intranetuser oder ------</i>: darf sowohl von Intranet- als auch Backendusern bearbeitet werden!</span></li>
@@ -323,7 +324,9 @@
                             <li><span>Verlinkung: wenn die Spalte "Name" eingeblendet ist, kann man statt einer eigenen Spalte zum Aufrufen des Downloads/Links auch den Namen entsprechend verlinken.</span></li>
                             <li><span>"ver&ouml;ffentlicht": wird in jedem Fall nur angezeigt, wenn man die Liste bearbeiten darf. Es kann entweder eine eigene Spalte mit dem Status "ver&ouml;ffentlicht" angezeigt werden oder es wird die Zeile mit einem nicht ver&ouml;ffentlichtem Eintrag leicht rot hinterlegt.</span></li>
                             <li><span>Archivieren: Wird eine Datei nach der Bearbeitung zur&uuml;ckgegeben, dann wird eine Kopie der voherigen Version gespeichert, um die Verionshistorie nachvollziehen zuk&ouml;nnen.</span></li>
-                            <li><span>Genehmigung: Autorisierte Nutzer k&ouml;nnen ein Genehmigungsverfahren f&uuml;r eine Datei einleiten. Alle Bearbeiter m&uuml;ssen abstimmen, ob die Datei zur Abgabe bereit ist oder es noch an &Uuml;berarbeitung bedarf. Die Datei kann w&auml;hrend des Genehmigungsverfahrens nicht bearbeitet werden.</span></li>
+                            <?php if($this->useApprovalSystemFeatureList) :?>
+                                <li><span>Genehmigung: Autorisierte Nutzer k&ouml;nnen ein Genehmigungsverfahren f&uuml;r eine Datei einleiten. Alle Bearbeiter m&uuml;ssen abstimmen, ob die Datei zur Abgabe bereit ist oder es noch an &Uuml;berarbeitung bedarf. Die Datei kann w&auml;hrend des Genehmigungsverfahrens nicht bearbeitet werden. Dateien, die sich in einem Genehmigungsverfahren befinden oder bereits genehmigt wurden, stehen <b>nur</b> zum <b>Download</b> bereit</span></li>
+                            <?php endif; ?>
                         </ol>
                     </div>
                 </div>
@@ -424,7 +427,7 @@
                 <!-- TAB3 SPRACHEN ENDE -->
                 <div class="lw_functions_bottom">
                     <input class="btn btn-primary" type="submit"  value="speichern"  />
-                    <input class="btn" type="button" onClick="document.location.href='<?php echo $this->backUrl; ?>'" value="abbrechen" />
+                    <input class="btn" type="button" onClick="document.location.href='<?php echo $this->backUrl; ?>';" value="abbrechen" />
                 </div>
             </div>
         </form>
@@ -435,8 +438,8 @@
 <fieldset class="lwadminform">
 
     <legend class="lwadminform">Rechtezuweisung</legend>
-    <div id="container_rights">
-    <?php echo $this->rightslink; ?>
+    <div id="container_rights">    
+        <input type="button" class="btn" value="Rechtezuweisung" onclick="openNewWindow('<?php echo $this->rightslink; ?>');">
         <div>&nbsp;</div>
         <?php if (is_array($this->intranets) && count($this->intranets) > 0): ?>
             <br/>

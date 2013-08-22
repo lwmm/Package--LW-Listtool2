@@ -30,7 +30,7 @@ class ListtoolList extends \LWmvc\View\View
         $this->dic = new \LwListtool\Services\dic();
         $this->systemConfiguration = $this->dic->getConfiguration();
         $this->auth = $this->dic->getLwAuth();
-        $this->inAuth = $this->dic->getLwInAuth();
+        $this->inAuth = $this->dic->getLwInAuth();        
     }
 
     public function setListRights($rights)
@@ -57,6 +57,11 @@ class ListtoolList extends \LWmvc\View\View
     {
         $this->listId = $id;
     }
+    
+    public function setApprovalSystemUsage($usage)
+    {
+        $this->approvalSystemUsage = $usage;
+    }
 
     public function init()
     {
@@ -67,12 +72,18 @@ class ListtoolList extends \LWmvc\View\View
     {
         $listHasBorrowedItems = false;
 
+        $featureCollection = \lw_registry::getInstance()->getEntry("FeatureCollection");
+        if($featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive()){
+            $this->view->useApprovalSystemFeatureList = true;
+        }
+        
         $this->view->lang = $this->langPhrases;
         $this->view->listId = $this->listId;
         $this->view->auth = $this->auth;
         $this->view->inAuth = $this->inAuth;
         $this->view->entries = $this->view->collection;
         $this->view->configuration = $this->configuration;
+        $this->view->useApprovalSystemListConfig = $this->approvalSystemUsage;
 
         if ($this->configuration->getValueByKey('name')) {
             $this->view->listtitle = $this->configuration->getValueByKey('name');
