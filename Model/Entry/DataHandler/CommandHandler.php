@@ -69,7 +69,7 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         $id = $this->db->pdbinsert($this->db->gt('lw_master'));
         
         if ($id && $array['opt2file']['size'] > 0) {
-            $this->saveEntryFile($id, $array, $archive);
+            $this->saveEntryFile($id, $array, "add",$array['name'], $listId, $archive);
         }
         
         if ($id && $array['opt1file']['size'] > 0) {
@@ -94,7 +94,7 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         $ok = $this->db->pdbquery();
         
         if ($ok && $array['opt2file']['size'] > 0) {
-            $this->saveEntryFile($id, $array, $archive);
+            $this->saveEntryFile($id, $array, "save", $array['name'], $array['listId'], $archive);
         }
         if ($ok && $array['opt1file']['size'] > 0) {
             $this->saveThumbnailFile($id, $array);
@@ -112,7 +112,7 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         return $this->deleteExistingThumbnail($id);
     }
     
-    protected function saveEntryFile($id, $array, $archive=false)
+    protected function saveEntryFile($id, $array, $cmd, $entryName, $listId, $archive=false)
     {
         $filename = 'item_'.$id.'.file';
         $saved = $this->saveFile($array['opt2file']['tmp_name'], $filename, $archive);
@@ -122,6 +122,15 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
             $this->db->bindParameter("opt3number", 's', date("YmdHis"));
             $this->db->bindParameter("id", 'i', $id);
             $ok = $this->db->pdbquery();
+            
+            $featureCollection = \lw_registry::getInstance()->getEntry("FeatureCollection");
+            if($featureCollection->getFeature("LwListtool_EmailNotification")->isActive()){
+                if($cmd == "add"){
+                    $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName,"cmd" => "add"));
+                }else{
+                    $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $listId, "filename" => $array['opt2file']['name'], "entryname" => $entryName, "cmd" => "edit"));
+                }
+            }
         }
     }
     
@@ -151,9 +160,7 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
                     $file->delete();
                 }
             }
-            #echo $file->getName()."<br>";
         }
-        #die();
         return true;
     }
     

@@ -19,7 +19,7 @@
 *  
 ***************************************************************************/
 
-namespace lwListtool\Model\ListRights\CommandResolver;
+namespace LwListtool\Model\ListRights\CommandResolver;
 
 class getListRightsObject extends \LWmvc\Model\CommandResolver
 {

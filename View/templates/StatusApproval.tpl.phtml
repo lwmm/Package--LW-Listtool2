@@ -1,0 +1,173 @@
+<script src="<?php echo $this->mediaUrl."jquery/jqplot/jquery.jqplot.min.js"; ?>"></script>
+<script src="<?php echo $this->mediaUrl."jquery/jqplot/plugins/jqplot.pieRenderer.min.js";?>"></script>
+<style>
+    .clearfix:after {
+        content: ".";
+        display: block;
+        clear: both;
+        visibility: hidden;
+        line-height: 0;
+        height: 0;
+    }
+    
+    .clearfix {
+        display: inline-block;
+    }
+    
+    #tabs hr {
+        background-color: #ddd;
+        color: #ddd;
+        border: none;
+        height: 1px;
+    }
+    
+    .piechart{
+        width: 320px;
+        padding: 0;
+        height: 200px;
+        border: none;
+    }
+    
+    div.lt_fieldvalue ol{
+        padding: 0;
+        margin: 0;
+    }
+    
+</style>
+
+<div class="lt_form">
+
+    <form action="<?php echo $this->actionUrl; ?>" method="post" enctype="multipart/form-data">        
+        <script>
+            $(function() {
+                $( "#tabs" ).tabs();
+            });
+        </script>
+
+        <div class="demo" style="width:98%">
+
+            <div id="tabs">
+
+                <ul>
+                    <li><a href="#tabs-1"><?php if($this->lang =="en"): echo "Base data"; else: echo "Grunddaten"; endif; ?></a></li>
+                </ul>
+
+                <div id="tabs-1">
+
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel">Status</div>
+                        <div class="lt_fieldvalue"><span style="font-size: 14px;color: <?php if(date("YmdHis") > $this->entry->getValueByKey('opt7number')): echo "darkred"; else: echo "green"; endif;?>;"><b><?php if(date("YmdHis") > $this->entry->getValueByKey('opt7number')): echo "Finished"; else: echo "Running"; endif;?></b></span></div>
+                    </div>
+                    <hr>
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel">Name</div>
+                        <div class="lt_fieldvalue"><?php echo $this->entry->getValueByKey('name'); ?></div>
+                    </div>
+
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Description"; else: echo "Beschreibung"; endif; ?></div>
+                        <div class="lt_fieldvalue"><?php echo html_entity_decode($this->entry->getValueByKey('description')); ?></div>
+                    </div>                
+                    <hr>
+
+                    <?php if($this->entry->isFile() && !$this->addLink): ?>
+                        <?php if($this->entry->hasFile()): ?>
+                            <div class="lt_fieldwrapper">
+                                <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File"; else: echo "Datei"; endif; ?>:</div>
+                                <div class="lt_fieldvalue"><?php echo $this->entry->getValueByKey('opt2file'); ?></div>
+                            </div>
+                            <div class="lt_fieldwrapper">
+                                <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File rights"; else: echo "Dateirechte"; endif; ?>:</div>
+                                <div class="lt_fieldvalue"><?php echo $this->entry->getFileRights(); ?></div>
+                            </div>
+                            <div class="lt_fieldwrapper">
+                                <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Fiel Upload Date"; else: echo "Uploaddatum"; endif; ?>:</div>
+                                <div class="lt_fieldvalue"><?php echo $this->formatDate($this->entry->getValueByKey('opt3number')); ?></div>
+                            </div>
+                            <div class="lt_fieldwrapper">
+                                <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File size"; else: echo "Gr&ouml;&szlig;e"; endif; ?>:</div>
+                                <div class="lt_fieldvalue"><?php echo $this->entry->getFileSize(); ?></div>
+                            </div>
+                            <hr>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                            
+                    <div class="lt_fieldwrapper">
+                        <div><?php if($this->lang =="en"): echo "Approval period:"; else: echo "Genehmigungszeitraum:"; endif; ?></div>
+                    </div>
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "From:"; else: echo "Von:"; endif; ?></div>
+                        <div class="lt_fieldvalue"><?php echo $this->formatDate($this->entry->getValueByKey('opt5number')); ?></div>
+                    </div>    
+                     
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "To:"; else: echo "Bis:"; endif; ?></div>
+                        <div class="lt_fieldvalue"><?php echo $this->formatDate($this->entry->getValueByKey('opt7number')); ?></div>
+                    </div>
+                    <hr>
+                    
+                    <div class="lt_fieldwrapper">
+                        <div><?php if($this->lang =="en"): echo "Approvalstatus:"; else: echo "Genehmigungsstatus:"; endif; ?></div>
+                    </div>
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel">Teilnehmer:</div>
+                        <div class="lt_fieldvalue"><?php echo $this->results["participants"]; ?></div>
+                    </div>
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel">Stimmabgaben:</div>
+                        <div class="lt_fieldvalue"><?php echo $this->results["voted"]; ?></div>
+                    </div>
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel">Teilnahmequote:</div>
+                        <div class="lt_fieldvalue"><?php echo $this->results["participant_quote"]. " %"; ?></div>
+                    </div>
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel">Anworten:</div>
+                        <div class="lt_fieldvalue">
+                            <div class="clearfix" style="position: relative;">
+                                <div class="legend">
+                                    <div style="margin-bottom: 10px; float:left;margin-left: 10px;margin-right: 15px;">
+                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[0]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php echo "Ja" ?></span>&nbsp;( <?php echo $this->results["voted_yes"]; ?> )
+                                    </div>
+                                    <div>
+                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[1]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php echo "Nein" ?></span>&nbsp;( <?php echo $this->results["voted_no"]; ?> )
+                                    </div> 
+                                </div>
+                                
+                                <?php
+                                    $view = new \LwListtool\View\PieChart();
+                                    echo $view->render($this->results["voted_yes_percent"],$this->results["voted_no_percent"]);
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel">Kommentare:</div>
+                        <div class="lt_fieldvalue">
+                            <ol>
+                                <?php foreach($this->results["comments"] as $comment): ?>
+                                    <li><?php echo $comment; ?></li>
+                                <?php endforeach; ?>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <?php if($this->results["participant_quote"] < 100 && date("YmdHis") < $this->entry->getValueByKey('opt7number')): ?>
+                            <input type="button" value="Erinnerungsmail verschicken" onclick='if(confirm("Es wird eine Erinnerungsmail an diejenigen geschickt, die noch nicht abgestimmt haben.")) { self.location.href="<?php echo "#;" ?>";}else{return false;}'>
+                        <?php endif; ?>
+                        <?php if($this->results["voted_yes_percent"] >= 75 && ( date("YmdHis") >= $this->entry->getValueByKey('opt7number') || $this->results["participant_quote"] == 100 ) ): ?>
+                            <input type="button" value="Datei genehmigen" onclick='if(confirm("Sobald Sie die Datei genehmigt haben, kann die Datei nicht mehr bearbeitet werden.")) { self.location.href="<?php echo "#;" ?>";}else{return false;}'>
+                        <?php else: ?>
+                            <input type="button" value="Datei freigeben" onclick='if(confirm("Genehmigungsverfahren beenden und die Datei wieder freigeben ?")) { self.location.href="<?php echo $this->stoppApprovalUrl; ?>";}else{return false;}'>
+                        <?php endif; ?>
+                    </div>
+                </div>
+               
+            </div>
+
+        </div>   
+
+    </form>
+
+</div>

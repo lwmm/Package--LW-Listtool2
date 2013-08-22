@@ -1,0 +1,70 @@
+<style>
+    #tabs hr {
+        background-color: #ddd;
+        color: #ddd;
+        border: none;
+        height: 1px;
+    }
+    
+    #tabs #vote_comment{display: none;}
+    #tabs #vote_yes{margin-bottom: 5px;}
+</style>
+
+<div class="lt_form">
+
+    <form action="<?php echo $this->actionUrl; ?>" method="post" enctype="multipart/form-data">        
+        <script>
+            $(function() {
+                $( "#tabs" ).tabs();
+                
+                $("#vote_yes").click(function(){
+                    $("#vote_comment").hide();
+                });
+                
+                $("#vote_no").click(function(){
+                    $("#vote_comment").slideDown();
+                });
+            });
+        </script>
+
+        <div class="demo" style="width:98%">
+
+            <div id="tabs">
+
+                <ul>
+                    <li><a href="#tabs-1"><?php if($this->lang =="en"): echo "Base data"; else: echo "Grunddaten"; endif; ?></a></li>
+                </ul>
+
+                <div id="tabs-1">
+                    <?php if($this->error == 1): ?>
+                        <div class="lt_error"><?php if($this->lang =="en"){ echo "A comment is required, if you vote 'no'. "; }else{ echo "Ein Kommentar ist Pflicht, wenn Sie mit 'nein' abstimmen."; } ?></div>
+                    <?php endif; ?>       
+                    <?php if($this->error == 2): ?>
+                        <div class="lt_error"><?php if($this->lang =="en"){ echo "Comment max. length : 255 chars"; }else{ echo "Maximal 255 Zeichen im Kommentar erlaubt."; } ?></div>
+                    <?php endif; ?>  
+                        
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Is this File ready ?"; else: echo "Ist diese Datei bereit ?"; endif; ?></div>
+                        <div class="lt_fieldvalue">
+                            <input id="vote_yes" type="radio" name="lt_vote" value="1" checked="checked"><label for="vote_yes"><?php if($this->lang =="en"): echo "Yes"; else: echo "Ja"; endif; ?></label><br>
+                            <input id="vote_no" type="radio" name="lt_vote" value="0"><label for="vote_no"><?php if($this->lang =="en"): echo "No"; else: echo "Nein"; endif; ?></label>
+                        </div>
+                    </div>                
+
+                    <div id="vote_comment" class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Comment"; else: echo "Kommentar"; endif; ?></div>
+                        <div class="lt_fieldvalue"><textarea name="lt_comment" style="width: 300px;height: 250px;"></textarea></div>
+                    </div>                
+
+                    
+
+                    <input type="submit" value="<?php if($this->lang =="en"): echo "vote"; else: echo "abstimmen"; endif; ?>">
+                </div>
+               
+            </div>
+
+        </div>   
+
+    </form>
+
+</div>

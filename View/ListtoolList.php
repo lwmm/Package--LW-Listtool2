@@ -74,6 +74,13 @@ class ListtoolList extends \LWmvc\View\View
         $this->view->entries = $this->view->collection;
         $this->view->configuration = $this->configuration;
 
+        if ($this->configuration->getValueByKey('name')) {
+            $this->view->listtitle = $this->configuration->getValueByKey('name');
+        }
+        else {
+            $this->view->listtitle = $this->langPhrases["lang_listtitle"];
+        }
+
         if ($this->listRights->isReadAllowed()) {
             $this->view->ltRead = true;
         }

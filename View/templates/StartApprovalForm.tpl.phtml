@@ -1,0 +1,127 @@
+<script language="javascript" type="text/javascript" src="<?php echo $this->mediaUrl; ?>/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+<script language="javascript" type="text/javascript">
+    tinyMCE.init({
+    mode : "specific_textareas",
+    editor_selector : "listtoolmceEditor",
+    theme : "simple",
+    language : "de",
+    convert_urls : false,
+    relative_urls : false,
+    remove_script_host : false
+    });
+    
+    $(document).ready(function() {
+        $("#shown_opt8number").datepicker({
+            monthNames: ['Januar','Februar','M&auml;rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+            dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+
+            monthNamesShort: ['Jan','Feb','M&auml;r','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+            dayNamesShort: ['Son','Mon','Die','Mit','Don','Fre','Sam'],
+
+            dateFormat: "dd.mm.yy",
+            altField: '#opt8number', 
+            altFormat: 'yymmdd',
+            changeMonth: true,
+            changeYear: true,
+
+            showOn: 'both',
+            buttonImage: '<?php echo $this->mediaUrl; ?>/pics/fatcow_icons/16x16_0180/calendar_view_month.png'
+        });
+
+    }); 
+    
+</script>  
+<style>
+    #tabs hr {
+        background-color: #ddd;
+        color: #ddd;
+        border: none;
+        height: 1px;
+    }
+</style>
+
+<div class="lt_form">
+
+    <form action="<?php echo $this->actionUrl; ?>" method="post" enctype="multipart/form-data">        
+        <script>
+            $(function() {
+                $( "#tabs" ).tabs();
+            });
+        </script>
+
+        <div class="demo" style="width:98%">
+
+            <div id="tabs">
+
+                <ul>
+                    <li><a href="#tabs-1"><?php if($this->lang =="en"): echo "Base data"; else: echo "Grunddaten"; endif; ?></a></li>
+                </ul>
+
+                <div id="tabs-1">
+
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel">Name</div>
+                        <div class="lt_fieldvalue"><?php echo $this->entry->getValueByKey('name'); ?></div>
+                    </div>                
+
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Description"; else: echo "Beschreibung"; endif; ?></div>
+                        <div class="lt_fieldvalue"><?php echo html_entity_decode($this->entry->getValueByKey('description')); ?></div>
+                    </div>                
+                    <hr>
+
+                    <?php if($this->entry->isFile() && !$this->addLink): ?>
+                        <?php if($this->entry->hasFile()): ?>
+                            <div class="lt_fieldwrapper">
+                                <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File"; else: echo "Datei"; endif; ?>:</div>
+                                <div class="lt_fieldvalue"><?php echo $this->entry->getValueByKey('opt2file'); ?></div>
+                            </div>
+                            <div class="lt_fieldwrapper">
+                                <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File rights"; else: echo "Dateirechte"; endif; ?>:</div>
+                                <div class="lt_fieldvalue"><?php echo $this->entry->getFileRights(); ?></div>
+                            </div>
+                            <div class="lt_fieldwrapper">
+                                <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Fiel Upload Date"; else: echo "Uploaddatum"; endif; ?>:</div>
+                                <div class="lt_fieldvalue"><?php echo $this->formatDate($this->entry->getValueByKey('opt3number')); ?></div>
+                            </div>
+                            <div class="lt_fieldwrapper">
+                                <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "File size"; else: echo "Gr&ouml;&szlig;e"; endif; ?>:</div>
+                                <div class="lt_fieldvalue"><?php echo $this->entry->getFileSize(); ?></div>
+                            </div>
+                            <hr>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                            
+                    <div class="lt_fieldwrapper">
+                        <div><b><?php if($this->lang =="en"): echo "Set approval period:"; else: echo "Genehmigungszeitraum festlegen:"; endif; ?></b></div>
+                    </div>          
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "From:"; else: echo "Von:"; endif; ?></div>
+                        <div class="lt_fieldvalue"><?php echo date("d").".".date("m").".".date("Y"); ?></div>
+                    </div>    
+                    <?php if($this->error == 1): ?>
+                        <div class="lt_error"><?php if($this->lang =="en"){ echo "Enddate required!"; }else{ echo "Enddatum ben&ouml;tigt!"; } ?></div>
+                    <?php endif; ?>       
+                    <?php if($this->error == 2): ?>
+                        <div class="lt_error"><?php if($this->lang =="en"){ echo "Enddate has to be a future date!"; }else{ echo "Enddatum muss in der Zukunft liegen!"; } ?></div>
+                    <?php endif; ?>       
+                    <div class="lt_fieldwrapper">
+                        <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "To:"; else: echo "Bis:"; endif; ?></div>
+                        <div class="lt_fieldvalue">
+                            <input autocomplete="off" id="opt8number" type="hidden" name="opt8number" value="" />
+                            <input autocomplete="off" id="shown_opt8number" type="text" name="shown_opt8number" value="" class="lw_fe_datepicker" />
+                        </div>
+                    </div>    
+
+                            
+                    <input type="submit" value="<?php if($this->lang =="en"): echo "start approval"; else: echo "Genehmigung starten"; endif; ?>" />
+
+                </div>
+               
+            </div>
+
+        </div>   
+
+    </form>
+
+</div>
