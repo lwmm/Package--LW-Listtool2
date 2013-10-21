@@ -58,10 +58,12 @@ class getApprovalStatistics extends \LWmvc\Model\CommandResolver
         $results["participants"] = count($users);
         $results["participant_quote"] = round(count($votes) / count($users) * 100, 2);
         $results["voted"] = count($votes);
-        $results["voted_yes_percent"] = round($yes / count($votes) * 100, 2);
-        $results["voted_no_percent"] = round($no / count($votes) * 100, 2);
+        $results["voted_yes_percent"] = round($yes / count($users) * 100, 2);
+        $results["voted_no_percent"] = round($no / count($users) * 100, 2);
+        $results["voted_not_percent"] = round( ( count($users) - ( $yes + $no ) ) / count($users) * 100, 2);
         $results["voted_yes"] = $yes;
         $results["voted_no"] = $no;
+        $results["voted_not"] = count($users) - ( $yes + $no );
 
         $this->command->getResponse()->setDataByKey('results', $results);
         $this->command->getResponse()->setDataByKey('emailsOfNotVotedUsers', $emailsOfNotVotedUsers);

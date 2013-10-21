@@ -8,13 +8,14 @@
 
     #lw_fe_inputelement_lw_formular_template{width: 800px;height: 600px;}
     #tabs ul li a{color: #fff;}
+    #tabs2 ul li a{color: #fff;}
 
     .activeline {background: #e8f2ff !important;}
 
-    .active, .active2{background-color: #777;}
+    .active{background-color: #777;}
 
     .description {
-        margin-bottom:60px;
+        margin-bottom:30px;
         border:1px solid #aaa;
         border-radius: 5px;
         background-color:#eee;
@@ -50,8 +51,8 @@
         top: 0.5em;
     }
     
-    #base_data,#columns,#language{padding-top: 20px;}
-    #de, #en{
+    #base_data,#columns,#language,#rights{padding-top: 20px;}
+    #de, #en, #assign_rights, #assign_approval_rights{
         border: 1px solid #ccc;
         margin-top: -2px;    
     }
@@ -65,27 +66,31 @@
         padding: 10px;
     }
     
-    div#container_rights p{margin-left: 50px;}
-    div#container_rights ul{margin-left: 80px;}
-    div#container_rights p{font-weight: bold;}
+    div#container_rights p{font-weight: bold;}   
     
 </style>
 <script language="javascript" type="text/javascript">
     $(document).ready(function() {
         $("#tabs").tabs();
-        $("#tabs li.tab_level_1 a").click(function() {
-            $("#tabs li.tab_level_1 a").removeClass('active');
+        $("#tabs ul.base li a").click(function() {
+            $("#tabs ul.base li a").removeClass('active');
             $(this).addClass("active");
         });
         
         $("#language").tabs();
-        $("#language li.tab_level_2 a").click(function() {
-            $("#language li.tab_level_2 a").removeClass('active2');
-            $(this).addClass("active2");
+        $("#language ul.lang li a").click(function() {
+            $("#language ul.lang li a").removeClass('active');
+            $(this).addClass("active");
         });
+        
+        $("#rights").tabs();
+        $("#rights ul.rights li a").click(function() {
+            $("#rights ul.rights li a").removeClass('active');
+            $(this).addClass("active");
+        });       
     });
 </script>
-
+<?php $i = 1; ?>
 <fieldset class="lwadminform">
 
     <legend class="lwadminform">Listtoolbasisdaten bearbeiten</legend>
@@ -97,10 +102,11 @@
             <input type="hidden" name="template" value="list.tpl.html" />
 
             <div id="tabs">
-                <ul>
-                    <li class="tab_level_1"><a href="#base_data" class="active">Grunddaten</a></li>
-                    <li class="tab_level_1"><a href="#columns">Spalten</a></li>
-                    <li class="tab_level_1"><a href="#language">Sprache</a></li>
+                <ul class="base">
+                    <li><a href="#base_data" class="active">Grunddaten</a></li>
+                    <li><a href="#columns">Spalten</a></li>
+                    <li><a href="#language">Sprache</a></li>
+                    <li style="float:right;"><a href="#rights">Rechtezuweiseung</a></li>
                 </ul>
 
                 <!-- TAB1 GRUNDDATEN START -->
@@ -131,7 +137,7 @@
                                     </select>
                                 </span>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">1</sup></div>
+                            <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
@@ -181,7 +187,7 @@
                                     <input type="text"  name="suffix"  id="lw_fe_inputelement_lw_listtool_suffix"  class=" lw_fe_textfield"  value="<?php echo $this->f($this->entity->getValueByKey('suffix')); ?>"  />
                                 </span>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">2</sup></div>
+                            <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
@@ -197,7 +203,7 @@
                                     </select>
                                 </span>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">3</sup></div>
+                            <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
@@ -228,7 +234,7 @@
                                     </select>
                                 </span>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">4</sup></div>
+                            <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
@@ -244,7 +250,7 @@
                                     </select>
                                 </span>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">5</sup></div>
+                            <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
@@ -260,7 +266,7 @@
                                     </select>
                                 </span>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">6</sup></div>
+                            <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
@@ -276,7 +282,7 @@
                                     </select>
                                 </span>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">7</sup></div>
+                            <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
@@ -292,10 +298,28 @@
                                     </select>
                                 </span>
                             </div>
-                            <div class="lw_comment"><sup class="lw_footnote">8</sup></div>
+                            <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                             <div class="clearfix">&nbsp;</div>
                         </div>
                     </div>
+                    
+                    <?php if($this->useEmailNotificationSystemFeatureList) :?>
+                        <div class="lw_entry lw_select" id="lw_listtool_archive" >
+                            <div class="lw_contentwrapper">
+                                <label for="listtooltype"><span>Benachrichtigung</span></label>
+                                <div class="lw_content">
+                                    <span>
+                                        <select  name="notification"  id="lw_fe_inputelement_lw_listtool_language"  class=" lw_fe_selectone" >
+                                            <option value="1"<?php if ($this->entity->getValueByKey('notification') == 1): ?> selected="selected"<?php endif; ?>/> ja&nbsp;&nbsp;</option>
+                                            <option value="0"<?php if ($this->entity->getValueByKey('notification') == 0): ?> selected="selected"<?php endif; ?>/> nein&nbsp;&nbsp;</option>
+                                        </select>
+                                    </span>
+                                </div>
+                                <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
+                                <div class="clearfix">&nbsp;</div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                     
                     <?php if($this->useApprovalSystemFeatureList) :?>
                         <div class="lw_entry lw_select" id="lw_listtool_approval" >
@@ -309,7 +333,7 @@
                                         </select>
                                     </span>
                                 </div>
-                                <div class="lw_comment"><sup class="lw_footnote">9</sup></div>
+                                <div class="lw_comment"><sup class="lw_footnote"><?php echo $i++; ?></sup></div>
                                 <div class="clearfix">&nbsp;</div>
                             </div>
                         </div>
@@ -324,6 +348,9 @@
                             <li><span>Verlinkung: wenn die Spalte "Name" eingeblendet ist, kann man statt einer eigenen Spalte zum Aufrufen des Downloads/Links auch den Namen entsprechend verlinken.</span></li>
                             <li><span>"ver&ouml;ffentlicht": wird in jedem Fall nur angezeigt, wenn man die Liste bearbeiten darf. Es kann entweder eine eigene Spalte mit dem Status "ver&ouml;ffentlicht" angezeigt werden oder es wird die Zeile mit einem nicht ver&ouml;ffentlichtem Eintrag leicht rot hinterlegt.</span></li>
                             <li><span>Archivieren: Wird eine Datei nach der Bearbeitung zur&uuml;ckgegeben, dann wird eine Kopie der voherigen Version gespeichert, um die Verionshistorie nachvollziehen zuk&ouml;nnen.</span></li>
+                            <?php if($this->useEmailNotificationSystemFeatureList) :?>
+                            <li><span>Es wird eine Informations-Email an alle berechtigten Benutzer geschickt, wenn eine neue Datei angelegt oder eine bestehende Datei bearbeitet bzw. gel&ouml;scht wurde.</span></li>
+                            <?php endif; ?>
                             <?php if($this->useApprovalSystemFeatureList) :?>
                                 <li><span>Genehmigung: Autorisierte Nutzer k&ouml;nnen ein Genehmigungsverfahren f&uuml;r eine Datei einleiten. Alle Bearbeiter m&uuml;ssen abstimmen, ob die Datei zur Abgabe bereit ist oder es noch an &Uuml;berarbeitung bedarf. Die Datei kann w&auml;hrend des Genehmigungsverfahrens nicht bearbeitet werden. Dateien, die sich in einem Genehmigungsverfahren befinden oder bereits genehmigt wurden, stehen <b>nur</b> zum <b>Download</b> bereit</span></li>
                             <?php endif; ?>
@@ -411,9 +438,9 @@
 
                 <!-- TAB 3 SPRACHE START -->
                 <div id="language">
-                    <ul>
-                        <li class="tab_level_2"><a href="#de" class="active2" >Deutsch</a></li>
-                        <li class="tab_level_2"><a href="#en">Englisch</a></li>
+                    <ul class="lang">
+                        <li><a href="#de" class="active" >Deutsch</a></li>
+                        <li><a href="#en">Englisch</a></li>
                     </ul>
                     
                     <div id="de">
@@ -425,6 +452,68 @@
                     
                 </div>
                 <!-- TAB3 SPRACHEN ENDE -->
+                
+                <!-- TAB4 RECHTE START -->
+                <div id="rights">
+                    <ul class="rights">
+                        <li><a href="#assign_rights" class="active" >Benutzer</a></li>
+                        <?php if($this->useApprovalSystemFeatureList) :?>
+                            <li><a href="#assign_approval_rights">Genehmigungsrechte</a></li>
+                        <?php endif; ?>
+                    </ul>
+                    
+                    <div id="assign_rights">
+                        
+                        <input type="button" class="btn" value="Diesem Listtool Intranet / Benutzer zuweisen" onclick="openNewWindow('<?php echo $this->rightslink; ?>');">
+                        <div>&nbsp;</div>
+                        <?php if (is_array($this->intranets) && count($this->intranets) > 0): ?>
+                            <br/>
+                            <p>zugeordnete Intranets:</p>
+                            <ul>
+                                <?php foreach ($this->intranets as $intranet): ?>
+                                    <li><?php echo $intranet['name']; ?></li>
+                                <?php endforeach; ?>
+                            </ul>	
+                        <?php endif; ?>
+
+                        <?php if (is_array($this->users) && count($this->users) > 0): ?>
+                            <br/>
+                            <p>zugeordnete Benutzer:</p>
+                            <ul>
+                                <?php foreach ($this->users as $user): ?>
+                                    <li><?php echo $user['name']; ?></li>
+                                <?php endforeach; ?>
+                            </ul>	
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if($this->useApprovalSystemFeatureList) :?>
+                        <div id="assign_approval_rights">
+
+                            <h5>Genehmigungsadmin-Rechte zuweisen</h5>
+
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th style="width:20px;">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($this->userList as $user): ?>
+                                        <tr>
+                                            <td><?php echo $user["name"]; ?></td>
+                                            <td><input type="checkbox" name="approval_admin[<?php echo $user["id"]; ?>]" value="1" <?php if(array_key_exists($user["id"], $this->approvalAdminIds)): ?> checked="checked" <?php endif; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                    
+                </div>
+                <!-- TAB4  ENDE -->
+                
                 <div class="lw_functions_bottom">
                     <input class="btn btn-primary" type="submit"  value="speichern"  />
                     <input class="btn" type="button" onClick="document.location.href='<?php echo $this->backUrl; ?>';" value="abbrechen" />
@@ -433,32 +522,4 @@
         </form>
     </div>	        
 
-</fieldset>
-
-<fieldset class="lwadminform">
-
-    <legend class="lwadminform">Rechtezuweisung</legend>
-    <div id="container_rights">    
-        <input type="button" class="btn" value="Rechtezuweisung" onclick="openNewWindow('<?php echo $this->rightslink; ?>');">
-        <div>&nbsp;</div>
-        <?php if (is_array($this->intranets) && count($this->intranets) > 0): ?>
-            <br/>
-            <p>zugeordnete Intranets:</p>
-            <ul>
-                <?php foreach ($this->intranets as $intranet): ?>
-                    <li><?php echo $intranet['name']; ?></li>
-                <?php endforeach; ?>
-            </ul>	
-        <?php endif; ?>
-
-        <?php if (is_array($this->users) && count($this->users) > 0): ?>
-            <br/>
-            <p>zugeordnete Benutzer:</p>
-            <ul>
-                <?php foreach ($this->users as $user): ?>
-                    <li><?php echo $user['name']; ?></li>
-                <?php endforeach; ?>
-            </ul>	
-        <?php endif; ?>
-    </div>
 </fieldset>

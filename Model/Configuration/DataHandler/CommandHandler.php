@@ -25,7 +25,11 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
                 }
             }
         }
+        
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ApprovalRights', 'saveAssignedApprovalAdmins', array("listId"=>$id, "adminIds" => $parameter['approval_admin']));
+        
         unset($parameter['langParams']);
+        unset($parameter['approval_admin']);
         
         return $this->pluginRepository->savePluginData('lw_listtool2', $id, $parameter, $content);
     }

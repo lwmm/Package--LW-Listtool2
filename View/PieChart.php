@@ -12,10 +12,11 @@ class PieChart extends \LWmvc\View\View
         $this->view = new \lw_view(dirname(__FILE__).'/templates/PieChart.tpl.phtml');
     }
     
-    public function render($votedYes, $votedNo)
+    public function render($votedYes, $votedNo, $votedNot)
     {
         $this->view->yes = $votedYes;
         $this->view->no = $votedNo;
+        $this->view->not = $votedNot;
         return $this->view->render();
     }
 }

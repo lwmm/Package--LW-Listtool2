@@ -47,10 +47,10 @@ class QueryHandler extends \LWmvc\Model\DataQueryHandler
         return $this->db->pselect();    
     }
     
-    public function getAllReadersByPageId($pageId)
+    public function getAllReadersByListId($listId)
     {
-        $this->db->setStatement("SELECT * FROM t:lw_intra_assign WHERE object_type = 'page' AND object_id = :pageid ");
-        $this->db->bindParameter('pageid', 'i', $pageId);
+        $this->db->setStatement("SELECT * FROM t:lw_intra_assign WHERE object_type = 'listtool_cbox' AND object_id = :liid ");
+        $this->db->bindParameter('liid', 'i', $listId);
         $array = $this->db->pselect();    
         foreach($array as $entry) {
             if ($entry['right_type'] == 'intranet') {
@@ -68,4 +68,25 @@ class QueryHandler extends \LWmvc\Model\DataQueryHandler
         }        
         return $users;
     }    
+    
+    public function getAssignedUserList($userIds)
+    {
+        $array = array();
+        
+        foreach($userIds as $uid){
+            $this->db->setStatement("SELECT id, name FROM t:lw_in_user WHERE id = :id ");
+            $this->db->bindParameter("id", "i", $uid);
+            
+            $array[] = $this->db->pselect1();
+        }
+        
+        $sortArray = array();
+        foreach($array as $nr => $a){
+            $sortArray[$nr] = $a["name"];
+        }
+        
+        array_multisort($sortArray, SORT_ASC, $array);
+        
+        return $array;
+    }
 }

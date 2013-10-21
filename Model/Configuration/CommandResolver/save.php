@@ -76,6 +76,8 @@ class save extends \LWmvc\Model\CommandResolver
             $parameter['showAdditionalInfo'] = $dataValueObject->getValueByKey("showAdditionalInfo");
             $parameter['showThumbnail'] = $dataValueObject->getValueByKey("showThumbnail");
             $parameter['approval'] = $dataValueObject->getValueByKey("approval");
+            $parameter['notification'] = $dataValueObject->getValueByKey("notification");
+            $parameter['approval_admin'] = $dataValueObject->getValueByKey("approval_admin");
             $content = false;
             $result = $this->getCommandHandler()->savePluginData($this->command->getParameterByKey('id'), $parameter, $content);
             $this->command->getResponse()->setParameterByKey('saved', true);

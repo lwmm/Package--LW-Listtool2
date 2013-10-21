@@ -7,7 +7,7 @@
 
 namespace LwListtool\Model\ListRights\CommandResolver;
 
-class getAllReadersByPageId extends \LWmvc\Model\CommandResolver
+class getAssignedUserList extends \LWmvc\Model\CommandResolver
 {
     public function __construct($command)
     {
@@ -19,13 +19,13 @@ class getAllReadersByPageId extends \LWmvc\Model\CommandResolver
     
     public function getInstance($command)
     {
-        return new getAllReadersByPageId($command);
+        return new getAssignedUserList($command);
     }
     
     public function resolve()
     {
-        $result = $this->getQueryHandler()->getAllReadersByPageId($this->command->getParameterByKey('pageId'));
-        $this->command->getResponse()->setDataByKey('UserArray', $result);
+        $result = $this->getQueryHandler()->getAssignedUserList($this->command->getParameterByKey('users'));
+        $this->command->getResponse()->setDataByKey('userList', $result);
         return $this->command->getResponse();       
     }
 }

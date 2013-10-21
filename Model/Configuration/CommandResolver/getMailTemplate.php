@@ -45,7 +45,7 @@ class getMailTemplate extends \LWmvc\Model\CommandResolver
     public function resolve()
     {
         $templateName = $this->command->getParameterByKey('templateName');
-        if ($templateName == 'newListoolFileMailtext' || $templateName == 'editListoolFileMailtext' || $templateName == 'startApprovalListoolMailtext' || $templateName == 'remindApprovalListoolMailtext' || $templateName == 'releaseApprovalListoolMailtext') {
+        if ($templateName == 'newListoolFileMailtext' || $templateName == 'editListoolFileMailtext' || $templateName == 'deleteListoolFileMailtext' || $templateName == 'startApprovalListoolMailtext' || $templateName == 'remindApprovalListoolMailtext' || $templateName == 'releaseApprovalListoolMailtext') {
             $template = $this->getQueryHandler()->loadTemplateByName($templateName);
         }
         else{

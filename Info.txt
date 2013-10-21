@@ -1,0 +1,45 @@
+FeatureConfig
+
+Das ApprovalSystem ( Genehmigungssystem ) und das NotificationSystem ( Email
+Benachrichtigung ) müssen für die Aktivierung in die FeaturesConfig
+eingetragen werden.
+
+LwListtool_EmailNotification = 1
+LwListtool_ApprovalSystem = 1
+
+
+
+Email Notification Templates
+
+In Contentory unter Templates->Vorlagen Plugins anlegen.
+
+
+Templatenamen:
+
+    newListoolFileMailtext
+    editListoolFileMailtext
+    deleteListoolFileMailtext
+    startApprovalListoolMailtext
+    releaseApprovalListoolMailtext
+    remindApprovalListoolMailtext
+
+
+Die erste Zeile eines Templates wird bei der Emailversendung als
+Betreff verwendet. Rest ist Content der Mail.
+
+Platzhalter werden in geschweiften Klammen + Unterstrich gefasst.  {_PLATZHALTER_}
+
+Verfügbare Platzhalter:
+    {_filename_}
+    {_listname_}
+    {_listurl_}
+    {_entryname_}
+
+Beispiel:
+
+Listtool Datei wurde angelegt                       [ BETREFF ZEILE ]
+
+Neue Datei angelegt : {_filename_}                  [ MAIL CONTENT ]
+Liste : {_listname_}
+Url : {_listurl_}
+Eintrag : {_entryname_}

@@ -307,7 +307,7 @@
                                     <span class="lt_adminfunctions"><?php echo $this->lang["lang_approval_approved_file"]; ?></span>
                                 <?php endif; ?>
                                             
-                                <?php if($entry->isInApproval() && !$this->auth->isLoggedIn()): ?>
+                                <?php if($entry->isInApproval() && !$this->auth->isLoggedIn() && !$entry->isApprovalStarter($this->inAuth->getUserdata("id"))): ?>
                                     <span class="lt_adminfunctions">
                                         <?php echo $this->lang["lang_approval_started_by"]; ?> <?php if($entry->getApprovalStarterName() == "") { echo "Admin"; }else{ echo $entry->getApprovalStarterName();}; ?>
                                         <?php if(!$entry->hasLoggedInInUserVoted() && $entry->isVoteAllowed()): ?>
@@ -318,7 +318,18 @@
                                             | <?php echo $this->lang["lang_approval_missed_voting"]; ?>
                                         <?php endif; ?>
                                     </span>
+                                <?php elseif($entry->isInApproval() && !$this->auth->isLoggedIn()): ?>
+                                    <span class="lt_adminfunctions">
+                                        <?php if(!$entry->hasLoggedInInUserVoted() && $entry->isVoteAllowed()): ?>
+                                            | <a id="lt_entry_<?php echo $entry->getValueByKey("id"); ?>" class="lt_vote_approval_entry" href="#" class="lt_onsite_link"><?php echo '<span title="' . $this->lang["lang_approval_title"] . '">' . $this->lang["lang_approval_vote"] . '</span>'; ?></a>
+                                        <?php elseif($entry->hasLoggedInInUserVoted()): ?>
+                                            | <?php echo $this->lang["lang_approval_voted"]; ?>
+                                        <?php elseif(!$entry->hasLoggedInInUserVoted() && !$entry->isVoteAllowed()): ?>
+                                            | <?php echo $this->lang["lang_approval_missed_voting"]; ?>
+                                        <?php endif; ?>
+                                    </span>
                                 <?php endif; ?>
+                                    
                             <?php endif; #useApprovalSystem?>
                                     
                             <?php endif; #ltwrite ?>

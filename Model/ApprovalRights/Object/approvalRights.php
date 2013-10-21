@@ -27,6 +27,7 @@ class approvalRights extends \LWmvc\Model\Entity
     public function __construct($id = false)
     {
         parent::__construct($id);
+        $this->dic = new \lwListtool\Services\dic();
     }
 
     public function setAssignedUserArray($array)
@@ -54,26 +55,22 @@ class approvalRights extends \LWmvc\Model\Entity
         $this->listConfig = $config;
     }
 
-    public function isAuthInvolved()
-    {
-        if ($this->listConfig->getValueByKey('listtooltype') == "intranet") {
-            return false;
-        }
-        return true;
-    }
-
-    public function isInAuthInvolved()
-    {
-        $type = $this->listConfig->getValueByKey('listtooltype');
-        if ($type == "intranet" || $type == "intranet_backend") {
-            return true;
-        }
-        return false;
-    }
 
     public function isAssigned()
     {
-        return false;
+        $db = $this->dic->getDbObject();
+        
+        $db->setStatement("SELECT * FROM t:lw_intra_assign WHERE right_type = :rightType AND right_id = :rightId");
+        $db->bindParameter("rightType", "s", "user_approval_admin");
+        $db->bindParameter("rightId", "i", $this->inAuth->getUserData("id"));
+        
+        $result = $db->pselect1();
+        
+        if(empty($result)){
+            return false;
+        }
+        
+        return true;
     }
 
     public function isApprovalAllowed()

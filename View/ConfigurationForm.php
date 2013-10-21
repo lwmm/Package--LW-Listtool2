@@ -19,6 +19,9 @@ class ConfigurationForm extends \LWmvc\View\View
         if($this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive()){
             $this->view->useApprovalSystemFeatureList = true;
         }
+        if($this->featureCollection->getFeature("LwListtool_EmailNotification")->isActive()){
+            $this->view->useEmailNotificationSystemFeatureList = true;
+        }
         $LwI18nController = new \LwI18n\Controller\I18nController($this->dic->getDbObject(), $this->response);
         $LwI18nController->execute( "lw_listtool2", "de", $this->fillPlaceHolderWithSelectedLanguage("de"));
         $LwI18nController->execute( "lw_listtool2", "en", $this->fillPlaceHolderWithSelectedLanguage("en"));
@@ -46,6 +49,21 @@ class ConfigurationForm extends \LWmvc\View\View
     public function setAssignedIntranets($array)
     {
         $this->view->intranets = $array;
+    }
+    
+    /**
+     * List of single assigned users and users of assigned intranets.
+     * 
+     * @param array $array
+     */
+    public function setAssignedUserList($array)
+    {
+        $this->view->userList = $array;
+    }
+    
+    public function setAssignedApprovalAdminIds($array)
+    {
+        $this->view->approvalAdminIds = $array;
     }
     
     public function setListId($listId)

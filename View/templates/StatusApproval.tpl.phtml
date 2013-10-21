@@ -150,18 +150,21 @@
                         <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "Answers"; else: echo "Antworten"; endif; ?>:</div>
                         <div class="lt_fieldvalue">
                             <div class="clearfix" style="position: relative;">
-                                <div class="legend">
-                                    <div style="margin-bottom: 10px; float:left;margin-left: 10px;margin-right: 15px;">
-                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[0]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php if($this->lang =="en"): echo "Yes"; else: echo "Ja"; endif; ?></span>&nbsp;( <?php echo $this->results["voted_yes"]; ?> )
+                                <div class="legend clearfix">
+                                    <div style="margin-bottom: 10px; float:left;margin-left: 10px;margin-right: 10px;">
+                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 10px;background-color: <?php echo $this->colorArray[0]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php if($this->lang =="en"): echo "Yes"; else: echo "Ja"; endif; ?></span>&nbsp;( <?php echo $this->results["voted_yes"]; ?> )
                                     </div>
-                                    <div>
+                                    <div style="margin-bottom: 10px; float:left;margin-left: 10px;margin-right: 10px;">
                                         <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[1]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php if($this->lang =="en"): echo "No"; else: echo "Nein"; endif; ?></span>&nbsp;( <?php echo $this->results["voted_no"]; ?> )
+                                    </div> 
+                                    <div style="margin-bottom: 10px; float:left;margin-left: 10px;margin-right: 10px;">
+                                        <div style="margin-top:3px;margin-right:5px;float:left;width:15px;height: 15px;background-color: <?php echo $this->colorArray[2]; ?>">&nbsp;</div><span style="font-size: 11px;"><?php if($this->lang =="en"): echo "Not voted"; else: echo "Enthaltung"; endif; ?></span>&nbsp;( <?php echo $this->results["voted_not"]; ?> )
                                     </div> 
                                 </div>
                                 
                                 <?php
                                     $view = new \LwListtool\View\PieChart();
-                                    echo $view->render($this->results["voted_yes_percent"],$this->results["voted_no_percent"]);
+                                    echo $view->render($this->results["voted_yes_percent"],$this->results["voted_no_percent"],$this->results["voted_not_percent"]);
                                 ?>
                             </div>
                         </div>

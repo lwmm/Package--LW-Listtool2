@@ -39,6 +39,7 @@ class Frontend extends \LWmvc\Controller
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=>$this->getContentObjectId()));
         $this->listConfig = $response->getDataByKey('ConfigurationEntity');
         $this->useApprovalSystemListConfig = $this->listConfig->getValueByKey('approval');
+        $this->useEmailNotificationSystemListConfig = $this->listConfig->getValueByKey('notification');
         
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getListRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
         $this->listRights = $response->getDataByKey('rightsObject');
@@ -103,6 +104,14 @@ class Frontend extends \LWmvc\Controller
                     return $this->showAddLinkFormAction($response->getDataByKey("error"));
                 }
             }
+            
+            if ($this->request->getAlnum("type") == "file" && $this->request->getInt("published") == 1 ) {
+                if($this->featureCollection->getFeature("LwListtool_EmailNotification")->isActive() && $this->useEmailNotificationSystemListConfig){
+                    $opt2file = $this->request->getFileData('opt2file');
+                    \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $opt2file['name'], "entryname" => $this->request->getAlnum("name"),"cmd" => "addFile"));
+                }
+            }
+            
             return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
         }
      }
@@ -150,14 +159,22 @@ class Frontend extends \LWmvc\Controller
        if ($this->listRights->isWriteAllowed()) {
            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
            $entity = $response->getDataByKey('EntryEntity');
-           
-           if(!$entity->isInApproval()){
+
+           if(!$entity->isInApproval() && !$entity->isApproved()){
                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'save', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
                if ($response->getParameterByKey("error")) {
                    return $this->showEditEntryFormAction($response->getDataByKey("error"));
                }
+               
+               if ($entity->isFile() && $this->request->getInt("published") == 1) {
+                    if($this->featureCollection->getFeature("LwListtool_EmailNotification")->isActive() && $this->useEmailNotificationSystemListConfig){
+                        \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey('opt2file'), "entryname" => $entity->getValueByKey("name"),"cmd" => "editFile"));
+                    }
+                }
+               
                return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
            }
+            
            return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
        }
     }
@@ -211,7 +228,17 @@ class Frontend extends \LWmvc\Controller
     protected function deleteEntryAction()
     {
        if ($this->listRights->isWriteAllowed()) {
+           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+           $entity = $response->getDataByKey('EntryEntity');
+           
            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'delete', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+           
+           if ($entity->isFile() && $entity->getValueByKey('published') == 1) {
+                if($this->featureCollection->getFeature("LwListtool_EmailNotification")->isActive() && $this->useEmailNotificationSystemListConfig){
+                    \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey('opt2file'), "entryname" => $entity->getValueByKey("name"),"cmd" => "deleteFile"));
+                }
+            }
+           
            return $this->buildReloadResponse(array("cmd"=>"showList"));
        }
     }
@@ -325,7 +352,7 @@ class Frontend extends \LWmvc\Controller
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if(!$entity->isInApproval()){
+            if(!$entity->isInApproval() && !$entity->isApproved()){
                 $entity->setId($this->request->getInt("id"));
 
                 $formView = new \LwListtool\View\StartApprovalForm();
@@ -347,7 +374,7 @@ class Frontend extends \LWmvc\Controller
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval()){                
+            if($entity->isInApproval() && !$entity->isApproved()){                
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getApprovalStatistics', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
                 $results = $response->getDataByKey('results'); 
                 
@@ -373,7 +400,7 @@ class Frontend extends \LWmvc\Controller
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval()){
+            if($entity->isInApproval() && !$entity->isApproved()){
                 $entity->setId($this->request->getInt("id"));
 
                 $formView = new \LwListtool\View\VoteApproval();
@@ -395,7 +422,7 @@ class Frontend extends \LWmvc\Controller
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if(!$entity->isInApproval()){
+            if(!$entity->isInApproval() && !$entity->isApproved()){
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'startApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id"), "enddate" => $this->request->getInt("opt8number")));
                 if($response->getParameterByKey("errordate")){
                     return $this->showStartApprovalEntryFormAction($response->getParameterByKey("errordate"));
@@ -413,7 +440,7 @@ class Frontend extends \LWmvc\Controller
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval()){
+            if($entity->isInApproval() && !$entity->isApproved()){
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'stoppApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id")));
                 \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "stoppApproval"));
                 return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
@@ -428,7 +455,7 @@ class Frontend extends \LWmvc\Controller
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval()){
+            if($entity->isInApproval() && !$entity->isApproved()){
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'voteApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id"), "listId"=>$this->getContentObjectId()), array("postArray" => $this->request->getPostArray()));            
                 if($response->getParameterByKey("errorvote")){
                     return $this->showApprovalEntryVoteAction($response->getParameterByKey("errorvote"));
@@ -445,7 +472,7 @@ class Frontend extends \LWmvc\Controller
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval()){
+            if($entity->isInApproval() && !$entity->isApproved()){
                 \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "remindApproval"));
                 \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'setDateSendApprovalReminder', array("id"=>$this->request->getInt("id")));
 
@@ -461,7 +488,7 @@ class Frontend extends \LWmvc\Controller
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval()){
+            if($entity->isInApproval() && !$entity->isApproved()){
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getApprovalStatistics', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
                 $results = $response->getDataByKey('results'); 
                 if($results["voted_yes_percent"] >= 75 && ( date("YmdHis") >= $entity->getValueByKey('opt7number') || $results["participant_quote"] == 100 ) ){

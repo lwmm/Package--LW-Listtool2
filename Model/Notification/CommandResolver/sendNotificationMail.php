@@ -43,6 +43,9 @@ class sendNotificationMail extends \LWmvc\Model\CommandResolver
             case "editFile":
                 $emailTemplateName = "editListoolFileMailtext";
                 break;
+            case "deleteFile":
+                $emailTemplateName = "deleteListoolFileMailtext";
+                break;
             case "startApproval":
                 $emailTemplateName = "startApprovalListoolMailtext";
                 break;
@@ -64,8 +67,8 @@ class sendNotificationMail extends \LWmvc\Model\CommandResolver
         $subject = trim(substr($template, 0, strpos($template, PHP_EOL)));
         $content = trim(str_replace($subject, "", $template));    
         
-        if($cmd == "addFile" || $cmd == "editFile" ){
-            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getAllReadersByPageId', array("pageId"=>\lw_page::getInstance()->getId()));
+        if($cmd == "addFile" || $cmd == "editFile" || $cmd == "deleteFile"){
+            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getAllReadersByListId', array("listId"=>$listId));
             $users = $response->getDataByKey('UserArray');
             
             foreach($users as $userId){

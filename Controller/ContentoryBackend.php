@@ -93,6 +93,15 @@ class ContentoryBackend extends \LWmvc\Controller
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getUserByListId', array("listId"=>$this->getContentObjectId()));
         $formView->setAssignedUser($response->getDataByKey('UserArray'));
         
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getAllReadersByListId', array("listId"=>$this->getContentObjectId()));
+        $users = $response->getDataByKey('UserArray');
+        
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getAssignedUserList', array("users"=>$users));
+        $formView->setAssignedUserList($response->getDataByKey('userList'));
+        
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ApprovalRights', 'getAssignedApprovalAdmins', array("listId"=>$this->getContentObjectId()));
+        $formView->setAssignedApprovalAdminIds($response->getDataByKey('approvalAdminIds'));
+        
         return $this->returnRenderedView($formView);
     }    
 
