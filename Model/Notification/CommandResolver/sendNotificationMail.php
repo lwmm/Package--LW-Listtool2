@@ -27,14 +27,8 @@ class sendNotificationMail extends \LWmvc\Model\CommandResolver
 
         $config = $this->dic->getConfiguration();               
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Configuration', 'getConfigurationEntityById', array("id"=> $listId));
-        $listConfig = $response->getDataByKey('ConfigurationEntity');
-        $lang = $listConfig->getValueByKey('language');
+        $listname = $response->getDataByKey('ConfigurationEntity')->getValueByKey('name');
         
-        if($listConfig->getValueByKey('name') == ""){
-            $listname = $this->getQueryHandler()->getListnameByListId($lang);
-        }else{
-            $listname = $listConfig->getValueByKey('name');
-        }
         
         switch ($cmd) {
             case "addFile":
@@ -77,14 +71,14 @@ class sendNotificationMail extends \LWmvc\Model\CommandResolver
                     $emails[$email] = true;
                 }
             }            
-        }else if($cmd == "startApproval" || "stoppApproval"){
+        }else if($cmd == "startApproval" ||  $cmd == "stoppApproval"){
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'getAllAssignedUserEmails', array("listId"=> $listId));
             $emails = $response->getDataByKey('emails');
-        }else if($cmd == "remindApproval"){
+        }else if($cmd=="remindApproval"){
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getApprovalStatistics', array("id"=>$entryid, "listId"=>$listId));
             $emails = $response->getDataByKey('emailsOfNotVotedUsers');
         }
-        
+
         $mailer = new \LwMailer\Controller\LwMailer($config["mailConfig"], $config);
         foreach($emails as $email => $flagg){
             $mailInformationArray = array(

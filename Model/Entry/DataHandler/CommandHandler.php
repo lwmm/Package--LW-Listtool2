@@ -212,6 +212,12 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         return $this->db->pdbquery();
     }
     
+    /**
+     *              /F020/
+     * 
+     * Setzen des Flaggs "in Genehmigung" für den Eintrag und speichern
+     * des Startdatums, Enddatums und der User-ID des Verfahrensstarters.
+     */
     public function startApprovalEntity($id, $userId, $enddate)
     {
         $sek = date("His");
@@ -232,6 +238,9 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         return $this->db->pdbquery();
     }
     
+    /**
+     * Alle Stimmabgaben zu einem Genehmigungsverfahren löschen.
+     */
     protected function deleteVoteApprovalEntriesByEntryId($id)
     {
         $this->db->setStatement("DELETE FROM t:lw_master WHERE lw_object = :lw_object AND opt1number = :opt1number ");
@@ -241,7 +250,12 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         return $this->db->pdbquery();
     }
 
-
+    /**
+     *              /F040/ + /F060/
+     * 
+     * Die abgegebene Stimme wird gespeichert. Bei einer "Nein"-Stimmer
+     * wird zusätzlich noch der Kommentar gespeichert.
+     */
     public function addVoteApprovalEntry($id, $userId, $listId, $array)
     {
         if($array["lt_vote"] == 0){
@@ -260,6 +274,9 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         return $this->db->pdbquery();
     }
     
+    /**
+     * Datum der Versendung speichern.
+     */
     public function setDateSendApprovalReminder($id)
     {
         $this->db->setStatement("UPDATE t:lw_master SET opt8number = :date WHERE id = :id ");
@@ -269,6 +286,12 @@ class CommandHandler extends \LWmvc\Model\DataCommandHandler
         return $this->db->pdbquery();
     }
     
+    /**
+     *              /F021/
+     * 
+     * Alle Informationen zum Genehmigungsverfahren löschen ( Stimmabgaben ) und den
+     * Flagg setzen, dass dieser Eintrag genehmigt worden ist. 
+     */
     public function setEntryApproved($id)
     {
         $this->deleteVoteApprovalEntriesByEntryId($id);

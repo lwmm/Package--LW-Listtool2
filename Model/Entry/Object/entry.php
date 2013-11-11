@@ -128,16 +128,22 @@ class entry extends \LWmvc\Model\Entity
     public function getFreeDate()
     {
         $date = substr($this->getValueByKey('opt2number'), 0, 8);
+        
+        if(empty($date)){
+            return false;
+        }
         return \lw_object::formatDate($date);
     }
     
     public function getFreeTime()
     {
-        $hour = substr($this->getValueByKey('opt2number'), 8, 2);
-        $min = substr($this->getValueByKey('opt2number'), 10, 2);
-        $sec = substr($this->getValueByKey('opt2number'), 12, 2);
-        
-        return $hour.':'.$min.':'.$sec;
+        #$hour = substr($this->getValueByKey('opt2number'), 8, 2);
+        #$min = substr($this->getValueByKey('opt2number'), 10, 2);
+        #$sec = substr($this->getValueByKey('opt2number'), 12, 2);
+        if(!$this->getFreeDate()) {
+            return false;
+        }
+        return '08:00:00';
     }
     
     
@@ -172,9 +178,19 @@ class entry extends \LWmvc\Model\Entity
         return false;
     }
     
-    public function isApprovalStarter($userId)
+    public function isInUserApprovalStarter()
     {
-        if ($this->isInApproval() && $this->getValueByKey('opt6number') == $userId) {
+        $inAuth = $this->dic->getLwInAuth();
+        if ($this->isInApproval() && $this->getValueByKey('opt6number') == $inAuth->getUserdata("id")) {
+            return true;
+        }
+        return false;
+    }
+    
+    public function isInUserBorrower()
+    {
+        $inAuth = $this->dic->getLwInAuth();
+        if ($this->getValueByKey('opt6number') == $inAuth->getUserdata("id")) {
             return true;
         }
         return false;

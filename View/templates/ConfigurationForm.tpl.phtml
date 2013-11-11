@@ -349,7 +349,7 @@
                             <li><span>"ver&ouml;ffentlicht": wird in jedem Fall nur angezeigt, wenn man die Liste bearbeiten darf. Es kann entweder eine eigene Spalte mit dem Status "ver&ouml;ffentlicht" angezeigt werden oder es wird die Zeile mit einem nicht ver&ouml;ffentlichtem Eintrag leicht rot hinterlegt.</span></li>
                             <li><span>Archivieren: Wird eine Datei nach der Bearbeitung zur&uuml;ckgegeben, dann wird eine Kopie der voherigen Version gespeichert, um die Verionshistorie nachvollziehen zuk&ouml;nnen.</span></li>
                             <?php if($this->useEmailNotificationSystemFeatureList) :?>
-                            <li><span>Es wird eine Informations-Email an alle berechtigten Benutzer geschickt, wenn eine neue Datei angelegt oder eine bestehende Datei bearbeitet bzw. gel&ouml;scht wurde.</span></li>
+                                <li><span>Es wird eine Informations-Email an alle berechtigten Benutzer geschickt, wenn eine neue Datei angelegt oder eine bestehende Datei bearbeitet bzw. gel&ouml;scht wurde.</span></li>
                             <?php endif; ?>
                             <?php if($this->useApprovalSystemFeatureList) :?>
                                 <li><span>Genehmigung: Autorisierte Nutzer k&ouml;nnen ein Genehmigungsverfahren f&uuml;r eine Datei einleiten. Alle Bearbeiter m&uuml;ssen abstimmen, ob die Datei zur Abgabe bereit ist oder es noch an &Uuml;berarbeitung bedarf. Die Datei kann w&auml;hrend des Genehmigungsverfahrens nicht bearbeitet werden. Dateien, die sich in einem Genehmigungsverfahren befinden oder bereits genehmigt wurden, stehen <b>nur</b> zum <b>Download</b> bereit</span></li>
@@ -463,12 +463,11 @@
                     </ul>
                     
                     <div id="assign_rights">
-                        
                         <input type="button" class="btn" value="Diesem Listtool Intranet / Benutzer zuweisen" onclick="openNewWindow('<?php echo $this->rightslink; ?>');">
                         <div>&nbsp;</div>
                         <?php if (is_array($this->intranets) && count($this->intranets) > 0): ?>
                             <br/>
-                            <p>zugeordnete Intranets:</p>
+                            <p><b>zugeordnete Intranets:</b></p>
                             <ul>
                                 <?php foreach ($this->intranets as $intranet): ?>
                                     <li><?php echo $intranet['name']; ?></li>
@@ -478,7 +477,7 @@
 
                         <?php if (is_array($this->users) && count($this->users) > 0): ?>
                             <br/>
-                            <p>zugeordnete Benutzer:</p>
+                            <p><b>zugeordnete Benutzer:</b></p>
                             <ul>
                                 <?php foreach ($this->users as $user): ?>
                                     <li><?php echo $user['name']; ?></li>

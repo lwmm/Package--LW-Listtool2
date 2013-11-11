@@ -188,7 +188,7 @@ class isValid extends \LWmvc\Model\Validator
             }
         }
         else {
-            if (in_array($ext, $extarray)) {
+            if (in_array('.'.strtolower($ext), $extarray)) {
                 $this->addError($key, LW_BLACKLIST_ERROR, array("notallowed"=>$this->configuration->getValueByKey('suffix'), "extension"=>$ext));
                 $ok = false;
             }

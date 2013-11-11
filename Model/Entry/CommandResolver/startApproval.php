@@ -25,6 +25,8 @@ class startApproval extends \LWmvc\Model\CommandResolver
         else if($this->command->getParameterByKey("enddate") <= date("Ymd")){
             $this->command->getResponse()->setParameterByKey('errordate', 2);
         }else{
+            
+            # /F020/ Eingeleitetes Genehmigungsverfahren in der DB unter der Eintrags-ID speichern
             $ok = $this->getCommandHandler()->startApprovalEntity($this->command->getParameterByKey("id"), $this->command->getParameterByKey("approvalUserId"), $this->command->getParameterByKey("enddate"));
             if ($ok) {
                 $this->command->getResponse()->setParameterByKey('startApproval', true);

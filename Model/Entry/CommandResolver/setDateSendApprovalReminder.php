@@ -19,6 +19,7 @@ class setDateSendApprovalReminder extends \LWmvc\Model\CommandResolver
     
     public function resolve()
     {
+        # Datum der Erinnerungsmailversendung speichern.
         $ok = $this->getCommandHandler()->setDateSendApprovalReminder($this->command->getParameterByKey("id"));
         if ($ok) {
             $this->command->getResponse()->setParameterByKey('approvalReminder', true);

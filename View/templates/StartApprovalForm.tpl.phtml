@@ -11,7 +11,7 @@
     });
     
     $(document).ready(function() {
-        $("#shown_opt8number").datepicker({
+        $("#shown_enddate").datepicker({
             monthNames: ['Januar','Februar','M&auml;rz','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
             dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
 
@@ -19,7 +19,7 @@
             dayNamesShort: ['Son','Mon','Die','Mit','Don','Fre','Sam'],
 
             dateFormat: "dd.mm.yy",
-            altField: '#opt8number', 
+            altField: '#enddate', 
             altFormat: 'yymmdd',
             changeMonth: true,
             changeYear: true,
@@ -108,8 +108,8 @@
                     <div class="lt_fieldwrapper">
                         <div class="lt_fieldlabel"><?php if($this->lang =="en"): echo "To:"; else: echo "Bis:"; endif; ?></div>
                         <div class="lt_fieldvalue">
-                            <input autocomplete="off" id="opt8number" type="hidden" name="opt8number" value="" />
-                            <input autocomplete="off" id="shown_opt8number" type="text" name="shown_opt8number" value="" class="lw_fe_datepicker" />
+                            <input autocomplete="off" id="enddate" type="hidden" name="enddate" value="" />
+                            <input autocomplete="off" id="shown_enddate" type="text" name="shown_enddate" value="" class="lw_fe_datepicker" />
                         </div>
                     </div>    
 

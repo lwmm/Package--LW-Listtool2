@@ -29,7 +29,6 @@ class VoteApproval extends \LWmvc\View\View
     
     public function render()
     {
-        #$this->view->mediaUrl = $this->systemConfiguration['url']['media'];
         $this->view->entry = $this->entity;
         $this->view->error = $this->error;
         $this->view->actionUrl = \lw_page::getInstance()->getUrl(array("cmd" => "voteApproval", "id" => $this->entity->getValueByKey('id')));

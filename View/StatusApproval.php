@@ -42,7 +42,7 @@ class StatusApproval extends \LWmvc\View\View
         $this->view->remindApprovalUrl = \lw_page::getInstance()->getUrl(array("cmd" => "sendReminderApprovalMail", "id" => $this->entity->getValueByKey('id')));
         $this->view->approveEntryUrl = \lw_page::getInstance()->getUrl(array("cmd" => "approveEntry", "id" => $this->entity->getValueByKey('id')));
         $this->view->results = $this->results;
-        $this->view->colorArray = array("#788eff", "#fffa78", "#b8f5fb", "#aeff78", "#cb78ff", "#ff7878", "#ffbb78", "#d4ff78", "#78ffa4", "#ab78ff", "#00CBFF");
+        $this->view->colorArray = array("#78ffa4", "#ff7878", "#788eff", "#aeff78", "#cb78ff", "#fffa78", "#ffbb78", "#d4ff78", "#b8f5fb", "#ab78ff", "#00CBFF");
         
         if ($this->configuration->getValueByKey('language') == "de") {
             $this->view->lang = "de";

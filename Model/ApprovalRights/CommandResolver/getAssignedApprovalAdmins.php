@@ -19,7 +19,7 @@ class getAssignedApprovalAdmins extends \LWmvc\Model\CommandResolver
     
     public function resolve()
     {
-        $result = $this->getQueryHandler()->getAllAssignedApprovalAdminsByListIs($this->command->getParameterByKey('listId'));
+        $result = $this->getQueryHandler()->getAllAssignedApprovalAdminsByListIds($this->command->getParameterByKey('listId'));
         $this->command->getResponse()->setDataByKey('approvalAdminIds', $result);
         return $this->command->getResponse();       
     }

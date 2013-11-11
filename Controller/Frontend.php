@@ -27,6 +27,7 @@ class Frontend extends \LWmvc\Controller
     {
         parent::__construct($cmd, $oid);
         $this->dic = new \LwListtool\Services\dic();
+        $this->auth = $this->dic->getLwAuth();
         $this->response = \lw_registry::getInstance()->getEntry("response");
         $this->request = \lw_registry::getInstance()->getEntry("request");
         $this->lwi18nQH = new \LwI18n\Model\queryHandler($this->dic->getDbObject());
@@ -40,6 +41,7 @@ class Frontend extends \LWmvc\Controller
         $this->listConfig = $response->getDataByKey('ConfigurationEntity');
         $this->useApprovalSystemListConfig = $this->listConfig->getValueByKey('approval');
         $this->useEmailNotificationSystemListConfig = $this->listConfig->getValueByKey('notification');
+        $this->useBorrowSystemListConfig = $this->listConfig->getValueByKey('borrow');
         
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ListRights', 'getListRightsObject', array("listId"=>$this->getContentObjectId(), "listConfig"=>$this->listConfig));
         $this->listRights = $response->getDataByKey('rightsObject');
@@ -111,9 +113,9 @@ class Frontend extends \LWmvc\Controller
                     \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $opt2file['name'], "entryname" => $this->request->getAlnum("name"),"cmd" => "addFile"));
                 }
             }
-            
             return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
         }
+        return $this->showListAction();
      }
 
      protected function showEditEntryFormAction($error=false)
@@ -128,30 +130,43 @@ class Frontend extends \LWmvc\Controller
             }
             $entity = $response->getDataByKey('EntryEntity');
             $entity->setId($this->request->getInt("id"));
-            
-            $dir = \lw_directory::getInstance($this->config["path"]["listtool"]."archive/");
-            $files = $dir->getDirectoryContents('file');
-            $archivedFiles = array();
-            foreach ($files as $file) {
-                if(strstr($file->getName(), "_item_" . $this->request->getInt("id") . ".file")) {
-                    $archivedFiles[] = $file->getName();
+      
+            if(!$entity->isInApproval() && !$entity->isApproved()){ # /F030/ + /F080/ Bearbeitung verweigern, wenn sich die Datei im Genehmigungsverfahren befindet oder genehmigt worden ist.
+                if($this->useBorrowSystemListConfig && ($this->auth->isLoggedIn() || $entity->isInUserBorrower())) {
+                    $allowEdit = true;
+                }else if(!$this->useBorrowSystemListConfig){
+                    $allowEdit = true;
+                }else{
+                    $allowEdit = false;
+                }
+
+                if($allowEdit){
+                    $dir = \lw_directory::getInstance($this->config["path"]["listtool"]."archive/");
+                    $files = $dir->getDirectoryContents('file');
+                    $archivedFiles = array();
+                    foreach ($files as $file) {
+                        if(strstr($file->getName(), "_item_" . $this->request->getInt("id") . ".file")) {
+                            $archivedFiles[] = $file->getName();
+                        }
+                    }
+
+                    $formView->setArchiveValues($this->listConfig->getValueByKey("archive"), $archivedFiles);
+                    $formView->setEntity($entity);
+                    $formView->setConfiguration($this->listConfig);
+                    if ($entity->isFile()) {
+                        $formView->setEntryType('file');
+                    }
+                    else {
+                        $formView->setEntryType('link');
+                    }
+                    $formView->setErrors($error);
+                    $response = $this->returnRenderedView($formView);
+                    $response->setParameterByKey('die', 1);
+                    return $response;
                 }
             }
-
-            $formView->setArchiveValues($this->listConfig->getValueByKey("archive"), $archivedFiles);
-            $formView->setEntity($entity);
-            $formView->setConfiguration($this->listConfig);
-            if ($entity->isFile()) {
-                $formView->setEntryType('file');
-            }
-            else {
-                $formView->setEntryType('link');
-            }
-            $formView->setErrors($error);
-            $response = $this->returnRenderedView($formView);
-            $response->setParameterByKey('die', 1);
-            return $response;
         }
+        return $this->showListAction();
      }
      
     protected function saveEntryAction()
@@ -160,7 +175,7 @@ class Frontend extends \LWmvc\Controller
            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
            $entity = $response->getDataByKey('EntryEntity');
 
-           if(!$entity->isInApproval() && !$entity->isApproved()){
+           if(!$entity->isInApproval() && !$entity->isApproved()){ # /F030/ + /F080/ Bearbeitung verweigern, wenn sich die Datei im Genehmigungsverfahren befindet oder genehmitgt worden ist.
                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'save', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId(), "configuration" => $this->listConfig), array('postArray'=>$this->request->getPostArray(), 'opt1file'=>$this->request->getFileData('opt1file'), 'opt2file'=>$this->request->getFileData('opt2file')));
                if ($response->getParameterByKey("error")) {
                    return $this->showEditEntryFormAction($response->getDataByKey("error"));
@@ -171,12 +186,10 @@ class Frontend extends \LWmvc\Controller
                         \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey('opt2file'), "entryname" => $entity->getValueByKey("name"),"cmd" => "editFile"));
                     }
                 }
-               
-               return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
-           }
-            
+           }            
            return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
        }
+       return $this->showListAction();
     }
     
     protected function deleteEntryThumbnailAction()
@@ -185,15 +198,15 @@ class Frontend extends \LWmvc\Controller
            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
            $entity = $response->getDataByKey('EntryEntity');
            
-           if(!$entity->isInApproval()){
+           if(!$entity->isInApproval() && !$entity->isApproved()){ # /F030/ Bearbeitung verweigern, wenn sich die Datei im Genehmigungsverfahren befindet
                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'deleteThumbnail', array("id"=>$this->request->getInt("id")), array());
                if ($response->getParameterByKey("error")) {
                    return $this->showEditEntryFormAction($response->getDataByKey("error"));
                }
-               return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
            }
            return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
        }
+       return $this->showListAction();
     }
      
     protected function showAddFileFormAction($error=false)
@@ -204,7 +217,7 @@ class Frontend extends \LWmvc\Controller
     }
      
     protected function showAddLinkFormAction($error=false)
-    {
+    {        
         if ($this->listRights->isWriteAllowed()) {
             return $this->buildAddForm('link', $error);
         }
@@ -231,13 +244,15 @@ class Frontend extends \LWmvc\Controller
            $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
            $entity = $response->getDataByKey('EntryEntity');
            
-           $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'delete', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
-           
-           if ($entity->isFile() && $entity->getValueByKey('published') == 1) {
-                if($this->featureCollection->getFeature("LwListtool_EmailNotification")->isActive() && $this->useEmailNotificationSystemListConfig){
-                    \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey('opt2file'), "entryname" => $entity->getValueByKey("name"),"cmd" => "deleteFile"));
+           if(!$entity->isInApproval()) {
+               $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'delete', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
+
+               if ($entity->isFile() && $entity->getValueByKey('published') == 1) {
+                    if($this->featureCollection->getFeature("LwListtool_EmailNotification")->isActive() && $this->useEmailNotificationSystemListConfig){
+                        \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey('opt2file'), "entryname" => $entity->getValueByKey("name"),"cmd" => "deleteFile"));
+                    }
                 }
-            }
+           }
            
            return $this->buildReloadResponse(array("cmd"=>"showList"));
        }
@@ -346,14 +361,23 @@ class Frontend extends \LWmvc\Controller
        return showListAction();
     }
     
+    /**
+     *              /F020/
+     * 
+     * Laden des Formulars, um die Gültigkeitsdauer eines Genehmigungsverfahrens
+     * festzulegen und dieses einzuleiten.
+     */
     public function showStartApprovalEntryFormAction($error = false)
     {
+        # Prüfung der Nutzerrechte und Systemeinstellungen
         if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
+            
+            # Eintrag anhand der ID laden
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
+            # Prüfung ob für den Eintrag ein Genehmigungsverfahren eingeleiteten werden kann
             if(!$entity->isInApproval() && !$entity->isApproved()){
-                $entity->setId($this->request->getInt("id"));
 
                 $formView = new \LwListtool\View\StartApprovalForm();
                 $formView->setEntity($entity);
@@ -365,20 +389,25 @@ class Frontend extends \LWmvc\Controller
                 return $response;
             }
         }
+        # Ist die Prüfung der Nutzerrechte, Systemeinstellungen und des Eintragsstatus fehlgeschladen
+        # wird die Liste angezeigt.   ( Verdacht auf Url-Manipulation )     
         return $this->showListAction();
     }
 
+    /**
+     *              /F100/ + /F110/ + /F120/
+     * 
+     * Genehmigungsstatistik laden und im Statusdialog anzeigen.
+     */
     public function showApprovalEntryStatusAction()
     {
         if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
-            
-            if($entity->isInApproval() && !$entity->isApproved()){                
+
+            if($entity->isInApproval() && !$entity->isApproved() && ($this->auth->isLoggedIn() || $entity->isInUserApprovalStarter()) ){                
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getApprovalStatistics', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
                 $results = $response->getDataByKey('results'); 
-                
-                $entity->setId($this->request->getInt("id"));
 
                 $formView = new \LwListtool\View\StatusApproval();
                 $formView->setEntity($entity);
@@ -394,15 +423,19 @@ class Frontend extends \LWmvc\Controller
         return $this->showListAction();
     }
     
+    /**
+     *              /F040/
+     * 
+     * Laden des Formulars für die Abstimmung. 
+     */
     public function showApprovalEntryVoteAction($error = false)
     {
-        if ($this->listRights->isWriteAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {   
+        if ($this->listRights->isWriteAllowed()/* /F040/ nur mit zugewiesenen Schreibrechten darf abgestimmt werden */ && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig && !$this->auth->isLoggedIn()) {   
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval() && !$entity->isApproved()){
-                $entity->setId($this->request->getInt("id"));
-
+            # /F140/ ist der Gültigkeitszeitraum überschritten, dann darf keine Abstimmung mehr angenommen werden
+            if($entity->isInApproval() && !$entity->isApproved() && $entity->isVoteAllowed() && !$entity->hasLoggedInInUserVoted()){
                 $formView = new \LwListtool\View\VoteApproval();
                 $formView->setEntity($entity);
                 $formView->setError($error);
@@ -416,6 +449,11 @@ class Frontend extends \LWmvc\Controller
          return $this->showListAction();
     }
 
+    /**
+     *              /F020/
+     * 
+     * Die Datei wird in den Status "in Genehmigung" versetzt. 
+     */
     protected function startApprovalAction()
     {
         if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {            
@@ -423,25 +461,44 @@ class Frontend extends \LWmvc\Controller
             $entity = $response->getDataByKey('EntryEntity');
             
             if(!$entity->isInApproval() && !$entity->isApproved()){
-                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'startApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id"), "enddate" => $this->request->getInt("opt8number")));
+                
+                # Ausführung des Befehls, die Datei in den Status "in Genehmigung" zu versetzen
+                $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'startApproval', array("id"=>$entity->getValueByKey("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id"), "enddate" => $this->request->getInt("enddate")));
+                
                 if($response->getParameterByKey("errordate")){
+                    # Liegt das im Formular eingebene Enddatum nicht in der Zukunft, dann wird das Formular neu geladen und
+                    # die entsprechende Fehlermeldung ausgeben.
                     return $this->showStartApprovalEntryFormAction($response->getParameterByKey("errordate"));
                 }
+                
+                # Versendung einer Informationsmail, dass für eine Datei ein Genehmigungsverfahren eingeleitet wurde.
                 \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "startApproval"));
+                
+                # Dialog des Formulars schließen und Liste neu anzeigen.
                 return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
             }
         }
         return $this->showListAction();
     }
     
+    /**
+     *              /F130/ + /F150/ + /F170/
+     * 
+     * Genehmigungsverfahren beenden. 
+     */
     protected function stoppApprovalAction()
     {
         if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval() && !$entity->isApproved()){
+            # Prüfung ob der Eintrag genehmigt werden kann und ob der Genehmigungsstarter bzw. ein Backend-Administrator eingeloggt ist
+            if($entity->isInApproval() && !$entity->isApproved() && ($this->auth->isLoggedIn() || $entity->isInUserApprovalStarter())){
+                
+                # Genehmigungsverfahren stoppen und die Datei wieder freigeben.
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'stoppApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id")));
+                
+                # Versendung einer Informationsmail, dass für eine Datei ein Genehmigungsverfahren beendet wurde und die Datei wieder bearbeitet werden kann.. 
                 \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "stoppApproval"));
                 return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
             }
@@ -449,15 +506,23 @@ class Frontend extends \LWmvc\Controller
         return $this->showListAction();
     }
     
+    /**
+     *              /F040/
+     * 
+     * Stimmabgabe speichern. 
+     */
     protected function voteApprovalAction()
     {
-        if ($this->listRights->isWriteAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
+        if ($this->listRights->isWriteAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig && !$this->auth->isLoggedIn()) {
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval() && !$entity->isApproved()){
+            if($entity->isInApproval() && !$entity->isApproved() && $entity->isVoteAllowed() && !$entity->hasLoggedInInUserVoted()){
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'voteApproval', array("id"=>$this->request->getInt("id"), "approvalUserId"=> $this->dic->getLwInAuth()->getUserdata("id"), "listId"=>$this->getContentObjectId()), array("postArray" => $this->request->getPostArray()));            
                 if($response->getParameterByKey("errorvote")){
+                    
+                    # /F060/ Wurde mit "Nein" gestimmt und kein Kommentar oder ein zu langer Kommentar geschrieben, dann 
+                    # wird das Formular für die Stimmabgabe neue geladen und die entsprechende Fehlermeldung angezeigt.
                     return $this->showApprovalEntryVoteAction($response->getParameterByKey("errorvote"));
                 }
                 return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));
@@ -466,31 +531,50 @@ class Frontend extends \LWmvc\Controller
         return $this->showListAction();
     }
     
+    /**
+     *              /F090/
+     * 
+     * Erinnerungsmail verschicken. 
+     */
     public function sendReminderApprovalMailAction()
     {
         if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval() && !$entity->isApproved()){
-                \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "remindApproval"));
-                \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'setDateSendApprovalReminder', array("id"=>$this->request->getInt("id")));
+            if($entity->isInApproval() && !$entity->isApproved() && ($this->auth->isLoggedIn() || $entity->isInUserApprovalStarter()) ){
+                # Versendung der Erinnerungsmail.
+                \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Notification', 'sendNotificationMail', array("entryid" => $entity->getValueByKey("id") ,"listId"=> $this->getContentObjectId(), "filename" => $entity->getValueByKey("opt2file"), "entryname" => $entity->getValueByKey("name"),"cmd" => "remindApproval"));
+                
+                # Datum speichern, wann die Erinnerungsmail verschickt wurde.
+                \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'setDateSendApprovalReminder', array("id"=> $entity->getValueByKey("id")));
 
+                # Dialoag der Genehmigungsstatistik neu laden.
                 return $this->showApprovalEntryStatusAction();
             }
         }
         return $this->showListAction();
     }
     
+    /**
+     *              /F021/
+     * 
+     * Eine Datei als genehmigt markieren bei 75% oder mehr "Ja-Stimmen". 
+     */
     public function approveEntryAction()
     {
         if ($this->listRights->isWriteAllowed() && $this->approvalRights->isApprovalAllowed() && $this->featureCollection->getFeature("LwListtool_ApprovalSystem")->isActive() && $this->useApprovalSystemListConfig) {
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getEntryEntityById', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
             $entity = $response->getDataByKey('EntryEntity');
             
-            if($entity->isInApproval() && !$entity->isApproved()){
+            # Prüfung ob der Eintrag genehmigt werden kann und ob der Genehmigungsstarter bzw. ein Backend-Administrator eingeloggt ist
+            if($entity->isInApproval() && !$entity->isApproved() && ($this->auth->isLoggedIn() || $entity->isInUserApprovalStarter()) ){
+                
+                # Statistik des Genehmigungsverfahrens laden
                 $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getApprovalStatistics', array("id"=>$this->request->getInt("id"), "listId"=>$this->getContentObjectId()));
                 $results = $response->getDataByKey('results'); 
+                
+                # /F070/ + /F160/ es müssen minimum 75% "Ja"-Stimmen abgegeben worden sein
                 if($results["voted_yes_percent"] >= 75 && ( date("YmdHis") >= $entity->getValueByKey('opt7number') || $results["participant_quote"] == 100 ) ){
                     \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'setEntryApproved', array("id"=>$this->request->getInt("id")));
                      return $this->buildReloadResponse(array("cmd"=>"showList", "reloadParent"=>1));

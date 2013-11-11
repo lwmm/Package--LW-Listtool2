@@ -65,6 +65,11 @@ class QueryHandler extends \LWmvc\Model\DataQueryHandler
         return $this->db->pselect();
     }
     
+    /**
+     *              /F100/ + /F110/ + /F120/
+     * 
+     * Stimmabgaben laden. 
+     */
     public function getVotingsByEntryId($id, $listid)
     {
         $this->db->setStatement("SELECT opt1bool, opt1text, lw_first_date, lw_first_user  FROM t:lw_master WHERE lw_object = :lw_object AND opt1number = :opt1number AND category_id = :category_id ");

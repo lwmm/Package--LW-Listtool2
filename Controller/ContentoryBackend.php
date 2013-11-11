@@ -60,8 +60,8 @@ class ContentoryBackend extends \LWmvc\Controller
 
     protected function deleteListAction($error = false)
     {
-        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getListEntriesAggregate', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
-        $listEntriesAggregate = $response->getDataByKey('listEntriesAggregate');
+        $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'getListEntriesCollection', array("configuration"=>$this->listConfig, "listId"=>$this->getContentObjectId(), "listRights"=>$this->listRights));
+        $listEntriesAggregate = $response->getDataByKey('listEntriesCollection');
 
         foreach($listEntriesAggregate as $entry) {
             $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'Entry', 'delete', array("id"=>$entry->getValueByKey("id"), "listId"=>$this->getContentObjectId()));
@@ -101,6 +101,8 @@ class ContentoryBackend extends \LWmvc\Controller
         
         $response = \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ApprovalRights', 'getAssignedApprovalAdmins', array("listId"=>$this->getContentObjectId()));
         $formView->setAssignedApprovalAdminIds($response->getDataByKey('approvalAdminIds'));
+        
+        \LWmvc\Model\CommandDispatch::getInstance()->execute('LwListtool', 'ApprovalRights', 'checkExistanceOfAssignedApprovalAdmins', array("listId"=>$this->getContentObjectId()));
         
         return $this->returnRenderedView($formView);
     }    

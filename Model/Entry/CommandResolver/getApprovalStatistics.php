@@ -1,4 +1,9 @@
 <?php
+/**
+ *              /F100/ + /F110/ + /F120/
+ * 
+ * Genehmigungsstatistik laden und im Statusdialog anzeigen.
+ */
 
 namespace LwListtool\Model\Entry\CommandResolver;
 
@@ -24,11 +29,17 @@ class getApprovalStatistics extends \LWmvc\Model\CommandResolver
         $votedUsers = array();
         $emailsOfNotVotedUsers = array();
 
+        # Dem Listtool zugewiesene Intranets laden
         $intranets = $this->getQueryHandler()->getIntranetsByListid($this->command->getParameterByKey('listId'));
+        
+        # Dem Listtool direkt zugewiesene Nutzer laden
         $users = $this->getQueryHandler()->getUserByListid($this->command->getParameterByKey('listId'));
+        
+        # Stimmabgaben für dieses Listtool und der entsprechenden Eintrags-ID laden
         $votes = $this->getQueryHandler()->getVotingsByEntryId($this->command->getParameterByKey('id'), $this->command->getParameterByKey('listId'));
 
 
+        # Die einzelnen Nutzer der zugewiesenen Intranets laden.
         foreach ($intranets as $intranet) {
             $intraUser = $this->getQueryHandler()->getUserByIntranetId($intranet["id"]);
             foreach ($intraUser as $inUser) {
@@ -54,13 +65,17 @@ class getApprovalStatistics extends \LWmvc\Model\CommandResolver
                 $emailsOfNotVotedUsers[$user["email"]] = true;
             }
         }
-
+        
         $results["participants"] = count($users);
         $results["participant_quote"] = round(count($votes) / count($users) * 100, 2);
         $results["voted"] = count($votes);
+        
+        # /F050/ die reinen "Ja"-Stimmen sind relevent für die Genehmigung. "Nein"-Stimmen
+        # und Enthaltungen reduzieren somit den Anteil von "Ja"-Stimmen.
         $results["voted_yes_percent"] = round($yes / count($users) * 100, 2);
         $results["voted_no_percent"] = round($no / count($users) * 100, 2);
         $results["voted_not_percent"] = round( ( count($users) - ( $yes + $no ) ) / count($users) * 100, 2);
+        
         $results["voted_yes"] = $yes;
         $results["voted_no"] = $no;
         $results["voted_not"] = count($users) - ( $yes + $no );

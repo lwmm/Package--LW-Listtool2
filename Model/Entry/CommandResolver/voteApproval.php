@@ -20,6 +20,8 @@ class voteApproval extends \LWmvc\Model\CommandResolver
     public function resolve()
     {
         $array = $this->command->getDataByKey('postArray');
+        
+        # /F060/ Wurde mit "Nein" gestimmt , dann darf das Kommentarfeld nicht leer sein
         if($array["lt_vote"] == 0 && $array["lt_comment"] == ""){
             $this->command->getResponse()->setParameterByKey('errorvote', 1);
         }else if($array["lt_vote"] == 0 && strlen($array["lt_comment"]) > 255){

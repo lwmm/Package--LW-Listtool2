@@ -19,6 +19,7 @@ class setEntryApproved extends \LWmvc\Model\CommandResolver
     
     public function resolve()
     {
+        # /F021/ Datei als genehmigt markieren anhand der Eintrags-ID.
         $ok = $this->getCommandHandler()->setEntryApproved($this->command->getParameterByKey("id"));
         if ($ok) {
             $this->command->getResponse()->setParameterByKey('entryApproved', true);

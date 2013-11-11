@@ -29,13 +29,13 @@ class QueryHandler extends \LWmvc\Model\DataQueryHandler
         $this->type = "lw_listtool2";
     }
  
-    public function getAllAssignedApprovalAdminsByListIs($listId)
+    public function getAllAssignedApprovalAdminsByListIds($listId)
     {
         $array = array();
         
         $this->db->setStatement("SELECT right_id FROM t:lw_intra_assign WHERE object_id = :objectId AND right_type = :rightType ");
         $this->db->bindParameter("objectId", "i", $listId);
-        $this->db->bindParameter("rightType", "s", "user_approval_admin");
+        $this->db->bindParameter("rightType", "s", "approval_admin");
         
         $result = $this->db->pselect();
 

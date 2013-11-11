@@ -1,24 +1,5 @@
 <?php
 
-/* * ************************************************************************
- *  Copyright notice
- *
- *  Copyright 2013 Logic Works GmbH
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *  
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *  
- * ************************************************************************* */
-
 namespace lwListtool\Model\ApprovalRights\Object;
 
 class approvalRights extends \LWmvc\Model\Entity
@@ -28,16 +9,6 @@ class approvalRights extends \LWmvc\Model\Entity
     {
         parent::__construct($id);
         $this->dic = new \lwListtool\Services\dic();
-    }
-
-    public function setAssignedUserArray($array)
-    {
-        $this->UserArray = $array;
-    }
-
-    public function setAssignedIntranetsArray($array)
-    {
-        $this->IntranetsArray = $array;
     }
 
     public function setAuthObject($auth)
@@ -54,15 +25,26 @@ class approvalRights extends \LWmvc\Model\Entity
     {
         $this->listConfig = $config;
     }
+    
+    public function setListId($listId)
+    {
+        $this->listId = $listId;
+    }
 
-
+    /**
+     *              /F010/
+     * 
+     * Prüfung ob der eingeloggte Intranet-User auch über 
+     * Genehmigungsadministratorrechte verfügt.
+     */
     public function isAssigned()
     {
         $db = $this->dic->getDbObject();
         
-        $db->setStatement("SELECT * FROM t:lw_intra_assign WHERE right_type = :rightType AND right_id = :rightId");
-        $db->bindParameter("rightType", "s", "user_approval_admin");
+        $db->setStatement("SELECT * FROM t:lw_intra_assign WHERE right_type = :rightType AND object_id = :objectId AND right_id = :rightId ");
+        $db->bindParameter("rightType", "s", "approval_admin");
         $db->bindParameter("rightId", "i", $this->inAuth->getUserData("id"));
+        $db->bindParameter("objectId", "i", $this->listId);
         
         $result = $db->pselect1();
         
@@ -72,7 +54,13 @@ class approvalRights extends \LWmvc\Model\Entity
         
         return true;
     }
-
+    
+    /**
+     *              /F010/ 
+     * 
+     * Es wird geprüft ob für den eingeloggten Benuzter das 
+     * Genehmigungsystem zugänglich gemacht werden darf.
+     */
     public function isApprovalAllowed()
     {
         $type = $this->listConfig->getValueByKey('listtooltype');
